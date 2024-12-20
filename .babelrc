@@ -1,1 +1,7 @@
-// init
+{
+  "presets": [
+    "@babel/preset-env",
+   ["@babel/preset-react",
+    { "runtime": "automatic" }] // enables automatic imports of JSX, no need for manually adding import React from 'react' anymore
+  ]
+}
