@@ -10,7 +10,7 @@ const users = new Schema({
   location: String,
 
 })
-
+//
 const federated_credentialsModel = new Schema({
 
   user_id: Number,
