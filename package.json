@@ -52,6 +52,8 @@
 
     "eslint-plugin-react-hooks": "^5.1.0",
 
+    "express-session": "^1.18.1",
+
     "html-loader": "^5.1.0",
 
     "mongodb": "^6.12.0",
