@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 //TODO: require { obj } for endpoint root route
 
 dotenv.config();
@@ -13,7 +14,10 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());  // Parse the request body
-app.use(express.static()) //TODO:
+// create file path starting with current directory -> dist folder and serve it with express middleware
+app.use(express.static(path.join(__dirname, '../dist')));
+
+
 
 // Root Route
 app.get('/', (req, res) => {
