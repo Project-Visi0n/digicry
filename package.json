@@ -58,6 +58,10 @@
 
     "mongoose": "^8.9.2",
 
+    "passport": "^0.7.0",
+
+    "passport-google-oidc": "^0.1.0",
+
     "passport-oauth": "^1.0.0",
 
     "react": "^19.0.0",
