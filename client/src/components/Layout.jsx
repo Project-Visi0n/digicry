@@ -24,13 +24,27 @@ const Layout = ({ children }) => {
 
           {/* Navigation */}
           <nav className="glass-container nav-container">
-            <NavLink to="/" className="nav-link">
+            <NavLink 
+            to="/" 
+            className={({ isActive }) => 
+              isActive ? "nav-link active" : "nav-link"
+              }
+              end
+              >
               Home
             </NavLink>
-            <NavLink to="/journal" className="nav-link">
+            <NavLink to="/journal"
+            className={({ isActive }) => 
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
               Journal
             </NavLink>
-            <NavLink to="/analytics" className="nav-link">
+            <NavLink to="/analytics" 
+              className={({ isActive }) => 
+                isActive ? "nav-link active" : "nav-link"
+              }
+            >
               Analytics
             </NavLink>
           </nav>
@@ -45,3 +59,5 @@ const Layout = ({ children }) => {
 
   );
 };
+
+export default Layout;
