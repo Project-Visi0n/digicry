@@ -1,7 +1,7 @@
 import { Container, Typography, Box } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 
-const Layout = () => {
+const Layout = ({ children }) => {
 
   return (
     <>
@@ -14,9 +14,9 @@ const Layout = () => {
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}>
           {/* App Title */}
-          <Typography 
-            variant="h2" 
-            component="h1" 
+          <Typography
+            variant="h2"
+            component="h1"
             className="main-title"
           >
             Digi-Cry
