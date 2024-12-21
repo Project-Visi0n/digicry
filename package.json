@@ -3,12 +3,6 @@
   "scripts": {
 
     "server": "nodemon server/index.js",
-<<<<<<< HEAD
-
-    "client": "webpack serve --mode development",
-
-    "dev": "concurrently \"npm run server\" \"npm run client\""
-=======
     "build": "webpack --config webpack.config.js",
 
     "client": "webpack serve --mode development ",
@@ -20,7 +14,6 @@
     "clean-deps": "rimraf node_modules package-lock.json && npm install",
 
     "start-prod": "nodemon dist/bundle.js"
->>>>>>> upstream/main
 
   },
 

@@ -8,11 +8,7 @@ const cors = require('cors');
 
 dotenv.config();
 
-<<<<<<< HEAD
-const PORT = process.env.PORT || 4000;
-=======
 const PORT = process.env.PORT || 5000;
->>>>>>> upstream/main
 
 // Create an instance of Express
 const app = express();
