@@ -1,19 +1,36 @@
 // Import necessary modules from React and Material UI
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, Paper } from '@mui/material';
 
 
 // Define the App component
 const App = () => {
+  // State for mood analytics
+
+  // State for loading status
 
 
+  
+  //useEffect(() => {
+    
+    // TODO: Implement API call to fetch data with axios
+    
+    //  }, []);
+    
   // Render the homepage
   return (
-    <Container maxWidth="md" className="glass-container">
+    <Container maxWidth="lg">
+      <Box sx={{ my: 4 }}>
       {/* Header Section */}
         <Typography variant="h3" align="center" gutterBottom>
           Digi-Cry Today?
         </Typography>
+        <Paper className="glass-container" elevation={3}>
+          <Typography variant="h5">
+            Welcome to you mood journal
+          </Typography>
+        </Paper>
+      </Box>
 
       {/* Future Sections: Mood Analytics and Local Events */}
       <Box>
