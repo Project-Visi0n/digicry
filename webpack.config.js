@@ -22,7 +22,6 @@ const DIST_DIR = path.resolve(__dirname, 'dist');
 
 module.exports = {
 
-  // watch: true, // set watch to true to rebuild on save (when file is edited)
 
   // stats allows us to control what bundle info gets displayed
   stats: {
@@ -94,12 +93,25 @@ module.exports = {
   ],
 
   devServer: {
+    static: {
+      directory: DIST_DIR,
+    },
     port: 8080,
-    host: 'localhost',
     hot: true,
-    liveReload: true,
-  }
-}
-
+    open: true,
+    historyApiFallback: true,
+    proxy: [{
+      context: ['/api'],
+      target: 'http://localhost:4000',
+    }]
+  },
+  plugins: [
+    new WebpackBar(),
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: path.resolve(SRC_DIR, 'index.html'),
+    }),
+  ],
+};
 
 
