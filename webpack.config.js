@@ -22,7 +22,7 @@ const DIST_DIR = path.resolve(__dirname, 'dist');
 
 module.exports = {
 
-  watch: true, // set watch to true to rebuild on save (when file is edited)
+  // watch: true, // set watch to true to rebuild on save (when file is edited)
 
   // stats allows us to control what bundle info gets displayed
   stats: {
@@ -92,6 +92,14 @@ module.exports = {
     }),
     // ? may add CopyPlugin for favicon later
   ],
+
+  devServer: {
+    port: 8080,
+    host: 'localhost',
+    hot: true,
+    liveReload: true,
+  }
 }
+
 
 
