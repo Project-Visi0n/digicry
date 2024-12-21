@@ -1,7 +1,7 @@
 // Import necessary modules from React and Material UI
 import React, { useState, useEffect } from "react";
 import { Container, Typography, Box } from '@mui/material';
-
+import Login from './Login.jsx'
 
 // Define the App component
 const App = () => {
@@ -22,7 +22,7 @@ const App = () => {
   
       {/* Motivational Quote Section */}
       <Box>
-  
+        <Login/>
       </Box>
   
       {/* Future Sections: Mood Analytics and Local Events */}

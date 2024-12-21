@@ -52,20 +52,14 @@
 
     "webpack": "^5.97.1",
 
-    "webpack-cli": "^6.0.1",
-
     "webpackbar": "^7.0.0"
 
   },
 
   "dependencies": {
-
     "@emotion/react": "^11.14.0",
-
     "@emotion/styled": "^11.14.0",
-
     "@mui/material": "^6.2.1",
-
     "axios": "^1.7.9",
 
     "cors": "^2.8.5",
@@ -90,7 +84,17 @@
 
     "style-loader": "^4.0.0",
 
-    "webpack-dev-server": "^5.2.0"
+    "webpack-cli": "^5.1.4",
+
+    "webpack-dev-server": "^5.2.0",
+
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.18.2",
+    "passport-local": "^1.0.0",
+    "uuid": "^8.3.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.5",
+    "passport-google-oauth20": "^2.0.0"
 
   }
 
