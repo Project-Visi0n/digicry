@@ -1,3 +1,27 @@
+/* Import Google Fonts - Poppins for headings and Nunito for body text */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@300;400;600&display=swap');
+
+:root {
+  --pink: #FFA69E;
+  --cream: #FAF3DD;
+  --mint: #B8F2E6;
+  --blue: #AED9E0;
+  --grey: #5E6472;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(
+    135deg,
+    var(--mint) 0%,
+    var(--blue) 50%,
+    var(--pink) 100%
+  );
+  min-height: 100vh;
+  background-attachment: fixed;
+}
+
 /* Glassmorphism container style */
 .glass-container {
   background: rgba(255, 255, 255, 0.2); /* White with 20% opacity */
