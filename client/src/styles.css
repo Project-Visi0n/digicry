@@ -1,6 +1,7 @@
 /* Import Google Fonts - Poppins for headings and Nunito for body text */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@300;400;600&display=swap');
 
+/* Color Variables */
 :root {
   --pink: #FFA69E;
   --cream: #FAF3DD;
@@ -16,6 +17,7 @@
   box-sizing: border-box;
 }
 
+/* Basic Styles*/
 body {
   margin: 0;
   font-family: 'Nunito', sans-serif;
@@ -244,3 +246,4 @@ body {
     transform: translateY(0);
   }
 }
+
