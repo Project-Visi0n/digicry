@@ -109,3 +109,36 @@ body {
   border-radius: 12px;
   margin-top: 1rem;
 }
+
+/* Events Panel Specific Styles */
+.events-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.event-card-placeholder {
+  height: 150px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.event-card-placeholder:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-3px);
+}
+
+/* Quote Panel Specific Styles */
+.quote-panel {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.15) !important;
+  padding: 1.5rem !important;
+}
+
+.quote-text {
+  color: var(--grey) !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+}
