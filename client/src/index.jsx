@@ -1,6 +1,5 @@
-//ths way to use React may be deprecated for React 19
-import React from 'react'
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import App from './components/App.jsx';
 
 // Import styles
@@ -11,4 +10,8 @@ const container = document.getElementById('root');
 
 const root = createRoot(container);
 
-root.render(<App />);
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
