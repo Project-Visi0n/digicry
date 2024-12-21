@@ -1,5 +1,4 @@
 import { Container, Typography, Box } from '@mui/material';
-import { NavLink } from 'react-router-dom';
 
 const Layout = ({ children }) => {
 
@@ -21,33 +20,6 @@ const Layout = ({ children }) => {
           >
             Digi-Cry
           </Typography>
-
-          {/* Navigation */}
-          <nav className="glass-container nav-container">
-            <NavLink 
-            to="/" 
-            className={({ isActive }) => 
-              isActive ? "nav-link active" : "nav-link"
-              }
-              end
-              >
-              Home
-            </NavLink>
-            <NavLink to="/journal"
-            className={({ isActive }) => 
-              isActive ? "nav-link active" : "nav-link"
-            }
-          >
-              Journal
-            </NavLink>
-            <NavLink to="/analytics" 
-              className={({ isActive }) => 
-                isActive ? "nav-link active" : "nav-link"
-              }
-            >
-              Analytics
-            </NavLink>
-          </nav>
 
           {/* Page Content */}
           <Box sx={{ mt: 4 }}>

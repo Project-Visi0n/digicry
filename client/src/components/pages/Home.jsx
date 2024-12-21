@@ -1,9 +1,9 @@
 
-import { Typography, Box, Paper, Stack } from '@mui/material';
-//import Login from "./Login";
+import { Typography, Box, Stack } from '@mui/material';
 
 
-// Define the App component
+
+// Define the Home component
 const Home = () => {
  
   // Render the homepage
