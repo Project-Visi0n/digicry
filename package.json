@@ -52,35 +52,26 @@
 
     "webpack": "^5.97.1",
 
+    "webpack-cli": "^6.0.1",
+
     "webpackbar": "^7.0.0"
 
   },
 
   "dependencies": {
+
     "@emotion/react": "^11.14.0",
+
     "@emotion/styled": "^11.14.0",
+
     "@mui/material": "^6.2.1",
+
     "axios": "^1.7.9",
 
     "cors": "^2.8.5",
 
     "dotenv": "^16.4.7",
 
-<<<<<<< HEAD
-    "eslint": "^9.17.0",
-
-    "eslint-plugin-import": "^2.31.0",
-
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-
-    "eslint-plugin-react": "^7.37.2",
-
-    "eslint-plugin-react-hooks": "^5.1.0",
-
-    "express-session": "^1.18.1",
-
-=======
->>>>>>> 2978c338ed3c1c82996dff998c54ba1379acb080
     "html-loader": "^5.1.0",
 
     "mongodb": "^6.12.0",
@@ -98,8 +89,6 @@
     "react-dom": "^19.0.0",
 
     "style-loader": "^4.0.0",
-
-    "webpack-cli": "^5.1.4",
 
     "webpack-dev-server": "^5.2.0"
 
