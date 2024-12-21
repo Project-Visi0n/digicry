@@ -7,61 +7,47 @@
   --mint: #B8F2E6;
   --blue: #AED9E0;
   --grey: #5E6472;
+  --gradient: linear-gradient(135deg, var(--mint) 0%, var(--blue) 50%, var(--pink) 100%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   font-family: 'Nunito', sans-serif;
-  background: linear-gradient(
-    135deg,
-    var(--mint) 0%,
-    var(--blue) 50%,
-    var(--pink) 100%
-  );
+  background: var(--gradient);
   min-height: 100vh;
   background-attachment: fixed;
+  color: var(--grey);
 }
 
-/* Glassmorphism container styles */
-.glass-container {
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 8px 32px 0 rgba(94, 100, 114, 0.1) !important;
-  border-radius: 24px !important;
-  padding: 2rem !important;
-  transition: all 0.3s ease-in-out !important;
+.main-container {
+  padding: 2rem 1rem;
+  min-height: 100vh;
 }
 
-.glass-container:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-  transform: translateY(-5px);
-  box-shadow: 0 12px 40px 0 rgba(94, 100, 114, 0.2) !important;
-}
-
-/* Typography styles */
-h1, h2, h3, h4, h5, h6 {
+.main-title {
   font-family: 'Poppins', sans-serif !important;
-  color: var(--grey) !important;
+  font-weight: 700 !important;
+  font-size: 4rem !important;
+  text-align: center;
+  margin-bottom: 3rem !important;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  letter-spacing: -1px;
 }
 
-/* Custom button styles */
-.google-button {
-  background: rgba(255, 255, 255, 0.9) !important;
-  color: var(--grey) !important;
-  font-family: 'Poppins', sans-serif !important;
-  text-transform: none !important;
-  padding: 12px 24px !important;
-  border-radius: 12px !important;
-  transition: all 0.3s ease-in-out !important;
-  box-shadow: 0 4px 20px rgba(94, 100, 114, 0.1) !important;
+.content-stack {
+  max-width: 1000px;
+  margin: 0 auto !important;
 }
 
-.google-button:hover {
-  background: rgba(255, 255, 255, 1) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(94, 100, 114, 0.15) !important;
-}
 
-/* Additional styling for mood analytics */
+

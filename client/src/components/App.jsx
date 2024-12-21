@@ -7,7 +7,7 @@ import { Container, Typography, Box, Paper, Stack } from '@mui/material';
 // Define the App component
 const App = () => {
   // State for authentication
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // State for mood analytics
 
@@ -26,54 +26,60 @@ const App = () => {
   // Render the homepage
   return (
     <Container maxWidth="lg">
-      <Box sx={{ my: 4 }}>
+    <Box className="main-container">
       {/* Header Section */}
-        <Typography variant="h3" align="center" gutterBottom>
-          Digi-Cry Today?
-        </Typography>
+      <Typography
+        variant="h2"
+        component="h1"
+        className="main-title"
+      >
+        Digi-Cry
+      </Typography>
 
-        {/* When Login can be imported */}
-        
-        {/* <Stack spacing={3}>
-          {!isAuthenticated ? (
-            // Show login if not authenticated
-            <Box sx={{ maxWidth: 600, mx: 'auto', width: '100%' }}>
-              <Login />
-            </Box>
-          ) : (
-            // Show main content if authenticated
-        <Stack spacing={3}>
-          <Paper className="glass-container" elevation={3}>
-            <Typography variant="h5">
-              Welcome to you mood journal
-            </Typography>
-            </Paper> */}
-
-          {/* Future Sections: Mood Analytics and Local Events */}
-          <Box>
-            <Typography variant="h6" component="p">
-              Track your mood and connect with your community.
-           </Typography>
-          {/* TODO: Add charts or graphs here for mood tracking */}
+      {/* Main Content */}
+      <Stack spacing={4} className="content-stack">
+        {/* Mood Tracking Section */}
+        <Box className="glass-panel mood-panel">
+          <Typography variant="h4" className="section-title">
+            Track Your Mood
+          </Typography>
+          <Typography variant="body1" className="section-description">
+            Document your emotional journey and gain insights into your well-being
+          </Typography>
+          <Box className="mood-preview">
+            {/* Placeholder for mood tracking visualization */}
+            <div className="mood-graph-placeholder"></div>
           </Box>
+        </Box>
 
         {/* Events Section */}
-        <Box mt={4}>
-          <Typography variant="h6">Local Events Near You:</Typography>
-          {/* TODO: Add local events here */}
+        <Box className="glass-panel events-panel">
+          <Typography variant="h4" className="section-title">
+            Local Events
+          </Typography>
+          <Typography variant="body1" className="section-description">
+            Connect with your community
+          </Typography>
+          <Box className="events-preview">
+            {/* Event cards will go here */}
+            <div className="event-card-placeholder"></div>
+            <div className="event-card-placeholder"></div>
+          </Box>
         </Box>
-  
-        {/* Motivational Quote Section */}
-        <Box>
-          <Typography variant="h6">Motivational Quote:</Typography>
-          {/* TODO: Add motivational quotes here */}
-      </Box>
-    {/* </Stack> */}
-  {/* )} */}
-{/* </Stack> */}
-</Box>
-</Container>
-  );
+
+        {/* Quote Section */}
+        <Box className="glass-panel quote-panel">
+          <Typography variant="h4" className="section-title">
+            Daily Inspiration
+          </Typography>
+          <Typography variant="body1" className="quote-text">
+            "The only way to do great work is to love what you do."
+          </Typography>
+        </Box>
+      </Stack>
+    </Box>
+  </Container>
+);
 };
 
 
