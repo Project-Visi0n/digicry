@@ -3,7 +3,9 @@
   "scripts": {
 
     "server": "nodemon server/index.js",
-    "client": "webpack -- mode development -- watch",
+
+    "client": "webpack serve --mode development",
+
     "dev": "concurrently \"npm run server\" \"npm run client\""
 
   },
