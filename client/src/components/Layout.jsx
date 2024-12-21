@@ -21,6 +21,13 @@ const Layout = ({ children }) => {
             Digi-Cry
           </Typography>
 
+          {/* Navigation Placeholder */}
+          <nav className="glass-container nav-container">
+            <a className="nav-link active" href="#home">Home</a>
+            <a className="nav-link" href="#journal">Journal</a>
+            <a className="nav-link" href="#analytics">Analytics</a>
+          </nav>
+
           {/* Page Content */}
           <Box sx={{ mt: 4 }}>
             {children}
