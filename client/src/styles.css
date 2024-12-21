@@ -183,3 +183,27 @@ body {
   cursor: pointer;
   transform: translateY(-2px);
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 3rem !important;
+  }
+
+  .glass-panel {
+    padding: 1.5rem !important;
+  }
+
+  .quote-panel {
+    margin: 1rem !important;
+  }
+
+  .voice-analytics-container {
+    min-height: 100px;
+  }
+
+  .voice-visualization-placeholder {
+    height: 60px;
+  }
+
+}
