@@ -6,7 +6,7 @@ function Login({ }) {
   return (
     <div>
     <h1>Sign in</h1>
-    <a class="button google" href="/login/federated/google">
+    <a class="button google" href="/auth/google">
     Sign in with Google
     </a>
     </div>
