@@ -98,3 +98,14 @@ body {
   margin-bottom: 2rem !important;
 }
 
+/* Mood Panel Specific Styles */
+.mood-panel {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+.mood-graph-placeholder {
+  height: 200px;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+  border-radius: 12px;
+  margin-top: 1rem;
+}
