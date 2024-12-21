@@ -36,7 +36,7 @@ mongoose.connect('mongodb//localhost:27017/digicry')
   console.log('Failed to connect to the database! ')
 })
 
-const db = mongoose.connection;
+
 //Exports go here
 
 module.exports = { Federated_Credentials, User };

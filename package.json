@@ -57,14 +57,32 @@
   },
 
   "dependencies": {
+
     "@emotion/react": "^11.14.0",
+
     "@emotion/styled": "^11.14.0",
+
     "@mui/material": "^6.2.1",
+
     "axios": "^1.7.9",
+
+    "bcrypt": "^5.0.1",
+
+    "body-parser": "^1.18.2",
+
+    "connect-flash": "^0.1.1",
+
+    "connect-mongo": "^5.1.0",
+
+    "cookie-parser": "^1.4.5",
 
     "cors": "^2.8.5",
 
     "dotenv": "^16.4.7",
+
+    "express": "^4.21.2",
+
+    "express-session": "^1.18.1",
 
     "html-loader": "^5.1.0",
 
@@ -74,9 +92,11 @@
 
     "passport": "^0.7.0",
 
+    "passport-google-oauth20": "^2.0.0",
+
     "passport-google-oidc": "^0.1.0",
 
-    "passport-oauth": "^1.0.0",
+    "passport-local": "^1.0.0",
 
     "react": "^19.0.0",
 
@@ -84,17 +104,11 @@
 
     "style-loader": "^4.0.0",
 
+    "uuid": "^8.3.2",
+
     "webpack-cli": "^5.1.4",
 
-    "webpack-dev-server": "^5.2.0",
-
-    "bcrypt": "^5.0.1",
-    "body-parser": "^1.18.2",
-    "passport-local": "^1.0.0",
-    "uuid": "^8.3.2",
-    "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.5",
-    "passport-google-oauth20": "^2.0.0"
+    "webpack-dev-server": "^5.2.0"
 
   }
 
