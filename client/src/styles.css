@@ -1,18 +1,401 @@
-/* Glassmorphism container style */
-.glass-container {
-  background: rgba(255, 255, 255, 0.2); /* White with 20% opacity */
-  border-radius: 15px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  padding: 20px;
+/* Import Google Fonts - Poppins for headings and Nunito for body text */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@300;400;600&display=swap');
+
+/* Color Variables */
+:root {
+  --pink: #FFA69E;
+  --cream: #FAF3DD;
+  --mint: #B8F2E6;
+  --blue: #AED9E0;
+  --grey: #5E6472;
+  --gradient: linear-gradient(135deg, var(--mint) 0%, var(--blue) 50%, var(--pink) 100%);
 }
 
-/* Apply color palette to Typography */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Basic Styles*/
 body {
-  font-family: 'Roboto', sans-serif;
-  background: #FAF3DD;
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  background: var(--gradient);
+  min-height: 100vh;
+  background-attachment: fixed;
+  color: var(--grey);
 }
 
-/* Additional styling for mood analytics */
+/* Background Elements */
+.gradient-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  background: var(--gradient);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+.gradient-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  backdrop-filter: blur(100px);
+  -webkit-backdrop-filter: blur(100px);
+}
+
+.main-container {
+  padding: 2rem 1rem;
+  min-height: 100vh;
+}
+
+.main-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 4rem !important;
+  text-align: center;
+  margin-bottom: 3rem !important;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  letter-spacing: -1px;
+}
+
+/* Navigation Container */
+.nav-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem !important;
+  margin-bottom: 2rem;
+}
+
+/* Navigation Links */
+.nav-link {
+  color: var(--grey);
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--pink);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Active link styles */
+.nav-link.active {
+  color: var(--pink);
+}
+
+.nav-link.active::after {
+  transform: scaleX(1);
+}
+
+/* Responsive navigation */
+@media (max-width: 600px) {
+  .nav-container {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .nav-link {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+.content-stack {
+  max-width: 1000px;
+  margin: 0 auto !important;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 24px !important;
+  padding: 2rem !important;
+  transition: all 0.4s ease-in-out !important;
+  overflow: hidden;
+  position: relative;
+}
+
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.glass-panel:hover::before {
+  left: 100%;
+}
+
+.glass-panel:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 600 !important;
+  margin-bottom: 1rem !important;
+  color: var(--grey) !important;
+}
+
+.section-description {
+  opacity: 0.8;
+  margin-bottom: 2rem !important;
+}
+
+/* Mood Panel Specific Styles */
+.mood-panel {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+.mood-graph-placeholder {
+  height: 200px;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+/* Events Panel Specific Styles */
+.events-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.event-card-placeholder {
+  height: 150px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.event-card-placeholder:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-3px);
+}
+
+/* Quote Panel Specific Styles */
+.quote-panel {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.15) !important;
+  padding: 1.5rem !important;
+}
+
+.quote-text {
+  color: var(--grey) !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+}
+
+/* Voice Analytics Panel Styles */
+.voice-panel {
+  background: rgba(255, 255, 255, 0.2) !important;
+  text-align: center;
+}
+
+.voice-analytics-container {
+  margin-top: 1.5rem;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-visualization-placeholder {
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.1) 0%,
+    rgba(255,255,255,0.2) 50%,
+    rgba(255,255,255,0.1) 100%
+  );
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.voice-visualization-placeholder:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.2) 0%,
+    rgba(255,255,255,0.3) 50%,
+    rgba(255,255,255,0.2) 100%
+  );
+  cursor: pointer;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 3rem !important;
+  }
+
+  .glass-panel {
+    padding: 1.5rem !important;
+  }
+
+  .quote-panel {
+    margin: 1rem !important;
+  }
+
+  .voice-analytics-container {
+    min-height: 100px;
+  }
+
+  .voice-visualization-placeholder {
+    height: 60px;
+  }
+
+}
+
+/* Animation for loading state */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+/* Animation for voice panel */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.voice-panel:hover .voice-visualization-placeholder {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Add subtle animations */
+.glass-panel {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Blob Animations */
+.blob {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.blob-1 {
+  background: var(--pink);
+  top: -20%;
+  right: -20%;
+  animation: float1 20s ease-in-out infinite;
+}
+
+.blob-2 {
+  background: var(--mint);
+  bottom: -20%;
+  left: -20%;
+  animation: float2 25s ease-in-out infinite;
+}
+
+/* Blob Floating Animations */
+@keyframes float1 {
+  0% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(-10%, 10%);
+  }
+  66% {
+    transform: translate(10%, -10%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes float2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(10%, -10%);
+  }
+  66% {
+    transform: translate(-10%, 10%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
