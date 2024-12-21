@@ -1,41 +1,14 @@
-// Import necessary modules from React and Material UI
-import React, { useState, useEffect } from "react";
-import { Container, Typography, Box, Paper, Stack } from '@mui/material';
+
+import { Typography, Box, Paper, Stack } from '@mui/material';
 //import Login from "./Login";
 
 
 // Define the App component
-const App = () => {
-  // State for authentication
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // State for mood analytics
-
-  // State for loading status
-  const [isLoading, setIsLoading] = useState(true);
-
-
-
-  // TODO: Implement API call to fetch data with axios
-  // useEffect(() => {
-  //   // Check authentication status
-  //   console.log('App component mounted');
-  //   setIsLoading(false);
-  //    }, []);
-
+const Home = () => {
+ 
   // Render the homepage
   return (
-    <Container maxWidth="lg">
     <Box className="main-container">
-      {/* Header Section */}
-      <Typography
-        variant="h2"
-        component="h1"
-        className="main-title"
-      >
-        Digi-Cry
-      </Typography>
-
         {/* Quote Section */}
         <Box className="glass-panel quote-panel" sx={{ mb: 4 }}>
           <Typography variant="h4" className="section-title">
@@ -95,7 +68,6 @@ const App = () => {
 
       </Stack>
     </Box>
-  </Container>
 );
 };
 
