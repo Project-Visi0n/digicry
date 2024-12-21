@@ -36,8 +36,34 @@ const App = () => {
         Digi-Cry
       </Typography>
 
-      {/* Main Content */}
-      <Stack spacing={4} className="content-stack">
+        {/* Quote Section */}
+        <Box className="glass-panel quote-panel" sx={{ mb: 4 }}>
+          <Typography variant="h4" className="section-title">
+            Daily Inspiration
+          </Typography>
+          <Typography variant="body1" className="quote-text">
+            "The only way to do great work is to love what you do."
+          </Typography>
+        </Box>
+
+        {/* Voice Analytics Section */}
+        <Box className="glass-panel voice-panel" sx={{ mb: 4 }}>
+          <Typography variant="h4" className="section-title">
+            Mood Analytics
+          </Typography>
+          <Box className="voice-analytics-container">
+            {/* Placeholder for voice analytics */}
+            <Box className="voice-visualization-placeholder">
+              <Typography variant="body1" sx={{ opacity: 0.7 }}>
+                Share how you're feeling...
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Main Content Stack */}
+        <Stack spacing={4} className="content-stack">
+
         {/* Mood Tracking Section */}
         <Box className="glass-panel mood-panel">
           <Typography variant="h4" className="section-title">
@@ -67,15 +93,6 @@ const App = () => {
           </Box>
         </Box>
 
-        {/* Quote Section */}
-        <Box className="glass-panel quote-panel">
-          <Typography variant="h4" className="section-title">
-            Daily Inspiration
-          </Typography>
-          <Typography variant="body1" className="quote-text">
-            "The only way to do great work is to love what you do."
-          </Typography>
-        </Box>
       </Stack>
     </Box>
   </Container>
