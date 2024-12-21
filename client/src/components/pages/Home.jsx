@@ -73,4 +73,4 @@ const Home = () => {
 
 
 // Export the App component
-export default App;
+export default Home;

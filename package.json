@@ -96,6 +96,8 @@
 
     "react-router": "^6.28.1",
 
+    "react-router-dom": "6.21.1",
+
     "style-loader": "^4.0.0",
 
     "webpack-dev-server": "^5.2.0"

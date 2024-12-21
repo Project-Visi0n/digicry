@@ -8,11 +8,17 @@ import Login from './Login';
 
 
 const App = () => {
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // authentication logic
+
+
   return (
-    <>
     <Routes>
       <Route path="/login" element={
-        !isAuthticated ? <Login /> : <Navigate to="/" replace />
+        !isAuthenticated ? <Login /> : <Navigate to="/" replace />
       } />
 
       <Route path="/" element={
@@ -40,7 +46,6 @@ const App = () => {
       } />
 
     </Routes>
-    </>
   );
 };
 
