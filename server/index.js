@@ -3,6 +3,7 @@ const passport = require("passport");
 const session = require("express-session");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const dotenv = require("dotenv");
+const path = require('path');
 const cors = require("cors");
 // TODO: require { obj } for endpoint root route
 
@@ -69,8 +70,7 @@ passport.deserializeUser((user, done) => {
 
 // Root Route
 app.get("/", (req, res) => {
-  res.send("Welcome to Digi-Cry Backend!");
-  // TODO: add endpoint
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 
 // Log in with google route
@@ -107,5 +107,5 @@ app.get("/logoout", (req, res) => {
 
 // Start Sever
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Listening at: http://127.0.0.1:${PORT}`);
+  console.log(`Listening on port: ${PORT}`);
 });
