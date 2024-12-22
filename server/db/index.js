@@ -27,7 +27,7 @@ const User = mongoose.model("User", usersSchema);
 // Connecting to mongodb database
 
 mongoose
-  .connect("mongodb//localhost:27017/digicry")
+  .connect("mongodb://localhost:27017/digicry")
   .then(() => {
     console.log("Connected to the database successfully");
   })
