@@ -106,6 +106,6 @@ app.get("/logoout", (req, res) => {
 });
 
 // Start Sever
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Listening at: http://127.0.0.1:${PORT}`);
 });
