@@ -20,6 +20,27 @@ const app = express();
 // client ID, clientSecret, CallbackURL, and an async callback function that will call
 // 'next' or 'done' once it is finished. The function automatically receives 2 tokens and
 // a profile.
+
+// this sets it up so that each session gets a cookie with a secret key
+app.use(
+  session({ // creates a new 'session' on requests
+    secret: "your-secret-key", 
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 1000 * 60 * 60 }, // creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
+  })
+);
+
+// set up passport
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(cors({
+  origin: `http://localhost:3000`,
+  credentials: true,
+}));
+app.use(express.json()); // Parse the request body
+//app.use(express.static('/dist')) //TODO:
+
 passport.use(
   new GoogleStrategy(
     {
@@ -44,24 +65,6 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
-
-// this sets it up so that each session gets a cookie with a secret key
-app.use(
-  session({ // creates a new 'session' on requests
-    secret: "your-secret-key", 
-    resave: true,
-    saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 }, // creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
-  })
-);
-
-// set up passport
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(cors());
-app.use(express.json()); // Parse the request body
-//app.use(express.static('/dist')) //TODO:
-
 // Routers
 
 // Root Route
@@ -81,7 +84,7 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    res.redirect("/profile");
+    res.redirect("http://localhost:8080");
   }
 );
 
