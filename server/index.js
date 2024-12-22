@@ -40,7 +40,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json()); // Parse the request body
-//app.use(express.static('/dist')) //TODO:
+app.use(express.static(path.join(__dirname, '../dist')));
 
 passport.use(
   new GoogleStrategy(
