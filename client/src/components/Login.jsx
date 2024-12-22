@@ -6,13 +6,16 @@ function Login({ }) {
 
   const handleClick = async() => {
 
-    axios.get('auth/google')
+    axios.get('http://localhost:5000/auth/google').then((result) => {
+     console.log(result)
+    });
+
   }
 
   return (
     <div>
     <h1>Sign in</h1>
-    <a class="button google" onClick={handleClick} href="auth/google">
+    <a className="button google" onClick={handleClick} href="/auth/google">
     Sign in with Google
     </a>
     </div>

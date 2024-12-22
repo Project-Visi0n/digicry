@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from './Layout';
 import Home from './pages/Home';
-
+import Login from './Login'
 
 const App = () => {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -24,6 +24,7 @@ const App = () => {
       element={
         <Layout>
           <Home />
+          <Login/>
         </Layout>
       }
       />

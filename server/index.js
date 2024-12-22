@@ -1,10 +1,10 @@
-const express = require('express');
-const passport = require('passport')
-const session = require('express-session');
+const express = require("express");
+const passport = require("passport");
+const session = require("express-session");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const dotenv = require('dotenv');
-const cors = require('cors');
-//TODO: require { obj } for endpoint root route
+const dotenv = require("dotenv");
+const cors = require("cors");
+// TODO: require { obj } for endpoint root route
 
 dotenv.config();
 
@@ -15,11 +15,11 @@ const app = express();
 
 // Middleware
 
-//We set passport up to use the 'Google Strategy'. Each 'strategy' is an approach
-//used for logging into a certain site. The Google Strategy needs an object with the
-//client ID, clientSecret, CallbackURL, and an async callback function that will call
-//'next' or 'done' once it is finished. The function automatically receives 2 tokens and
-//a profile.
+// We set passport up to use the 'Google Strategy'. Each 'strategy' is an approach
+// used for logging into a certain site. The Google Strategy needs an object with the
+// client ID, clientSecret, CallbackURL, and an async callback function that will call
+// 'next' or 'done' once it is finished. The function automatically receives 2 tokens and
+// a profile.
 passport.use(
   new GoogleStrategy(
     {
@@ -28,14 +28,16 @@ passport.use(
       callbackURL: `${process.env.CALLBACK_URL}`,
     },
     async (accessToken, refreshToken, profile, done) => {
-      //Method to create or authenticate use in our DB
+      // Method to create or authenticate use in our DB
       return done(null, profile);
     }
   )
 );
 
-//save user info session as a cookie
+// save user info session as a cookie
 passport.serializeUser((user, done) => {
+  console.log(user, 'this is the user')
+  console.log(done);
   done(null, user);
 });
 
@@ -43,41 +45,38 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-//this sets it up so that each session gets a cookie with a secret key 
+// this sets it up so that each session gets a cookie with a secret key
 app.use(
-  session({
-    secret: 'your-secret-key',
+  session({ // creates a new 'session' on requests
+    secret: "your-secret-key", 
     resave: true,
     saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 },
+    cookie: { maxAge: 1000 * 60 * 60 }, // creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
   })
 );
 
-//set up passport
+// set up passport
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors());
-app.use(express.json());  // Parse the request body
-//app.use(express.static()) //TODO:
+app.use(express.json()); // Parse the request body
+//app.use(express.static('/dist')) //TODO:
 
 // Routers
 
-
-
-
 // Root Route
-app.get('/', (req, res) => {
-  res.send('Welcome to Digi-Cry Backend!');
-  //TODO: add endpoint
+app.get("/", (req, res) => {
+  res.send("Welcome to Digi-Cry Backend!");
+  // TODO: add endpoint
 });
 
-//Log in with google route
+// Log in with google route
 app.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile"] })
 );
 
-//Callback route for google to redirect to
+// Callback route for google to redirect to
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
@@ -86,7 +85,7 @@ app.get(
   }
 );
 
-//Display user profile
+// Display user profile
 app.get("/profile", (req, res) => {
   if (req.isAuthenticated()) {
     res.send(
@@ -97,7 +96,7 @@ app.get("/profile", (req, res) => {
   }
 });
 
-//logout the user
+// logout the user
 app.get("/logoout", (req, res) => {
   req.logout();
   res.redirect("/");
