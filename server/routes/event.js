@@ -13,8 +13,8 @@ router.get('/', (req, res) => {
       q: 'location=New Orleans, LA', // currently hard coding our location - future implementation will be dynamic via user's location
       engine: 'google_events',
       api_key: process.env.EVENTS_API_KEY
-    };
-  });
+    }
+  })
 
     .then((response) => {
 
