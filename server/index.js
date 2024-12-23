@@ -15,7 +15,7 @@ const { User } = require("./models");
 const journalRoutes = require("./routes/journal");
 
 dotenv.config();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Connect to MongoDB
 connectDB();
@@ -24,9 +24,21 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
-app.use(express.json()); // Parse JSON bodies
-// TODO: app.use(express.static('/dist'))
+
+// Parse JSON bodies
+app.use(express.json());
+
+// CORS configuration
+app.use(
+  cors({
+    origin: `http://localhost:8080`,
+    credentials: true,
+  }),
+);
+
+// Serve static files from the dist directory
+app.use(express.static(path.join(__dirname, "../dist")));
+
 
 // We set passport up to use the 'Google Strategy'. Each 'strategy' is an approach
 // used for logging into a certain site. The Google Strategy needs an object with the
@@ -48,16 +60,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// CORS configuration
-app.use(
-  cors({
-    origin: `http://localhost:3000`,
-    credentials: true,
-  }),
-);
-
-// Serve static files from the dist directory
-app.use(express.static(path.join(__dirname, "../dist")));
 
 // Passport Strategy
 passport.use(
@@ -105,7 +107,7 @@ app.get("/api/stoic-quote", async (req, res) => {
 // Routes
 
 // Journal Routes
-app.use("api/journal", journalRoutes);
+app.use("/api/journal", journalRoutes);
 
 // Root Route
 app.get("/", (req, res) => {
