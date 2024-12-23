@@ -3,6 +3,7 @@ const passport = require("passport");
 const session = require("express-session");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const dotenv = require("dotenv");
+const path = require('path');
 const cors = require("cors");
 const axios = require("axios");
 
@@ -36,6 +37,13 @@ app.use(
 // set up passport
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors({
+  origin: `http://localhost:3000`,
+  credentials: true,
+}));
+app.use(express.json()); // Parse the request body
+app.use(express.static(path.join(__dirname, '../dist')));
+
 
 passport.use(
   new GoogleStrategy(
@@ -76,7 +84,7 @@ app.get("/api/stoic-quote", async (req, res) => {
 // Routers
 // Root Route
 app.get("/", (req, res) => {
-  res.send("Welcome to Digi-Cry Backend!");
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 
 // Log in with google route
@@ -112,6 +120,7 @@ app.get("/logout", (req, res) => {
 });
 
 // Start Sever
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Listening at: http://127.0.0.1:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Listening on port: ${PORT}`);
+
 });
