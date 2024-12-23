@@ -1,35 +1,20 @@
-import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import Layout from './Layout';
-import Home from './pages/Home';
-import Login from './Login'
+import Layout from "./Layout";
+import Home from "./pages/Home";
 
-const App = () => {
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-        setIsLoading(false);
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-
+function App() {
   return (
     <Routes>
       <Route
-      path="/"
-      element={
-        <Layout>
-          <Home />
-          <Login/>
-        </Layout>
-      }
+        path="/"
+        element={
+          <Layout>
+            <Home />
+          </Layout>
+        }
       />
-      </Routes>
-    );
-  };
+    </Routes>
+  );
+}
 
-  export default App;
+export default App;
