@@ -55,7 +55,29 @@ router.post("/", (req, res) => {
     });
 });
 
+// Retrieve all journal entries
+router.get("/", (req, res) => {
+  const { userId } = req.query;
 
+  const filter = {};
+
+  if (userId) {
+    if (!isValidObjectId(userId)) {
+      return res.sendStatus(400);
+    }
+    filter.userId = userId;
+  }
+
+  Journal.find(filter)
+    .sort({ createdAt: -1 }) // Newest first
+    .then((entries) => {
+      res.send(entries);
+    })
+    .catch((err) => {
+      console.error("Error fetching journal entries:", err.message);
+      res.sendStatus(500);
+    });
+});
 
 
 
