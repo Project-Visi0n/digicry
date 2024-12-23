@@ -3,20 +3,42 @@ const passport = require("passport");
 const session = require("express-session");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const dotenv = require("dotenv");
-const path = require('path');
+const path = require("path");
 const cors = require("cors");
 const axios = require("axios");
 
+// Import database connection and models
+const connectDB = require("./db/index");
+const { User } = require("./models");
+
+// Import Routes
+const journalRoutes = require("./routes/journal");
+
 dotenv.config();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
+
+// Connect to MongoDB
+connectDB();
+
 // Create an instance of Express
 const app = express();
 
 // Middleware
 
-app.use(cors());
-app.use(express.json()); // Parse the request body
-// app.use(express.static('/dist')) //TODO:
+// Parse JSON bodies
+app.use(express.json());
+
+// CORS configuration
+app.use(
+  cors({
+    origin: `http://localhost:8080`,
+    credentials: true,
+  }),
+);
+
+// Serve static files from the dist directory
+app.use(express.static(path.join(__dirname, "../dist")));
+
 
 // We set passport up to use the 'Google Strategy'. Each 'strategy' is an approach
 // used for logging into a certain site. The Google Strategy needs an object with the
@@ -37,14 +59,9 @@ app.use(
 // set up passport
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors({
-  origin: `http://localhost:3000`,
-  credentials: true,
-}));
-app.use(express.json()); // Parse the request body
-app.use(express.static(path.join(__dirname, '../dist')));
 
 
+// Passport Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -58,6 +75,12 @@ passport.use(
     },
   ),
 );
+
+// Create  anew user
+// user = new User({
+//   googleId: profile.id,
+//   name: profile.displayName,
+// });
 
 // save user info session as a cookie
 passport.serializeUser((user, done) => {
@@ -81,10 +104,14 @@ app.get("/api/stoic-quote", async (req, res) => {
   }
 });
 
-// Routers
+// Routes
+
+// Journal Routes
+app.use("/api/journal", journalRoutes);
+
 // Root Route
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+  res.sendFile(path.join(__dirname, "../dist", "index.html"));
 });
 
 // Log in with google route
@@ -120,7 +147,6 @@ app.get("/logout", (req, res) => {
 });
 
 // Start Sever
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Listening on port: ${PORT}`);
-
 });
