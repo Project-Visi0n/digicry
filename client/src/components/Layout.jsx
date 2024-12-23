@@ -19,7 +19,7 @@ function Layout({ children }) {
             Digi-Cry
           </Typography>
 
-          {/* Navigation Placeholder */}
+          {/* Navigation Bar */}
           <nav className="glass-container nav-container">
             <NavLink
               to="/"
@@ -29,14 +29,21 @@ function Layout({ children }) {
             >
               Home
             </NavLink>
-            <NavLink
-              to="journal"
+              <NavLink
+              to="/journal"
               className={({ isActive }) =>
                 isActive ? "nav-link active" : "nav-link"
-              }
+            }
             >
               Journal
             </NavLink>
+            {/* <NavLink
+            to="#"
+            onClick={logout}
+            className="nav-link"
+          >
+            Logout
+          </NavLink> */}
           </nav>
 
           {/* Page Content */}
