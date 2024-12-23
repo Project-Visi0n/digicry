@@ -1,9 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { NavLink } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { Container, Typography, Box } from "@mui/material";
 import PropTypes from "prop-types";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
-function Layout({ children }) {
+function Layout() {
+  const { user, logout } = useContext(AuthContext);
+
   return (
     <>
       {/* Background elements */}
@@ -29,25 +33,27 @@ function Layout({ children }) {
             >
               Home
             </NavLink>
-              <NavLink
-              to="/journal"
-              className={({ isActive }) =>
-                isActive ? "nav-link active" : "nav-link"
-            }
-            >
-              Journal
-            </NavLink>
-            {/* <NavLink
-            to="#"
-            onClick={logout}
-            className="nav-link"
-          >
-            Logout
-          </NavLink> */}
+            {user && (
+              <>
+                <NavLink
+                  to="/journal"
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
+                  Journal
+                </NavLink>
+                <NavLink to="#" onClick={logout} className="nav-link">
+                  Logout
+                </NavLink>
+              </>
+            )}
           </nav>
 
           {/* Page Content */}
-          <Box sx={{ mt: 4 }}>{children}</Box>
+          <Box sx={{ mt: 4 }}>
+            <Outlet /> {/* Render child routes here */}
+          </Box>
         </Box>
       </Container>
     </>
@@ -55,7 +61,7 @@ function Layout({ children }) {
 }
 
 Layout.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
 };
 
 export default Layout;
