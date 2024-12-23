@@ -79,6 +79,58 @@ router.get("/", (req, res) => {
     });
 });
 
+// Update an existing journal entry
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const { userId, title, content, mood } = req.body;
+
+  if (!isValidObjectId(id)) {
+    return res.sendStatus(400);
+  }
+
+  // Build the update object
+  const update = {};
+  if (title && typeof title === "string" && title.trim() !== "") {
+    update.title = title.trim();
+  }
+  if (content && typeof content === "string" && content.trim() !== "") {
+    update.content = content.trim();
+  }
+  if (mood && ["😊", "😐", "😢", "😡", "😴"].includes(mood)) {
+    update.mood = mood;
+  }
+
+  if (Object.keys(update).length === 0) {
+    return res.sendStatus(400);
+  }
+
+  // If userId is provided in update, validate it
+  if (userId && !isValidObjectId(userId)) {
+    return res.sendStatus(400);
+  }
+
+  // Ensure that the userId in the update matches the existing entry's userId
+  Journal.findById(id)
+    .then((entry) => {
+      if (!entry) {
+        throw new Error("Journal entry not found.");
+      }
+
+      if (userId && entry.userId.toString() !== userId) {
+        throw new Error("Cannot change the userId of the journal entry.");
+      }
+
+      // Update the journal entry
+      return Journal.findByIdAndUpdate(id, update, { new: true });
+    })
+    .then((updatedEntry) => {
+      res.send(updatedEntry);
+    })
+    .catch((err) => {
+      console.error("Error updating journal entry:", err.message);
+      res.sendDtatus(500);
+    });
+});
 
 
 
