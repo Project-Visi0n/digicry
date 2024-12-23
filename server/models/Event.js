@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const eventSchema = new Schema({
   title: String,
   date: String,
-  location: String,
+  location: Array,
   description: String,
   venueName: String,
   linkUrl: String,
