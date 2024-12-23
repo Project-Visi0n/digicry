@@ -1,19 +1,41 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Typography,
   Box,
   Stack,
   IconButton,
   CircularProgress,
+  Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import AddIcon from "@mui/icons-material/Add";
+import { AuthContext } from "../../context/AuthContext";
 
 function Home() {
   const [quote, setQuote] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { user, login, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      // If authenticated, redirect to journal
+      navigate("/journal");
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   // Function to fetch quote from the API
   const fetchQuote = () => {
@@ -88,7 +110,31 @@ function Home() {
     return null;
   };
 
-  // Wrapped all content in a single Box
+  // Render based on authentication state
+  if (!user) {
+    // If not authenticated, show login prompt
+    return (
+      <Box className="main-container" sx={{ textAlign: "center", mt: 8 }}>
+        <Typography variant="h3" className="main-title" gutterBottom>
+          Welcome to Digi-Cry
+        </Typography>
+        <Typography variant="h6" sx={{ mb: 4 }}>
+          Your personal journal to express and analyze your emotions.
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={login}
+          startIcon={<AddIcon />}
+        >
+          Sign in with Google
+        </Button>
+      </Box>
+    );
+  }
+
+  // If authenticated, render the main content
   return (
     <Box className="main-container">
       <Box>
