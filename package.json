@@ -3,6 +3,7 @@
   "scripts": {
 
     "server": "nodemon server/index.js",
+
     "build": "webpack --config webpack.config.js",
 
     "client": "webpack serve --mode development ",
@@ -77,6 +78,8 @@
 
     "@emotion/styled": "^11.14.0",
 
+    "@mui/icons-material": "^6.2.1",
+
     "@mui/material": "^6.2.1",
 
     "axios": "^1.7.9",
@@ -104,6 +107,8 @@
     "mongodb": "^6.12.0",
 
     "mongoose": "^8.9.2",
+
+    "node-fetch": "^3.3.2",
 
     "passport": "^0.7.0",
 

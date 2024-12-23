@@ -7,7 +7,6 @@ import './styles.css';
 
 //create Root file that will append to html element attribute with id:root
 const container = document.getElementById('root');
-
 const root = createRoot(container);
 
 root.render(
