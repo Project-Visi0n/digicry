@@ -128,11 +128,44 @@ router.put("/:id", (req, res) => {
     })
     .catch((err) => {
       console.error("Error updating journal entry:", err.message);
-      res.sendDtatus(500);
+      res.sendStatus(500);
     });
 });
 
+// Delete a journal entry
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body; // Ensure the user owns the entry
 
+  if (!isValidObjectId(id)) {
+    return res.status(400).send({ error: "Invalid journal entry ID." });
+  }
+
+  // Verify that the userId matches the entry's userId
+  if (userId && !isValidObjectId(userId)) {
+    return res.status(400).send({ error: "Invalid userId." });
+  }
+
+  Journal.findById(id)
+    .then((entry) => {
+      if (!entry) {
+        throw new Error("Journal entry not found.");
+      }
+
+      if (userId && entry.userId.toString() !== userId) {
+        throw new Error("Unauthorized to delete this journal entry.");
+      }
+
+      return Journal.findByIdAndDelete(id);
+    })
+    .then((deletedEntry) => {
+      res.send({ message: "Journal entry deleted successfully." });
+    })
+    .catch((err) => {
+      console.error("Error deleting journal entry:", err.message);
+      res.status(500);
+    });
+});
 
 
 
