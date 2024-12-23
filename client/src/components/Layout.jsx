@@ -1,5 +1,7 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { NavLink } from "react-router-dom";
 import { Container, Typography, Box } from "@mui/material";
+import PropTypes from "prop-types";
 
 function Layout({ children }) {
   return (
@@ -44,5 +46,9 @@ function Layout({ children }) {
     </>
   );
 }
+
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default Layout;
