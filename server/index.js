@@ -51,7 +51,7 @@ app.use(
   session({ // creates a new 'session' on requests
     secret: "your-secret-key",
     resave: true,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 }, // creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
   }),
 );
@@ -70,7 +70,6 @@ passport.use(
       callbackURL: `${process.env.CALLBACK_URL}`,
     },
     async (accessToken, refreshToken, profile, done) => {
-      // Method to create or authenticate use in our DB
       return done(null, profile);
     },
   ),
@@ -116,8 +115,10 @@ app.get("/", (req, res) => {
 
 // Log in with google route
 app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
+  "/auth/google", 
+  passport.authenticate("google", { scope: ["profile"] }), (req, res) => {
+    console.log(req, 'req')
+  }
 );
 
 // Callback route for google to redirect to
@@ -125,20 +126,22 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
+    console.log(req.session, 'this is the session in auth callback')
     res.redirect("http://localhost:8080");
   },
 );
 
 // Display user profile
-app.get("/profile", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.send(
-      `<h1>You logged in<h1><span>${JSON.stringify(req.user, null, 2)}<span>`,
-    );
-  } else {
-    res.redirect("/");
-  }
-});
+// app.get("/profile", (req, res) => {
+//   console.log(req.session, 'reached in profile')
+//   if (req.isAuthenticated()) {
+//     res.send(
+//       `<h1>You logged in<h1><span>${JSON.stringify(req.user, null, 2)}<span>`,
+//     );
+//   } else {
+//     res.redirect("/");
+//   }
+// });
 
 // logout the user
 app.get("/logout", (req, res) => {
