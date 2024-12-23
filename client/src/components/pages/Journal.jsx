@@ -13,24 +13,30 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "axios";
+import { Link } from "react-router-dom";
+import JournalEntryList from "./JournalEntryList";
+// import axios from "axios";
 
 function Journal() {
-
-
-
-
-
-
-
-
-
-
-  
-  return(
-    <>
-    </>
-  )
+  return (
+    <Box className="main-container">
+      <Typography variant="h4" className="section-title" gutterBottom>
+        Your Journal
+      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          component={Link}
+          to="journal/new"
+        >
+          New Entry
+        </Button>
+      </Box>
+      <JournalEntryList />
+    </Box>
+  );
 }
 
 export default Journal;
