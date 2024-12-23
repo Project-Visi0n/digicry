@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 
 const journalEntrySchema = new Schema(
   {
+    // Currently required to associate journal entries with users. Since authentication isn’t set up yet, we need to provide a valid userId when creating entries. Later, this will be automatically set based on the authenticated user.
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
