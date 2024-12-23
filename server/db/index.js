@@ -1,40 +1,36 @@
 const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const dotenv = require("dotenv");
 
-// Schemas Below this line
-const usersSchema = new Schema({
-  username: String,
-  hashed_password: String,
-  salt: String,
-  name: String,
-  location: String,
+dotenv.config();
+
+const MONGODB_URI =
+  process.env.MONGODB_URI || "mongodb://localhost:27017/digicry";
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Connected to MongoDB successfully");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    process.exit(1); // Exit process with failure
+  }
+};
+
+// Handle connection events
+mongoose.connection.on("disconnected", () => {
+  console.log("MongoDB disconnected");
 });
-//
-const federated_credentialsSchema = new Schema({
-  user_id: Number,
-  provider: String,
-  subject: String,
+
+mongoose.connection.on("error", (err) => {
+  console.error("MongoDB error:", err);
 });
 
-// Models below this line
+process.on("SIGINT", async () => {
+  await mongoose.connection.close();
+  process.exit(0);
+});
 
-const Federated_Credentials = mongoose.model(
-  "Federated_Credentials",
-  federated_credentialsSchema
-);
-const User = mongoose.model("User", usersSchema);
-
-// Connecting to mongodb database
-
-mongoose
-  .connect("mongodb://localhost:27017/digicry")
-  .then(() => {
-    console.log("Connected to the database successfully");
-  })
-  .catch(() => {
-    console.log("Failed to connect to the database! ");
-  });
-
-// Exports go here
-
-module.exports = { Federated_Credentials, User };
+module.exports = connectDB;
