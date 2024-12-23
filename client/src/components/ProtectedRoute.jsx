@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { CircularProgress, Box } from "@mui/material";
+import PropTypes from "prop-types";
 import { AuthContext } from "../context/AuthContext";
 
 function ProtectedRoute({ children }) {
@@ -22,3 +23,7 @@ function ProtectedRoute({ children }) {
 }
 
 export default ProtectedRoute;
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+};

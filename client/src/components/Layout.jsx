@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-function Layout() {
+function Layout({ children }) {
   const { user, logout } = useContext(AuthContext);
 
   return (
@@ -52,6 +52,7 @@ function Layout() {
 
           {/* Page Content */}
           <Box sx={{ mt: 4 }}>
+            {children}
             <Outlet /> {/* Render child routes here */}
           </Box>
         </Box>
@@ -61,7 +62,7 @@ function Layout() {
 }
 
 Layout.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
 };
 
 export default Layout;
