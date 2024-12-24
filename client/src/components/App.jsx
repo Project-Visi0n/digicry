@@ -1,25 +1,33 @@
 import { Routes, Route } from "react-router-dom";
 import { Typography } from "@mui/material";
+import { React, useState, useNavigate, useEffect } from "react";
 import Layout from "./Layout";
 import Home from "./pages/Home";
 import Journal from "./pages/Journal";
 import JournalEntry from "./pages/JournalEntry";
 import JournalEntryForm from "./pages/JournalEntryForm";
 import Login from "./Login";
-import { React, useState, useNavigate } from "react";
+import axios from 'axios';
 
 function App() {
   const [validSession, setValidSession] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const validChecker = (validity) => {
-    console.log('i was triggered')
-    if(validity){
-      setValidSession(true);
-    } else {
-      setValidSession(false);
-    }
-    console.log(validSession)
-  }
+  useEffect(() => {
+    console.log('howmany')
+   axios
+      .get("http://127.0.0.1:5000/check-session/")
+      .then((profile) => {
+        if (profile.isValid) {
+          setValidSession(profile.isValid);
+          setUser(profile.user);
+        } 
+      })
+      .catch((error) => {
+        console.error("Failed to get profile", error);
+      });
+      console.log('howmany')
+  }, []);
 
   return (
     <Routes>
@@ -34,7 +42,7 @@ function App() {
               <Route path="journal/edit/:id" element={<JournalEntryForm />} />
               <Route path="journal:id" element={<JournalEntry />} />
             </Routes>
-            <Login valid={validChecker} validSession={validSession}/>
+            <Login validSession={validSession}/>
           </Layout>
         }
       />

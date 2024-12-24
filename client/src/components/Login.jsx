@@ -1,32 +1,27 @@
-import { React, useState, useNavigate } from "react";
+import { React, useState, useNavigate, useEffect } from "react";
 
 function Login({ valid, validSession }) {
-  const [login, setLogin] = useState( validSession);
+  const [login, setLogin] = useState(validSession);
   const [href, setHref] = useState(`http://localhost:5000/auth/google`);
   const [inOut, setInOut] = useState(`in`);
- 
-  const handleClick = (event) => {
-    
-    if (!login) {
-  
+
+  useEffect(() => {
+    if (validSession) {
       setLogin(true);
       setInOut("out");
-      setHref("http://localhost:5000/auth/google");
-      valid(true);
+      setHref("http://127.0.0.1:5000/logout");
     } else {
-      
       setLogin(false);
-      valid(false)
       setInOut("in");
-      setHref("/");
+      setHref("http://127.0.0.1:5000/auth/google");
     }
-    console.log(valid)
-  };
+    console.log(valid);
+  }, []);
 
   return (
     <div>
       <h1>Sign {inOut} </h1>
-      <a className="button google" onClick={handleClick} href={href}  >
+      <a className="button google" href={href}>
         Sign {inOut} with Google
       </a>
     </div>

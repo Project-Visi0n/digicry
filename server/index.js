@@ -37,7 +37,6 @@ app.use(
 );
 
 // Serve static files from the dist directory
-app.use(express.static(path.join(__dirname, "../dist")));
 
 
 // We set passport up to use the 'Google Strategy'. Each 'strategy' is an approach
@@ -70,6 +69,7 @@ passport.use(
       callbackURL: `${process.env.CALLBACK_URL}`,
     },
     async (accessToken, refreshToken, profile, done) => {
+      console.log(done)
       return done(null, profile);
     },
   ),
@@ -109,39 +109,40 @@ app.get("/api/stoic-quote", async (req, res) => {
 app.use("/api/journal", journalRoutes);
 
 // Root Route
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist", "index.html"));
-});
 
 // Log in with google route
 app.get(
   "/auth/google", 
-  passport.authenticate("google", { scope: ["profile"] }), (req, res) => {
-    console.log(req, 'req')
-  }
+  passport.authenticate("google", { scope: ["profile"] })
 );
 
+app.get("/check-session", (req, res) => {
+  console.log('checking session')
+  console.log(req.sessionID, 'session id')
+  console.log(req.session ,'this is the session')
+  res.sendStatus(200);
+});
 // Callback route for google to redirect to
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    console.log(req.session, 'this is the session in auth callback')
-    res.redirect("http://localhost:8080");
-  },
+    console.log(req.session, "this is the session in auth callback");
+    res.redirect("http://localhost:8080/")
+  }
 );
 
 // Display user profile
-// app.get("/profile", (req, res) => {
-//   console.log(req.session, 'reached in profile')
-//   if (req.isAuthenticated()) {
-//     res.send(
-//       `<h1>You logged in<h1><span>${JSON.stringify(req.user, null, 2)}<span>`,
-//     );
-//   } else {
-//     res.redirect("/");
-//   }
-// });
+app.get("/profile", (req, res) => {
+  console.log(req.session, "reached in profile");
+  if (req.isAuthenticated()) {
+    res.send(
+      `<h1>You logged in<h1><span>${JSON.stringify(req.user, null, 2)}<span>`
+    );
+  } else {
+    res.redirect("/");
+  }
+});
 
 // logout the user
 app.get("/logout", (req, res) => {
