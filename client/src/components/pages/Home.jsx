@@ -1,19 +1,26 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Typography,
   Box,
   Stack,
   IconButton,
   CircularProgress,
+  Button,
 } from "@mui/material";
+import { useNavigate, Navigate } from "react-router-dom";
 import axios from "axios";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import AddIcon from "@mui/icons-material/Add";
+import { AuthContext } from "../../context/AuthContext";
 
 function Home() {
   const [quote, setQuote] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { user, login, loading } = useContext(AuthContext);
+  // const navigate = useNavigate();
 
   // Function to fetch quote from the API
   const fetchQuote = () => {
@@ -52,11 +59,9 @@ function Home() {
       });
   };
 
-  // Fetch motivational quote when the component mounts
   useEffect(() => {
-    // Call the fetchQuote function
     fetchQuote();
-  }, []); // Empty dependency array ensures this runs once when the component mounts
+  }, []);
 
   // Helper function to render quote content based on that state
   const renderQuoteContent = () => {
@@ -88,7 +93,44 @@ function Home() {
     return null;
   };
 
-  // Wrapped all content in a single Box
+  // Render based on authentication state
+  if (!loading && user) {
+    return <Navigate to="/journal" replace />;
+  }
+
+  // Show loading spinner id auth state is loading
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // If not authenticated, show login prompt
+  if (!user) {
+    return (
+      <Box className="main-container" sx={{ textAlign: "center", mt: 8 }}>
+        <Typography variant="h3" className="main-title" gutterBottom>
+          Welcome to Digi-Cry
+        </Typography>
+        <Typography variant="h6" sx={{ mb: 4 }}>
+          Your personal journal to express and analyze your emotions.
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={login}
+          startIcon={<AddIcon />}
+        >
+          Sign in with Google
+        </Button>
+      </Box>
+    );
+  }
+
+  // If authenticated, render the main content
   return (
     <Box className="main-container">
       <Box>
