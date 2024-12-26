@@ -20,11 +20,7 @@ function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   const { user, login, loading } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchQuote();
-  }, []);
+  // const navigate = useNavigate();
 
   // Function to fetch quote from the API
   const fetchQuote = () => {
@@ -62,6 +58,10 @@ function Home() {
         setIsLoading(false);
       });
   };
+
+  useEffect(() => {
+    fetchQuote();
+  }, []);
 
   // Helper function to render quote content based on that state
   const renderQuoteContent = () => {
