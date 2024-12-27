@@ -24,7 +24,7 @@ const journalEntrySchema = new Schema(
     mood: {
       type: String,
       required: [true, "Mood is required"],
-      enum: ["😊", "😐", "😢", "😡", "😴"]
+      enum: ["😊", "😐", "😢", "😡", "😴"],
     },
   },
   {
