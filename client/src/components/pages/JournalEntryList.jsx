@@ -43,6 +43,17 @@ function JournalEntryList() {
       });
   }, []);
 
+  // Optional Placeholders:
+  // Handler for edit or delete
+  const handleEdit = (entryId) => {
+    navigate(`/journal/edit/${entryId}`);
+    console.log("Edit clicked for entryId:", entryId);
+  };
+
+  const handleDelete = (entryId) => {
+    console.log("Delete clicked for entryId:", entryId);
+  };
+
   return (
     <Box>
       {entries.map((entry) => (
