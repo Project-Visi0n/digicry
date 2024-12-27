@@ -23,6 +23,7 @@ function Journal() {
       <Typography variant="h4" className="section-title" gutterBottom>
         Your Journal
       </Typography>
+
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <Button
           variant="contained"
@@ -34,6 +35,7 @@ function Journal() {
           New Entry
         </Button>
       </Box>
+
       <JournalEntryList />
     </Box>
   );
