@@ -93,10 +93,15 @@ function Home() {
     return null;
   };
 
-  // Render based on authentication state
-  if (!loading && user) {
-    return <Navigate to="/journal" replace />;
-  }
+  /**
+   ***********************************************************************************************
+   * COMMENT OUT WHEN IN DEVELOPMENT MODE
+   Render based on authentication state
+   if (!loading && user) {
+     return <Navigate to="/journal" replace />;
+   }
+   ***********************************************************************************************
+   */
 
   // Show loading spinner id auth state is loading
   if (loading) {
@@ -107,28 +112,33 @@ function Home() {
     );
   }
 
-  // If not authenticated, show login prompt
+  /**
+   * *****************************************************************************************************************
+   * DEVELOPMENT MODE - TEMPORARILY REMOVE AUTH CHECK
+  If not authenticated, show login prompt
   if (!user) {
-    return (
-      <Box className="main-container" sx={{ textAlign: "center", mt: 8 }}>
-        <Typography variant="h3" className="main-title" gutterBottom>
-          Welcome to Digi-Cry
-        </Typography>
-        <Typography variant="h6" sx={{ mb: 4 }}>
-          Your personal journal to express and analyze your emotions.
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={login}
-          startIcon={<AddIcon />}
-        >
-          Sign in with Google
-        </Button>
-      </Box>
-    );
-  }
+      return (
+          <Box className="main-container" sx={{ textAlign: "center", mt: 8 }}>
+            <Typography variant="h3" className="main-title" gutterBottom>
+              Welcome to Digi-Cry
+            </Typography>
+            <Typography variant="h6" sx={{ mb: 4 }}>
+              Your personal journal to express and analyze your emotions.
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={login}
+              startIcon={<AddIcon />}
+            >
+              Sign in with Google
+            </Button>
+          </Box>
+        );
+      }
+        ***************************************************************************************************************************
+      */
 
   // If authenticated, render the main content
   return (

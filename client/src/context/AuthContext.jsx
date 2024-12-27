@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 
 export const AuthContext = createContext();
 
@@ -20,8 +19,13 @@ export function AuthProvider({ children }) {
     const fetchUser = () => {
       setLoading(true);
       setTimeout(() => {
+        //* *************************************************************************************
         // For development, toggle this to simulate authenticated/unauthenticated states
-        const isAuthenticated = false; // Change to `true` to simulate an authenticated user
+        // CHANGE TRUE/FALSE, TRUE SIMULATES AN AUTHENTICATED USER FOR DEVELOPMENT PURPOSES
+        // **************************************************************************************
+        //  */
+        const isAuthenticated = true;
+        // **************************************************************************************
 
         if (isAuthenticated) {
           setUser({
