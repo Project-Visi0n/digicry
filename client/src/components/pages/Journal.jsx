@@ -25,7 +25,13 @@ function Journal() {
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button variant="contained" color="primary">
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<span style={{ fontSize: "1.2rem" }}>➕</span>}
+          component={Link}
+          to="/journal/new"
+        >
           New Entry
         </Button>
       </Box>
