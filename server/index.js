@@ -13,6 +13,7 @@ const { User } = require("./models");
 
 // Import Routes
 const journalRoutes = require("./routes/journal");
+const eventRoutes = require("./routes/event");
 
 dotenv.config();
 const PORT = process.env.PORT || 5001;
@@ -39,7 +40,6 @@ app.use(
 // Serve static files from the dist directory
 app.use(express.static(path.join(__dirname, "../dist")));
 
-
 // We set passport up to use the 'Google Strategy'. Each 'strategy' is an approach
 // used for logging into a certain site. The Google Strategy needs an object with the
 // client ID, clientSecret, CallbackURL, and an async callback function that will call
@@ -48,7 +48,8 @@ app.use(express.static(path.join(__dirname, "../dist")));
 
 // this sets it up so that each session gets a cookie with a secret key
 app.use(
-  session({ // creates a new 'session' on requests
+  session({
+    // creates a new 'session' on requests
     secret: "your-secret-key",
     resave: true,
     saveUninitialized: true,
@@ -59,7 +60,6 @@ app.use(
 // set up passport
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // Passport Strategy
 passport.use(
@@ -106,18 +106,21 @@ app.get("/api/stoic-quote", async (req, res) => {
 
 // Routes
 
-// Journal Routes
-app.use("/api/journal", journalRoutes);
-
 // Root Route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../dist", "index.html"));
 });
 
+// Journal Route
+app.use("/api/journal", journalRoutes);
+
+// Events Route
+app.use("/api/events", eventRoutes);
+
 // Log in with google route
 app.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", { scope: ["profile"] }),
 );
 
 // Callback route for google to redirect to
@@ -145,11 +148,6 @@ app.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
-
-
-// Upcoming Events
-const eventRoutes = require("./routes/event");
-app.use('/api/events', eventRoutes);
 
 // Start Sever
 app.listen(PORT, "0.0.0.0", () => {
