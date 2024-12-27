@@ -106,16 +106,17 @@ app.get("/api/stoic-quote", async (req, res) => {
 
 // Routes
 
+// Root Route
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist", "index.html"));
+});
+
 // Journal Route
 app.use("/api/journal", journalRoutes);
 
 // Events Route
 app.use("/api/events", eventRoutes);
 
-// Root Route
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist", "index.html"));
-});
 
 // Log in with google route
 app.get(
