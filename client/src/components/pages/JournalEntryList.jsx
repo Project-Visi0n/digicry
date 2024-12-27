@@ -14,6 +14,35 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 
 function JournalEntryList() {
+  const [entries, setEntries] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate;
+
+  useEffect(() => {
+    console.log("[JournalEntryList] Fetching journal entries...");
+
+    setIsLoading(true);
+    setError(null);
+
+    axios
+      .get("/api/journal")
+      .then((response) => {
+        console.log(
+          "[JournalEntryList] Successfully fetched entries:",
+          response.data,
+        );
+        setEntries(response.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("[JournalEntryList] Error fetching entries:", err);
+        setError("Failed to fetched journal entries. Please try again later.");
+        setIsLoading(false);
+      });
+  }, []);
+
   return (
     <Box>
       {entries.map((entry) => (
