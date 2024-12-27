@@ -33,6 +33,7 @@ function Layout({ children }) {
             >
               Home
             </NavLink>
+
             {user && (
               <>
                 <NavLink
@@ -43,6 +44,16 @@ function Layout({ children }) {
                 >
                   Journal
                 </NavLink>
+
+                <NavLink
+                  to="/events"
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
+                  Events
+                </NavLink>
+
                 <NavLink to="#" onClick={logout} className="nav-link">
                   Logout
                 </NavLink>

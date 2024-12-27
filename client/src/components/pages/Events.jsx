@@ -8,7 +8,7 @@ function Events() {
 
   useEffect(() => {
     axios
-      .get("api/events/all")
+      .get("/api/events/all")
       .then((response) => {
         setEvents(response.data);
       })
@@ -29,6 +29,10 @@ function Events() {
           <Typography variant="h6">{event.title}</Typography>
           <Typography variant="body2">{event.date}</Typography>
           <Typography variant="body2">{event.location}</Typography>
+          <Typography variant="body2">{event.description}</Typography>
+          <Typography variant="body2">{event.venueName}</Typography>
+          <Typography variant="body2">{event.linkUrl}</Typography>
+          <Typography variant="body2">{event.thumbnail}</Typography>
           {/* Add more fields as needed */}
         </Box>
       ))}

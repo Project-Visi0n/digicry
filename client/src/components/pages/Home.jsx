@@ -13,6 +13,7 @@ import axios from "axios";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
 import { AuthContext } from "../../context/AuthContext";
+import Events from "./Events";
 
 function Home() {
   const [quote, setQuote] = useState(null);
@@ -199,8 +200,7 @@ function Home() {
               Connect with your community
             </Typography>
             <Box className="events-preview">
-              <div className="event-card-placeholder" />
-              <div className="event-card-placeholder" />
+              <Events />
             </Box>
           </Box>
         </Stack>

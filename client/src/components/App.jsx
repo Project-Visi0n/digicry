@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Journal from "./pages/Journal";
 import JournalEntry from "./pages/JournalEntry";
 import JournalEntryForm from "./pages/JournalEntryForm";
+import Events from "./pages/Events";
 import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
@@ -47,6 +48,14 @@ function App() {
               <JournalEntry />
             </ProtectedRoute>
           }
+        />
+        <Route
+        path="events"
+        element={
+          <ProtectedRoute>
+            <Events />
+          </ProtectedRoute>
+        }
         />
 
         {/* Fallback route for 404 */}
