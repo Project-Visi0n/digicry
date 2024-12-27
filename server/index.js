@@ -117,7 +117,6 @@ app.use("/api/journal", journalRoutes);
 // Events Route
 app.use("/api/events", eventRoutes);
 
-
 // Log in with google route
 app.get(
   "/auth/google",
