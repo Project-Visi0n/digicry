@@ -8,7 +8,7 @@ import {
   CircularProgress,
   Button,
 } from "@mui/material";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, Link } from "react-router-dom";
 import axios from "axios";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
@@ -16,12 +16,29 @@ import { AuthContext } from "../../context/AuthContext";
 import Events from "./Events";
 
 function Home() {
+  const [recentEntries, setRecentEntries] = useState([]);
   const [quote, setQuote] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const { user, login, loading } = useContext(AuthContext);
   // const navigate = useNavigate();
+  // useEffect(() => {
+  //   console.log("[Home] Fetching recent journal entries...");
+  //   axios
+  //     .get("/api/journal")
+  //     .then((response) => {
+  //       console.log("[Home] /api/journal response:", response.data);
+  //       const data = response.data || [];
+  //       // Slice the first 3 or 5 for recent
+  //       const topThree = data.slice(0, 3);
+  //       setRecentEntries(topThree);
+  //     })
+  //     .catch((err) => {
+  //       console.error("[Home] Error fetching recent entries:", err);
+  //       setError("Failed to load recent entries. Please try again later.");
+  //     });
+  // }, []);
 
   // Function to fetch quote from the API
   const fetchQuote = () => {
@@ -63,6 +80,7 @@ function Home() {
   useEffect(() => {
     fetchQuote();
   }, []);
+
 
   // Helper function to render quote content based on that state
   const renderQuoteContent = () => {
@@ -166,17 +184,42 @@ function Home() {
         </Box>
 
         <Box className="glass-panel voice-panel" sx={{ mb: 4 }}>
-          <Typography variant="h4" className="section-title">
-            Mood Analytics
-          </Typography>
-          <Box className="voice-analytics-container">
-            <Box className="voice-visualization-placeholder">
-              <Typography variant="body1" sx={{ opacity: 0.7 }}>
-                Share how you're feeling...
+          <Typography variant="h5">Recent Journal Entries</Typography>
+          {error && (
+            <Typography variant="body2" color="error">
+              {error}
+            </Typography>
+          )}
+          {/* If no error, map the recent entries */}
+          {recentEntries.map((entry) => (
+            <Box
+              key={entry._id}
+              sx={{
+                mt: 2,
+                p: 2,
+                backgroundColor: "rgba(255,255,255,0.2)",
+                backdropFilter: "blur(12px)",
+                borderRadius: "8px",
+              }}
+            >
+              <Typography variant="h6">{entry.title}</Typography>
+              <Typography variant="body2" sx={{ opacity: 0.7 }}>
+                {entry.content.slice(0, 50)}...
               </Typography>
             </Box>
-          </Box>
+          ))}
+
+          {recentEntries.length === 0 && !error && (
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              No recent entries found.
+            </Typography>
+          )}
         </Box>
+
+        {/* VIEW ALL BUTTON */}
+        <Button variant="contained" component={Link} to="/journal">
+          View All Journal Entries
+        </Button>
 
         <Stack spacing={4} className="content-stack">
           <Box className="glass-panel mood-panel">
