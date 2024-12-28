@@ -1,133 +1,201 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import {
+  Box,
+  Container,
+  TextField,
+  Typography,
+  Button,
+  CircularProgress,
+  Stack,
+} from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Box, TextField, Typography, Button, MenuItem } from "@mui/material";
-// import { useParams, useNavigate } from "react-router-dom";
 
-function JournalEntryForm({ entryId, onSuccess }) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [mood, setMood] = useState("😊");
-  const [error, setError] = useState(null);
+function JournalEntryForm() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    mood: "😊",
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // If editing, fetch the existing entry
   useEffect(() => {
-    if (!entryId) return;
+    if (!id) return;
 
-    axios
-      .get(`/api/journal/${entryId}`)
-      .then((response) => {
+    const fetchEntry = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(`/api/journal/${id}`);
         const entry = response.data;
-        setTitle(entry.title);
-        setContent(entry.content);
-        setMood(entry.mood);
-      })
-      .catch((err) => {
-        console.error("[JournalEntryForm] Error fetching existing entry:", err);
+        setFormData({
+          title: entry.title || "",
+          content: entry.content || "",
+          mood: entry.mood || "😊",
+        });
+      } catch (err) {
+        console.error("Error fetching entry:", err);
         setError("Failed to load entry for editing.");
-      });
-  }, [entryId]);
-
-  const handleSubmit = () => {
-    setError(null);
-
-    // Basic validation
-    if (!title.trim() || !content.trim()) {
-      setError("Title and Content are required.");
-      return;
-    }
-
-    // Mock userId if needed (since authentication might not be set up)
-    // This might be replaced with a real user ID from context once auth is complete
-    const userId = "64342344abc1234567890"; // example ID or from your AuthContext
-
-    const entryData = {
-      userId,
-      title,
-      content,
-      mood,
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    if (entryId) {
-      // EDIT existing
-      axios
-        .put(`/api/journal/${entryId}`, entryData)
-        .then((response) => {
-          console.log("[JournalEntryForm] Updated entry:", response.data);
-          if (onSuccess) onSuccess();
-          // or navigate("/journal");
-        })
-        .catch((err) => {
-          console.error("[JournalEntryForm] Update error:", err);
-          setError("Failed to update entry.");
-        });
-    } else {
-      // CREATE new
-      axios
-        .post("/api/journal", entryData)
-        .then((response) => {
-          console.log("[JournalEntryForm] Created new entry:", response.data);
-          if (onSuccess) onSuccess();
-          // or navigate("/journal");
-        })
-        .catch((err) => {
-          console.error("[JournalEntryForm] Create error:", err);
-          setError("Failed to create entry.");
-        });
+    fetchEntry();
+  }, [id]);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      setIsLoading(true);
+      setError("");
+
+      if (id) {
+        await axios.put(`/api/journal/${id}`, formData);
+      } else {
+        await axios.post("/api/journal", formData);
+      }
+
+      navigate("/journal");
+    } catch (err) {
+      console.error("Error saving entry:", err);
+      setError("Failed to save journal entry");
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const moodOptions = ["😊", "😐", "😢", "😡", "😴"];
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={{ p: 2, maxWidth: 600 }}>
-      <Typography variant="h5" sx={{ mb: 2 }}>
-        {entryId ? "Edit Entry" : "Create New Entry"}
-      </Typography>
-
-      {error && (
-        <Typography variant="body2" color="error" sx={{ mb: 2 }}>
-          {error}
-        </Typography>
-      )}
-
-      {/* Title Field */}
-      <TextField
-        label="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        fullWidth
-        sx={{ mb: 2 }}
-      />
-
-      {/* Content Field (Multiline) */}
-      <TextField
-        label="Content"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        fullWidth
-        multiline
-        rows={4}
-        sx={{ mb: 2 }}
-      />
-
-      {/* Mood Select (Emojis) */}
-      <TextField
-        select
-        label="Mood"
-        value={mood}
-        onChange={(e) => setMood(e.target.value)}
-        sx={{ mb: 2, width: 120 }}
+    <Container maxWidth="md">
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        className="glass-panel"
+        sx={{
+          mt: 4,
+          p: 4,
+          borderRadius: "16px",
+        }}
       >
-        {["😊", "😐", "😢", "😡", "😴"].map((emoji) => (
-          <MenuItem key={emoji} value={emoji}>
-            {emoji}
-          </MenuItem>
-        ))}
-      </TextField>
+        <Typography
+          variant="h4"
+          sx={{
+            mb: 4,
+            fontWeight: "bold",
+            background:
+              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          {id ? "Edit Entry" : "New Entry"}
+        </Typography>
 
-      {/* Submit Button */}
-      <Button variant="contained" onClick={handleSubmit}>
-        {entryId ? "Update" : "Create"}
-      </Button>
-    </Box>
+        {error && (
+          <Typography color="error" sx={{ mb: 2 }}>
+            {error}
+          </Typography>
+        )}
+
+        <Stack spacing={3}>
+          <TextField
+            name="title"
+            label="Title"
+            value={formData.title}
+            onChange={handleInputChange}
+            fullWidth
+            required
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                backdropFilter: "blur(10px)",
+                "& fieldset": {
+                  borderColor: "rgba(255, 255, 255, 0.2)",
+                },
+              },
+            }}
+          />
+
+          <TextField
+            name="content"
+            label="Content"
+            value={formData.content}
+            onChange={handleInputChange}
+            multiline
+            rows={6}
+            fullWidth
+            required
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                backdropFilter: "blur(10px)",
+                "& fieldset": {
+                  borderColor: "rgba(255, 255, 255, 0.2)",
+                },
+              },
+            }}
+          />
+
+          <Box sx={{ display: "flex", gap: 2 }}>
+            {moodOptions.map((mood) => (
+              <Button
+                key={mood}
+                className={`glass-btn ${formData.mood === mood ? "primary" : ""}`}
+                onClick={() =>
+                  handleInputChange({
+                    target: { name: "mood", value: mood },
+                  })
+                }
+                sx={{
+                  minWidth: "60px",
+                  height: "60px",
+                  borderRadius: "12px",
+                  fontSize: "24px",
+                }}
+              >
+                {mood}
+              </Button>
+            ))}
+          </Box>
+
+          <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
+            <Button className="glass-btn" onClick={() => navigate("/journal")}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="glass-btn primary"
+              disabled={isLoading}
+            >
+              {id ? "Update Entry" : "Create Entry"}
+            </Button>
+          </Stack>
+        </Stack>
+      </Box>
+    </Container>
   );
 }
 
