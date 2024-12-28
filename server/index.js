@@ -14,6 +14,7 @@ const { User } = require("./models");
 
 // Import Routes
 const journalRoutes = require("./routes/journal");
+const eventRoutes = require("./routes/event");
 
 const PORT = process.env.PORT || 5001;
 
@@ -35,6 +36,15 @@ app.use(
     credentials: true,
   })
 );
+
+// Serve static files from the dist directory
+app.use(express.static(path.join(__dirname, "../dist")));
+
+// We set passport up to use the 'Google Strategy'. Each 'strategy' is an approach
+// used for logging into a certain site. The Google Strategy needs an object with the
+// client ID, clientSecret, CallbackURL, and an async callback function that will call
+// 'next' or 'done' once it is finished. The function automatically receives 2 tokens and
+// a profile.
 
 // this sets it up so that each session gets a cookie with a secret key
 app.use(
@@ -88,13 +98,21 @@ app.get("/api/stoic-quote", async (req, res) => {
 
 // Routes
 
-// Journal Routes
+// Root Route
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist", "index.html"));
+});
+
+// Journal Route
 app.use("/api/journal", journalRoutes);
+
+// Events Route
+app.use("/api/events", eventRoutes);
 
 // Log in with google route
 app.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", { scope: ["profile"] }),
 );
 
 
