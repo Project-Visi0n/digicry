@@ -9,29 +9,31 @@ import JournalEntryForm from "./pages/JournalEntryForm";
 import Login from "./Login";
 import axios from 'axios';
 
-function App() {
+ function App() {
   const [validSession, setValidSession] = useState(false);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    console.log('howmany')
+  // Update the state based on the current session
+ useEffect( () => {
    axios
       .get("http://127.0.0.1:5000/check-session/")
-      .then((profile) => {
-        if (profile.isValid) {
-          setValidSession(profile.isValid);
-          setUser(profile.user);
-        } 
+      .then(({ data }) => {
+        console.log(data) // this shows you whose profile is returned
+        if (data) {
+          setUser(data[0]);
+          setValidSession(true);
+        }
+
       })
       .catch((error) => {
         console.error("Failed to get profile", error);
       });
-      console.log('howmany')
-  }, []);
+    
+  }, [validSession]);
 
   return (
     <Routes>
-      <Route
+      <Route validSession={validSession}
         path="/"
         element={
           <Layout>
@@ -42,7 +44,7 @@ function App() {
               <Route path="journal/edit/:id" element={<JournalEntryForm />} />
               <Route path="journal:id" element={<JournalEntry />} />
             </Routes>
-            <Login validSession={validSession}/>
+            <Login validSession={validSession} setValidSession={setValidSession} setUser={setUser}/>
           </Layout>
         }
       />

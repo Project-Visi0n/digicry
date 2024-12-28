@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors");
 const axios = require("axios");
+dotenv.config();
 
 // Import database connection and models
 const connectDB = require("./db/index");
@@ -14,7 +15,6 @@ const { User } = require("./models");
 // Import Routes
 const journalRoutes = require("./routes/journal");
 
-dotenv.config();
 const PORT = process.env.PORT || 5001;
 
 // Connect to MongoDB
@@ -33,32 +33,23 @@ app.use(
   cors({
     origin: `http://localhost:8080`,
     credentials: true,
-  }),
+  })
 );
-
-// Serve static files from the dist directory
-
-
-// We set passport up to use the 'Google Strategy'. Each 'strategy' is an approach
-// used for logging into a certain site. The Google Strategy needs an object with the
-// client ID, clientSecret, CallbackURL, and an async callback function that will call
-// 'next' or 'done' once it is finished. The function automatically receives 2 tokens and
-// a profile.
 
 // this sets it up so that each session gets a cookie with a secret key
 app.use(
-  session({ // creates a new 'session' on requests
+  session({
+    // creates a new 'session' on requests
     secret: "your-secret-key",
     resave: true,
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 }, // creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
-  }),
+  })
 );
 
 // set up passport
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // Passport Strategy
 passport.use(
@@ -67,24 +58,16 @@ passport.use(
       clientID: `${process.env.GOOGLE_CLIENT_ID}`,
       clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
       callbackURL: `${process.env.CALLBACK_URL}`,
+      passReqToCallback: true,
     },
-    async (accessToken, refreshToken, profile, done) => {
-      console.log(done)
+    async (req, accessToken, refreshToken, profile, done) => {
       return done(null, profile);
-    },
-  ),
+    }
+  )
 );
-
-// Create  anew user
-// user = new User({
-//   googleId: profile.id,
-//   name: profile.displayName,
-// });
 
 // save user info session as a cookie
 passport.serializeUser((user, done) => {
-  console.log(user, "this is the user");
-  console.log(done);
   done(null, user);
 });
 
@@ -108,52 +91,66 @@ app.get("/api/stoic-quote", async (req, res) => {
 // Journal Routes
 app.use("/api/journal", journalRoutes);
 
-// Root Route
-
 // Log in with google route
 app.get(
-  "/auth/google", 
+  "/auth/google",
   passport.authenticate("google", { scope: ["profile"] })
 );
 
+
+// If there is a session on the request, find or create the user's corresponding model. 
+
 app.get("/check-session", (req, res) => {
-  console.log('checking session')
-  console.log(req.sessionID, 'session id')
-  console.log(req.session ,'this is the session')
-  res.sendStatus(200);
+  const key = Object.keys(req.sessionStore.sessions);
+  const reqSessions = JSON.parse(req.sessionStore.sessions[key[0]]);
+  const {
+    passport: { user: googleUser },
+  } = reqSessions;
+
+  User.find({ oAuthId: googleUser.id })
+    .then((user) => {
+      if (user.length === 0) {
+        User.create({
+          username: googleUser.displayName,
+          name: googleUser.displayName,
+          location: "unknown",
+          oAuthId: googleUser.id,
+        });
+      } else {
+        res.status(200).send(user);
+      }
+    })
+    .catch((error) => {
+      console.error(error, "Check-Session Error, User Not Found");
+      res.sendStatus(500);
+    });
 });
+
 // Callback route for google to redirect to
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    console.log(req.session, "this is the session in auth callback");
-    res.redirect("http://localhost:8080/")
+    res.redirect("http://localhost:8080/");
   }
 );
 
-// Display user profile
-app.get("/profile", (req, res) => {
-  console.log(req.session, "reached in profile");
-  if (req.isAuthenticated()) {
-    res.send(
-      `<h1>You logged in<h1><span>${JSON.stringify(req.user, null, 2)}<span>`
-    );
-  } else {
-    res.redirect("/");
-  }
-});
-
 // logout the user
-app.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect("/");
+app.get("/logout", function (req, res) {
+  req.logout(async function (err) {
+    if (err) {
+      console.error(err, "Error in request logout in server");
+      res.send(500);
+    }
+    await req.session.destroy();
+    await req.sessionStore.clear();
+    res.redirect("http://localhost:8080/");
+  });
 });
-
 
 // Upcoming Events
 const eventRoutes = require("./routes/event");
-app.use('/api/events', eventRoutes);
+app.use("/api/events", eventRoutes);
 
 // Start Sever
 app.listen(PORT, "0.0.0.0", () => {

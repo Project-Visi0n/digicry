@@ -8,6 +8,7 @@ const usersSchema = new Schema({
   salt: String,
   name: String,
   location: String,
+  oAuthId: Number,
 });
 
 const User = mongoose.model("User", usersSchema);
