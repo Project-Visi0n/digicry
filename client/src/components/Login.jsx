@@ -47,7 +47,6 @@ function Login({ validSession, setValidSession, setUser }) {
       </a>
     </div>
   );
-  );
 }
 
 export default Login;

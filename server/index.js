@@ -166,9 +166,6 @@ app.get("/logout", function (req, res) {
   });
 });
 
-// Upcoming Events
-const eventRoutes = require("./routes/event");
-app.use("/api/events", eventRoutes);
 
 // Start Sever
 app.listen(PORT, "0.0.0.0", () => {
