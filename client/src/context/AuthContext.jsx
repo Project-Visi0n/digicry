@@ -11,41 +11,47 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // Not authenticated at first // Stores user info
   const [loading, setLoading] = useState(true); // Indicates if auth state is being determined
+  const [validSession, setValidSession] = useState(false);
 
   // Fetch user profile from backend to determine authentication
   // Axios Request
 
-  // Check authentication status on mount
+  // Check session and get user model on mount
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkSession = async () => {
       try {
-        const { data } = await axios.get("/api/auth/user", {
-          withCredentials: true,
-        });
-        setUser(data);
+        const { data } = await axios.get(
+          "http://127.0.0.1:5000/check-session/",
+        );
+        if (data && data[0]) {
+          // data[0] contains the User model from MongoDB
+          setUser(data[0]);
+          setValidSession(true);
+        }
       } catch (err) {
-        console.error("Auth check failed:", err);
+        console.error("Session check failed:", err);
         setUser(null);
+        setValidSession(false);
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuth();
+    checkSession();
   }, []);
 
-  // Login function
-  const login = () => {
-    window.location.href = "/auth/google";
-  };
+  // Function to update user model
+  const updateUserModel = async (updates) => {
+    if (!user || !user.oAuthId) return;
 
-  // Logout function
-  const logout = async () => {
     try {
-      await axios.get("/api/auth/logout", { withCredentials: true });
-      setUser(null);
+      const { data } = await axios.put(
+        `http://127.0.0.1:5000/api/users/${user.oAuthId}`,
+        updates,
+      );
+      setUser(data);
     } catch (err) {
-      console.error("Logout failed:", err);
+      console.error("Failed to update user:", err);
     }
   };
 
@@ -54,10 +60,12 @@ export function AuthProvider({ children }) {
     () => ({
       user,
       loading,
-      login,
-      logout,
+      validSession,
+      setValidSession,
+      setUser,
+      updateUserModel,
     }),
-    [user, loading],
+    [user, loading, validSession],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
