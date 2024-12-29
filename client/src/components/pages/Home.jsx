@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import { useContext, useEffect, useState } from "react";
 import {
   Typography,
@@ -9,7 +8,7 @@ import {
   Button,
   Container,
   Card,
-  CardContent
+  CardContent,
 } from "@mui/material";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -84,7 +83,6 @@ function Home() {
     fetchQuote();
   }, []);
 
-
   // Helper function to render quote content based on that state
   const renderQuoteContent = () => {
     if (isLoading) {
@@ -103,7 +101,7 @@ function Home() {
       return (
         <Box mt={2}>
           <Typography variant="body1" className="motivational-quote">
-            "{quote.quote}"
+            &quot;{quote.quote}&quot;
           </Typography>
           <Typography variant="body2" className="quote-author">
             - {quote.author}
@@ -162,52 +160,61 @@ function Home() {
         ***************************************************************************************************************************
       */
 
+  const getQuoteText = () => {
+    if (!quote) return "";
+    return quote.quote || "";
+  };
+
+  const getQuoteAuthor = () => {
+    if (!quote) return "";
+    return quote.author || "";
+  };
+
   // Get user display name safely
   const getUserName = () => {
     if (user && user.name) {
       return user.name;
     }
-    return 'Friend';
+    return "Friend";
   };
 
   // If authenticated, render the main content
   return (
     <Container maxWidth="xl">
       {/* Hero Section with Quote */}
-      <Box 
+      <Box
         className="glass-panel hero-section"
         sx={{
-          textAlign: 'center',
+          textAlign: "center",
           py: 6,
           px: 4,
           mb: 4,
-          borderRadius: '24px'
+          borderRadius: "24px",
         }}
       >
-        <Typography 
-          variant="h3" 
-          sx={{ 
+        <Typography
+          variant="h3"
+          sx={{
             mb: 3,
-            background: 'linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
+            background:
+              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
           }}
         >
           Welcome back, {getUserName()}
         </Typography>
-        
+
         {/* Quote Display */}
-        <Box className="quote-container" sx={{ maxWidth: '800px', mx: 'auto' }}>
+        <Box className="quote-container" sx={{ maxWidth: "800px", mx: "auto" }}>
           {isLoading ? (
             <CircularProgress />
           ) : (
             <>
-              <Typography variant="h5" sx={{ fontStyle: 'italic', mb: 2 }}>
-                "{quote?.quote}"
+              <Typography variant="h5" sx={{ fontStyle: "italic", mb: 2 }}>
+                &quot;{getQuoteText()}&quot;
               </Typography>
-              <Typography variant="subtitle1">
-                - {quote?.author}
-              </Typography>
+              <Typography variant="subtitle1">- {getQuoteAuthor()}</Typography>
             </>
           )}
         </Box>
@@ -217,20 +224,17 @@ function Home() {
       <Stack spacing={4}>
         {/* Top Row */}
         <Stack
-          direction={{ xs: 'column', md: 'row' }}
+          direction={{ xs: "column", md: "row" }}
           spacing={4}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {/* Mood Analytics Section */}
-          <Card
-            className="glass-panel analytics-card"
-            sx={{ flex: 1 }}
-          >
+          <Card className="glass-panel analytics-card" sx={{ flex: 1 }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 3 }}>
                 Mood Analytics
               </Typography>
-              <Box className="mood-chart" sx={{ height: '300px' }}>
+              <Box className="mood-chart" sx={{ height: "300px" }}>
                 {/* Mood chart will go here */}
                 <div className="mood-graph-placeholder" />
               </Box>
@@ -238,22 +242,19 @@ function Home() {
           </Card>
 
           {/* Recent Journal Entries */}
-          <Card
-            className="glass-panel journal-card"
-            sx={{ flex: 1 }}
-          >
+          <Card className="glass-panel journal-card" sx={{ flex: 1 }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 3 }}>
                 Recent Entries
               </Typography>
               <Button
-        component={Link}
-        to="/journal/new"
-        className="glass-btn primary"
-        startIcon={<AddIcon />}
-      >
-        Add Journal Entry
-      </Button>
+                component={Link}
+                to="/journal/new"
+                className="glass-btn primary"
+                startIcon={<AddIcon />}
+              >
+                Add Journal Entry
+              </Button>
               {/* Journal entries list will go here */}
             </CardContent>
           </Card>
@@ -265,10 +266,10 @@ function Home() {
             <Typography variant="h5" sx={{ mb: 3 }}>
               Nearby Events
             </Typography>
-            <Stack 
-              direction={{ xs: 'column', sm: 'row' }} 
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
               spacing={2}
-              sx={{ width: '100%' }}
+              sx={{ width: "100%" }}
             >
               {/* Events will go here */}
             </Stack>
