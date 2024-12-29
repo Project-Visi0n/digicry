@@ -19,7 +19,9 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data } = await axios.get("/api/auth/user", { withCredentials: true });
+        const { data } = await axios.get("/api/auth/user", {
+          withCredentials: true,
+        });
         setUser(data);
       } catch (err) {
         console.error("Auth check failed:", err);
@@ -32,30 +34,29 @@ export function AuthProvider({ children }) {
     checkAuth();
   }, []);
 
-  // Mock login function to simulate user authentication
+  // Login function
   const login = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setUser({
-        name: "John Doe",
-        email: "john.doe@example.com",
-      });
-      setLoading(false);
-    }, 1000); // Simulate async login / Network delay
+    window.location.href = "/auth/google";
   };
 
-  // Mock logout function to simulate ending user authentication
-  const logout = () => {
-    setLoading(true);
-    setTimeout(() => {
+  // Logout function
+  const logout = async () => {
+    try {
+      await axios.get("/api/auth/logout", { withCredentials: true });
       setUser(null);
-      setLoading(false);
-    }, 500); // Simulate network delay
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
 
   // Memoize the context value to prevent unnecessary re-renders
   const value = useMemo(
-    () => ({ user, loading, login, logout }),
+    () => ({
+      user,
+      loading,
+      login,
+      logout,
+    }),
     [user, loading],
   );
 
