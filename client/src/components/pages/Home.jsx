@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import { useContext, useEffect, useState } from "react";
 import {
   Typography,
@@ -7,8 +6,11 @@ import {
   IconButton,
   CircularProgress,
   Button,
+  Container,
+  Card,
+  CardContent,
 } from "@mui/material";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, Link } from "react-router-dom";
 import axios from "axios";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
@@ -16,12 +18,29 @@ import { AuthContext } from "../../context/AuthContext";
 import Events from "./Events";
 
 function Home() {
+  const [recentEntries, setRecentEntries] = useState([]);
   const [quote, setQuote] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const { user, login, loading } = useContext(AuthContext);
   // const navigate = useNavigate();
+  // useEffect(() => {
+  //   console.log("[Home] Fetching recent journal entries...");
+  //   axios
+  //     .get("/api/journal")
+  //     .then((response) => {
+  //       console.log("[Home] /api/journal response:", response.data);
+  //       const data = response.data || [];
+  //       // Slice the first 3 or 5 for recent
+  //       const topThree = data.slice(0, 3);
+  //       setRecentEntries(topThree);
+  //     })
+  //     .catch((err) => {
+  //       console.error("[Home] Error fetching recent entries:", err);
+  //       setError("Failed to load recent entries. Please try again later.");
+  //     });
+  // }, []);
 
   // Function to fetch quote from the API
   const fetchQuote = () => {
@@ -82,7 +101,7 @@ function Home() {
       return (
         <Box mt={2}>
           <Typography variant="body1" className="motivational-quote">
-            "{quote.quote}"
+            &quot;{quote.quote}&quot;
           </Typography>
           <Typography variant="body2" className="quote-author">
             - {quote.author}
@@ -141,71 +160,123 @@ function Home() {
         ***************************************************************************************************************************
       */
 
+  const getQuoteText = () => {
+    if (!quote) return "";
+    return quote.quote || "";
+  };
+
+  const getQuoteAuthor = () => {
+    if (!quote) return "";
+    return quote.author || "";
+  };
+
+  // Get user display name safely
+  const getUserName = () => {
+    if (user && user.name) {
+      return user.name;
+    }
+    return "Friend";
+  };
+
   // If authenticated, render the main content
   return (
-    <Box className="main-container">
-      <Box>
-        {/* Daily Inspiration Section */}
-        <Box className="glass-panel quote-panel" sx={{ mb: 4 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 2,
-            }}
-          >
-            <Typography variant="h4" className="section-title">
-              Daily Inspiration
-            </Typography>
-            <IconButton onClick={fetchQuote} disabled={isLoading}>
-              <RefreshIcon />
-            </IconButton>
-          </Box>
-          {renderQuoteContent()}
-        </Box>
+    <Container maxWidth="xl">
+      {/* Hero Section with Quote */}
+      <Box
+        className="glass-panel hero-section"
+        sx={{
+          textAlign: "center",
+          py: 6,
+          px: 4,
+          mb: 4,
+          borderRadius: "24px",
+        }}
+      >
+        <Typography
+          variant="h3"
+          sx={{
+            mb: 3,
+            background:
+              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          Welcome back, {getUserName()}
+        </Typography>
 
-        <Box className="glass-panel voice-panel" sx={{ mb: 4 }}>
-          <Typography variant="h4" className="section-title">
-            Mood Analytics
-          </Typography>
-          <Box className="voice-analytics-container">
-            <Box className="voice-visualization-placeholder">
-              <Typography variant="body1" sx={{ opacity: 0.7 }}>
-                Share how you're feeling...
+        {/* Quote Display */}
+        <Box className="quote-container" sx={{ maxWidth: "800px", mx: "auto" }}>
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            <>
+              <Typography variant="h5" sx={{ fontStyle: "italic", mb: 2 }}>
+                &quot;{getQuoteText()}&quot;
               </Typography>
-            </Box>
-          </Box>
+              <Typography variant="subtitle1">- {getQuoteAuthor()}</Typography>
+            </>
+          )}
         </Box>
-
-        <Stack spacing={4} className="content-stack">
-          <Box className="glass-panel mood-panel">
-            <Typography variant="h4" className="section-title">
-              Track Your Mood
-            </Typography>
-            <Typography variant="body1" className="section-description">
-              Document your emotional journey and gain insights into your
-              well-being
-            </Typography>
-            <Box className="mood-preview">
-              <div className="mood-graph-placeholder" />
-            </Box>
-          </Box>
-
-          <Box className="glass-panel events-panel">
-            <Typography variant="h4" className="section-title">
-              Local Events
-            </Typography>
-            <Typography variant="body1" className="section-description">
-              Connect with your community
-            </Typography>
-            <Box className="events-preview">
-              <Events />
-            </Box>
-          </Box>
-        </Stack>
       </Box>
-    </Box>
+
+      {/* Main Content Stack */}
+      <Stack spacing={4}>
+        {/* Top Row */}
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={4}
+          sx={{ width: "100%" }}
+        >
+          {/* Mood Analytics Section */}
+          <Card className="glass-panel analytics-card" sx={{ flex: 1 }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ mb: 3 }}>
+                Mood Analytics
+              </Typography>
+              <Box className="mood-chart" sx={{ height: "300px" }}>
+                {/* Mood chart will go here */}
+                <div className="mood-graph-placeholder" />
+              </Box>
+            </CardContent>
+          </Card>
+
+          {/* Recent Journal Entries */}
+          <Card className="glass-panel journal-card" sx={{ flex: 1 }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ mb: 3 }}>
+                Recent Entries
+              </Typography>
+              <Button
+                component={Link}
+                to="/journal/new"
+                className="glass-btn primary"
+                startIcon={<AddIcon />}
+              >
+                Add Journal Entry
+              </Button>
+              {/* Journal entries list will go here */}
+            </CardContent>
+          </Card>
+        </Stack>
+
+        {/* Events Section */}
+        <Card className="glass-panel events-card">
+          <CardContent>
+            <Typography variant="h5" sx={{ mb: 3 }}>
+              Nearby Events
+            </Typography>
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={2}
+              sx={{ width: "100%" }}
+            >
+              {/* Events will go here */}
+            </Stack>
+          </CardContent>
+        </Card>
+      </Stack>
+    </Container>
   );
 }
 
