@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 
 export const AuthContext = createContext();
@@ -9,37 +10,26 @@ export const AuthContext = createContext();
  */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // Not authenticated at first // Stores user info
-  const [loading, setLoading] = useState(false); // Indicates if auth state is being determined
+  const [loading, setLoading] = useState(true); // Indicates if auth state is being determined
 
   // Fetch user profile from backend to determine authentication
   // Axios Request
 
+  // Check authentication status on mount
   useEffect(() => {
-    // Simulate an async operation to check authentication status
-    const fetchUser = () => {
-      setLoading(true);
-      setTimeout(() => {
-        //* *************************************************************************************
-        // For development, toggle this to simulate authenticated/unauthenticated states
-        // CHANGE TRUE/FALSE, TRUE SIMULATES AN AUTHENTICATED USER FOR DEVELOPMENT PURPOSES
-        // **************************************************************************************
-        //  */
-        const isAuthenticated = true;
-        // **************************************************************************************
-
-        if (isAuthenticated) {
-          setUser({
-            name: "John Doe",
-            email: "john.doe@example.com",
-          });
-        } else {
-          setUser(null);
-        }
+    const checkAuth = async () => {
+      try {
+        const { data } = await axios.get("/api/auth/user", { withCredentials: true });
+        setUser(data);
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        setUser(null);
+      } finally {
         setLoading(false);
-      }, 1000); // Simulate network delay
+      }
     };
 
-    fetchUser();
+    checkAuth();
   }, []);
 
   // Mock login function to simulate user authentication
