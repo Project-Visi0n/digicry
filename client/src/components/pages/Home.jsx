@@ -3,27 +3,27 @@ import {
   Typography,
   Box,
   Stack,
-  IconButton,
   CircularProgress,
   Button,
   Container,
   Card,
   CardContent,
 } from "@mui/material";
-import { useNavigate, Navigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
 import { AuthContext } from "../../context/AuthContext";
-import Events from "./Events";
+import Login from "../Login";
+// import Events from "./Events";
 
 function Home() {
-  const [recentEntries, setRecentEntries] = useState([]);
+  const { user, setUser, validSession, setValidSession, loading } =
+    useContext(AuthContext);
+  // const [recentEntries, setRecentEntries] = useState([]);
   const [quote, setQuote] = useState(null);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { user, login, loading } = useContext(AuthContext);
   // const navigate = useNavigate();
   // useEffect(() => {
   //   console.log("[Home] Fetching recent journal entries...");
@@ -43,40 +43,16 @@ function Home() {
   // }, []);
 
   // Function to fetch quote from the API
-  const fetchQuote = () => {
-    // Log to the console to indicate that quote fetching has started
-    console.log("Fetching motivational quote...");
-
-    // Set is loading to true before starting the fetch
-    setIsLoading(true);
-    setError(null); // Reset any previous errors
-
-    // Make a GET request to the Stoicism Quote API
-    axios
-      .get("/api/stoic-quote")
-      .then((response) => {
-        // Log the successful response
-        console.log("Quote fetched successfully:", response.data);
-
-        // Extract quote data from the response
-        const fetchedQuote = response.data.data;
-
-        // Update the 'quote' state with the fetched data
-        setQuote(fetchedQuote);
-
-        // Set loading to false as the data has been fetched
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        // Log the error
-        console.error("Error fetching quote:", err);
-
-        // Update the 'error' state with the error message
-        setError("Failed to fetch quote. Please try again later.");
-
-        // Set loading to false as the fetch attempt has concluded
-        setIsLoading(false);
-      });
+  const fetchQuote = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get("/api/stoic-quote");
+      setQuote(data.data);
+    } catch (err) {
+      console.error("Error fetching quote:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -84,34 +60,34 @@ function Home() {
   }, []);
 
   // Helper function to render quote content based on that state
-  const renderQuoteContent = () => {
-    if (isLoading) {
-      // Display a loading spinner while fetching the quote
-      return <CircularProgress />;
-    }
-    if (error) {
-      return (
-        <Typography variant="body1" color="error">
-          {error}
-        </Typography>
-      );
-    }
-    if (quote) {
-      // Display the fetched quote and author
-      return (
-        <Box mt={2}>
-          <Typography variant="body1" className="motivational-quote">
-            &quot;{quote.quote}&quot;
-          </Typography>
-          <Typography variant="body2" className="quote-author">
-            - {quote.author}
-          </Typography>
-        </Box>
-      );
-    }
-    // In case quote is null but not loading or error
-    return null;
-  };
+  // const renderQuoteContent = () => {
+  //   if (isLoading) {
+  //     // Display a loading spinner while fetching the quote
+  //     return <CircularProgress />;
+  //   }
+  //   if (error) {
+  //     return (
+  //       <Typography variant="body1" color="error">
+  //         {error}
+  //       </Typography>
+  //     );
+  //   }
+  //   if (quote) {
+  //     // Display the fetched quote and author
+  //     return (
+  //       <Box mt={2}>
+  //         <Typography variant="body1" className="motivational-quote">
+  //           &quot;{quote.quote}&quot;
+  //         </Typography>
+  //         <Typography variant="body2" className="quote-author">
+  //           - {quote.author}
+  //         </Typography>
+  //       </Box>
+  //     );
+  //   }
+  //   // In case quote is null but not loading or error
+  //   return null;
+  // };
 
   /**
    ***********************************************************************************************
@@ -126,39 +102,63 @@ function Home() {
   // Show loading spinner id auth state is loading
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "80vh",
+        }}
+      >
         <CircularProgress />
       </Box>
     );
   }
 
-  /**
-   * *****************************************************************************************************************
-   * DEVELOPMENT MODE - TEMPORARILY REMOVE AUTH CHECK
-  If not authenticated, show login prompt
   if (!user) {
-      return (
-          <Box className="main-container" sx={{ textAlign: "center", mt: 8 }}>
-            <Typography variant="h3" className="main-title" gutterBottom>
-              Welcome to Digi-Cry
-            </Typography>
-            <Typography variant="h6" sx={{ mb: 4 }}>
-              Your personal journal to express and analyze your emotions.
-            </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={login}
-              startIcon={<AddIcon />}
-            >
-              Sign in with Google
-            </Button>
-          </Box>
-        );
-      }
-        ***************************************************************************************************************************
-      */
+    return (
+      <Box
+        className="glass-panel"
+        sx={{
+          textAlign: "center",
+          mt: 8,
+          p: 6,
+          borderRadius: "24px",
+          maxWidth: "600px",
+          mx: "auto",
+          background: "rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(10px)",
+        }}
+      >
+        <Typography
+          variant="h3"
+          className="main-title"
+          sx={
+            {
+              /* ... */
+            }
+          }
+        >
+          Welcome to Digi-Cry
+        </Typography>
+        <Typography
+          variant="h6"
+          sx={
+            {
+              /* ... */
+            }
+          }
+        >
+          Your personal journal to express and analyze your emotions.
+        </Typography>
+        <Login
+          validSession={validSession}
+          setValidSession={setValidSession}
+          setUser={setUser}
+        />
+      </Box>
+    );
+  }
 
   const getQuoteText = () => {
     if (!quote) return "";
