@@ -9,18 +9,19 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import { useNavigate, Navigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
 import { AuthContext } from "../../context/AuthContext";
-import Events from "./Events";
+import Login from "../Login";
+// import Events from "./Events";
 
 function Home() {
-  const { user, login, loading } = useContext(AuthContext);
-  const [recentEntries, setRecentEntries] = useState([]);
+  const { user, setUser, validSession, setValidSession, loading } =
+    useContext(AuthContext);
+  // const [recentEntries, setRecentEntries] = useState([]);
   const [quote, setQuote] = useState(null);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // const navigate = useNavigate();
@@ -132,49 +133,29 @@ function Home() {
         <Typography
           variant="h3"
           className="main-title"
-          sx={{
-            mb: 3,
-            background:
-              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            fontWeight: "bold",
-          }}
+          sx={
+            {
+              /* ... */
+            }
+          }
         >
           Welcome to Digi-Cry
         </Typography>
         <Typography
           variant="h6"
-          sx={{
-            mb: 4,
-            color: "rgba(255, 255, 255, 0.8)",
-          }}
+          sx={
+            {
+              /* ... */
+            }
+          }
         >
           Your personal journal to express and analyze your emotions.
         </Typography>
-        <Button
-          variant="contained"
-          size="large"
-          onClick={login}
-          startIcon={<AddIcon />}
-          sx={{
-            background:
-              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
-            color: "white",
-            px: 4,
-            py: 1.5,
-            borderRadius: "12px",
-            textTransform: "none",
-            fontSize: "1.1rem",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-            "&:hover": {
-              background:
-                "linear-gradient(45deg, var(--pink) 50%, var(--blue) 110%)",
-            },
-          }}
-        >
-          Sign in with Google
-        </Button>
+        <Login
+          validSession={validSession}
+          setValidSession={setValidSession}
+          setUser={setUser}
+        />
       </Box>
     );
   }

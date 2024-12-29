@@ -1,4 +1,10 @@
-import { createContext, useState, useEffect, useMemo } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 
@@ -13,8 +19,23 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true); // Indicates if auth state is being determined
   const [validSession, setValidSession] = useState(false);
 
-  // Fetch user profile from backend to determine authentication
-  // Axios Request
+  // Function to update user model
+  const updateUserModel = useCallback(
+    async (updates) => {
+      if (!user || !user.oAuthId) return;
+
+      try {
+        const { data } = await axios.put(
+          `http://127.0.0.1:5000/api/users/${user.oAuthId}`,
+          updates,
+        );
+        setUser(data);
+      } catch (err) {
+        console.error("Failed to update user:", err);
+      }
+    },
+    [user],
+  );
 
   // Check session and get user model on mount
   useEffect(() => {
@@ -40,32 +61,16 @@ export function AuthProvider({ children }) {
     checkSession();
   }, []);
 
-  // Function to update user model
-  const updateUserModel = async (updates) => {
-    if (!user || !user.oAuthId) return;
-
-    try {
-      const { data } = await axios.put(
-        `http://127.0.0.1:5000/api/users/${user.oAuthId}`,
-        updates,
-      );
-      setUser(data);
-    } catch (err) {
-      console.error("Failed to update user:", err);
-    }
-  };
-
-  // Memoize the context value to prevent unnecessary re-renders
   const value = useMemo(
     () => ({
       user,
+      setUser,
       loading,
       validSession,
       setValidSession,
-      setUser,
       updateUserModel,
     }),
-    [user, loading, validSession],
+    [user, loading, validSession, updateUserModel],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
