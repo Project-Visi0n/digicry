@@ -93,7 +93,7 @@ module.exports = {
 
       {
         context: ["/api"],
-        target: "http://localhost:5001",
+        target: "http://localhost:5000", // CHANGE THIS AS NEEDED AND RESTART SERVER
         secure: false,
         changeOrigin: true,
       },
