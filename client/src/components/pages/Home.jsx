@@ -16,6 +16,8 @@ import { AuthContext } from "../../context/AuthContext";
 import Login from "../Login";
 // import Events from "./Events";
 
+import RenderEvents from '../RenderEvents.jsx';
+
 function Home() {
   const { user, setUser, validSession, setValidSession, loading } =
     useContext(AuthContext);
@@ -272,6 +274,7 @@ function Home() {
               sx={{ width: "100%" }}
             >
               {/* Events will go here */}
+              <RenderEvents />
             </Stack>
           </CardContent>
         </Card>
