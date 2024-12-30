@@ -1,6 +1,12 @@
 import axios from "axios";
 import { Typography, Box } from "@mui/material";
 import { useState, useEffect } from "react";
+import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone';
+import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone';
+import Button from '@mui/material/Button';
+import { Link } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
+
 
 // UPCOMING EVENTS FEATURE
 /**
@@ -106,10 +112,23 @@ export default function RenderEvents() {
           />
 
             <Typography variant="h6">{event.title}</Typography>
-            <Typography variant="body2">{event.date}</Typography>
-            <Typography variant="body2">{event.location[0]}</Typography>
-            <Typography variant="body2">{event.location[1]}</Typography>
             <Typography variant="body2">{event.description}</Typography>
+
+            <Typography variant="body2">
+              <CalendarMonthTwoToneIcon />
+              {event.date}</Typography>
+            <Typography variant="body2">
+              <LocationOnTwoToneIcon  />
+              {event.location[0]}
+            </Typography>
+            <Button
+              component={Link}
+              to="/journal/new"
+              className="glass-btn primary"
+              startIcon={<AddIcon />}
+              >Learn More</Button>
+            {/*<Typography variant="body2">{event.location[1]}</Typography>*/}
+            {/*<Typography variant="body2">{event.description}</Typography>*/}
             {/*<Typography variant="body2">{event.venueName}</Typography>*/}
             {/*<Typography variant="body2">{event.linkUrl}</Typography>*/}
             {/*<Typography variant="body2">{event.thumbnail}</Typography>*/}
