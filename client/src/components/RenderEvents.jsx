@@ -79,21 +79,40 @@ export default function RenderEvents() {
 
   return (
 
-    <Box>
+    <Box
+    sx={{ width: '100%'}}
+    >
       {
         events.map((event) => (
           <Box
+            sx={{
+              p:3,
+              height: 350,
+          }}
+
             key={event._id}
             className="event-card-placeholder">
+
+            <Box
+              component="img"
+              src={event.image}
+              alt={`Image promoting ${event.title}`}
+              sx={{
+                objectFit: 'cover',
+                height: 100,
+                width: 100,
+                borderRadius: 4,
+            }}
+          />
 
             <Typography variant="h6">{event.title}</Typography>
             <Typography variant="body2">{event.date}</Typography>
             <Typography variant="body2">{event.location[0]}</Typography>
             <Typography variant="body2">{event.location[1]}</Typography>
             <Typography variant="body2">{event.description}</Typography>
-            <Typography variant="body2">{event.venueName}</Typography>
-            <Typography variant="body2">{event.linkUrl}</Typography>
-            <Typography variant="body2">{event.thumbnail}</Typography>
+            {/*<Typography variant="body2">{event.venueName}</Typography>*/}
+            {/*<Typography variant="body2">{event.linkUrl}</Typography>*/}
+            {/*<Typography variant="body2">{event.thumbnail}</Typography>*/}
 
 
           </Box>
