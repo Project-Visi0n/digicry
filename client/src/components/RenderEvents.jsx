@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone';
 import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone';
 import Button from '@mui/material/Button';
-import { Link } from "react-router-dom";
-import AddIcon from "@mui/icons-material/Add";
+import ArrowOutwardTwoToneIcon from '@mui/icons-material/ArrowOutwardTwoTone';
+import { shadows } from '@mui/system';
 
 
 // UPCOMING EVENTS FEATURE
@@ -86,14 +86,22 @@ export default function RenderEvents() {
   return (
 
     <Box
-    sx={{ width: '100%'}}
+    sx={{
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 4,
+    }}
     >
       {
         events.map((event) => (
           <Box
             sx={{
               p:3,
-              height: 350,
+              height: 'fit-content',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
           }}
 
             key={event._id}
@@ -104,9 +112,10 @@ export default function RenderEvents() {
               src={event.image}
               alt={`Image promoting ${event.title}`}
               sx={{
+                boxShadow: 3,
                 objectFit: 'cover',
-                height: 100,
-                width: 100,
+                height: 150,
+                width: 150,
                 borderRadius: 4,
             }}
           />
@@ -114,18 +123,42 @@ export default function RenderEvents() {
             <Typography variant="h6">{event.title}</Typography>
             <Typography variant="body2">{event.description}</Typography>
 
-            <Typography variant="body2">
-              <CalendarMonthTwoToneIcon />
+            <Typography variant="body2"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+            >
+              <CalendarMonthTwoToneIcon
+              sx={{
+                color: '#5E6472',
+              }}/>
               {event.date}</Typography>
-            <Typography variant="body2">
-              <LocationOnTwoToneIcon  />
+            <Typography variant="body2"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+            >
+              <LocationOnTwoToneIcon
+              sx={{
+                color: '#5E6472',
+              }}
+              />
               {event.location[0]}
             </Typography>
             <Button
-              component={Link}
-              to="/journal/new"
+              sx={{
+                width: '50%',
+
+              }}
+              href={event.linkUrl}
+              rel="noopener noreferrer"
+              target="_noblank"
               className="glass-btn primary"
-              startIcon={<AddIcon />}
+              startIcon={<ArrowOutwardTwoToneIcon />}
               >Learn More</Button>
             {/*<Typography variant="body2">{event.location[1]}</Typography>*/}
             {/*<Typography variant="body2">{event.description}</Typography>*/}
