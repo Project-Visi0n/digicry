@@ -1,23 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-import {
-  Typography,
-  Box,
-  Stack,
-  CircularProgress,
-  Button,
-  Container,
-  Card,
-  CardContent,
-} from "@mui/material";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import AddIcon from "@mui/icons-material/Add";
-import { AuthContext } from "../../context/AuthContext";
-import Login from "../Login";
+import { Typography, Box } from "@mui/material";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { Box, Typography } from "@mui/material";
-
 
 // UPCOMING EVENTS FEATURE
 /**
@@ -26,18 +9,17 @@ import { Box, Typography } from "@mui/material";
  * fetchEventsByLoc - checks for user location before calling fetchEvents
  */
 
-export function RenderEvents() {
+export default function RenderEvents() {
   const [events, setEvents] = useState([])
-  const [error, setError] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
 
   const fetchEvents = () => {
-    axios.get('/api/events/all')
+    return axios.get('/api/events/all')
       .then((response) => {
         // assign variable to response data - eventData is used to map over data in render
-        const eventData = response.data;
+        const events = response.data;
         // update state
-        setEventData(eventData);
+        setEvents(events);
       })
       .catch((err) => {
         console.error('Error fetching events from DB', err);
@@ -101,7 +83,9 @@ export function RenderEvents() {
       {
         events.map((event) => (
           <Box
-            key={event._id} className="event-card-placeholder">
+            key={event._id}
+            className="event-card-placeholder">
+
             <Typography variant="h6">{event.title}</Typography>
             <Typography variant="body2">{event.date}</Typography>
             <Typography variant="body2">{event.location[0]}</Typography>
@@ -110,11 +94,13 @@ export function RenderEvents() {
             <Typography variant="body2">{event.venueName}</Typography>
             <Typography variant="body2">{event.linkUrl}</Typography>
             <Typography variant="body2">{event.thumbnail}</Typography>
-            ))
-            }
-            }
+
 
           </Box>
+          ))}
+    </Box>
+
+
 
 
         )
