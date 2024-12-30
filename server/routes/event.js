@@ -9,10 +9,14 @@ const { Event } = require("../models");
 
 // GET request to fetch event data from SERPAPI and save to our DB Event model
 router.get("/", (req, res) => {
+
+  const loc = req.query;
+  console.log(loc);
   axios
     .get("https://serpapi.com/search", {
+
       params: {
-        q: "location=New Orleans, LA", // currently hard coding our location - future implementation will be dynamic via user's location
+        q: `location=${loc}`,
         engine: "google_events",
         api_key: process.env.EVENTS_API_KEY,
       },
@@ -25,7 +29,7 @@ router.get("/", (req, res) => {
         date: event.date.when,
         location: event.address,
         description: event.description,
-        venueName: event.venue.name,
+        venueName: event.venue && event.venue.name || 'N/A',
         linkUrl: event.link,
         ticketUrl: event.ticket_info[0].link,
         thumbnail: event.thumbnail,
