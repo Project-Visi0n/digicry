@@ -162,7 +162,7 @@ app.get("/logout", function (req, res) {
     }
     await req.session.destroy();
     await req.sessionStore.clear();
-    res.redirect("http://localhost:8080/");
+    res.redirect("http://127.0.0.1:8080/");
   });
 });
 
