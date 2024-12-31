@@ -22,31 +22,12 @@ function Login({ validSession, setValidSession, setUser }) {
     }
   }, [validSession]);
 
-  // if login is true attempt to log out the user
-  const handleLogout = () => {
-    if (login) {
-      axios
-        .post("authorization/logout")
-        .then((success) => {
-          setLogin(false);
-          setValidSession(false);
-          setUser(null);
-          setInOut("in or Sign Up");
-          setHref("authorization/auth/google");
-          console.log("You logged out!", success);
-        })
-        .catch((error) => {
-          console.error("Failed to logout", error);
-        });
-    }
-  };
 
   return (
      <Button
       variant="contained"
       size="large"
       href={href}
-      onClick={login ? handleLogout : undefined}
       startIcon={<GoogleIcon />}
       sx={{
         background: "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
