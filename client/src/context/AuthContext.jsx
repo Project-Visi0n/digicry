@@ -20,6 +20,11 @@ export function AuthProvider({ children }) {
   const [validSession, setValidSession] = useState(false);
 
 
+  //Logout
+  const logout = () => {
+    setValidSession(false);
+    setUser(null);
+  }
 
   // Function to update user model
   const updateUserModel = useCallback(
@@ -57,7 +62,7 @@ export function AuthProvider({ children }) {
         setValidSession(false);
       } finally {
         setLoading(false);
-      }
+      } 
     };
 
     checkSession();
@@ -68,6 +73,7 @@ export function AuthProvider({ children }) {
       user,
       setUser,
       loading,
+      logout,
       validSession,
       setValidSession,
       updateUserModel,
