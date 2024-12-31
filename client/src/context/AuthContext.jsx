@@ -19,6 +19,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true); // Indicates if auth state is being determined
   const [validSession, setValidSession] = useState(false);
 
+
+
   // Function to update user model
   const updateUserModel = useCallback(
     async (updates) => {
@@ -27,14 +29,14 @@ export function AuthProvider({ children }) {
       try {
         const { data } = await axios.put(
           `http://127.0.0.1:5000/api/users/${user.oAuthId}`,
-          updates,
+          updates
         );
         setUser(data);
       } catch (err) {
         console.error("Failed to update user:", err);
       }
     },
-    [user],
+    [user]
   );
 
   // Check session and get user model on mount
@@ -42,7 +44,7 @@ export function AuthProvider({ children }) {
     const checkSession = async () => {
       try {
         const { data } = await axios.get(
-          "http://127.0.0.1:5000/check-session/",
+          "http://127.0.0.1:5000/check-session/"
         );
         if (data && data[0]) {
           // data[0] contains the User model from MongoDB
@@ -70,7 +72,7 @@ export function AuthProvider({ children }) {
       setValidSession,
       updateUserModel,
     }),
-    [user, loading, validSession, updateUserModel],
+    [user, loading, validSession, updateUserModel]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

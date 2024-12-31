@@ -42,7 +42,7 @@ function Login({ validSession, setValidSession, setUser }) {
   };
 
   return (
-    <Button
+     <Button
       variant="contained"
       size="large"
       href={href}
@@ -64,7 +64,7 @@ function Login({ validSession, setValidSession, setUser }) {
       }}
     >
       Sign {inOut} with Google
-    </Button>
+     </Button>
   );
 }
 
