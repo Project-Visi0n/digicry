@@ -24,6 +24,12 @@ export function AuthProvider({ children }) {
     setValidSession(false);
     setUser(null);
     axios.get("/authorization/logout")
+    .then(() => {
+      console.log('successful logout')
+    })
+    .catch((error) => {
+      console.error('failed logout ', error)
+    })
   };
 
   // Function to update user model

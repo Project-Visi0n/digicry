@@ -16,6 +16,19 @@ import { AuthContext } from "../../context/AuthContext";
 import Login from "../Login";
 // import Events from "./Events";
 
+import RenderEvents from "../RenderEvents";
+
+const testProxy = async () => {
+  try {
+    const response = await axios.get("/api/test");
+    console.log(response.data);
+    alert(`Proxy Test Successful: ${JSON.stringify(response.data)}`);
+  } catch (error) {
+    console.error("Proxy Test Failed:", error);
+    alert("Proxy Test Failed");
+  }
+};
+
 function Home() {
   const { user, setUser, validSession, setValidSession, loading } =
     useContext(AuthContext);
@@ -180,103 +193,117 @@ function Home() {
 
   // If authenticated, render the main content
   return (
-    <Container maxWidth="xl">
-      {/* Hero Section with Quote */}
-      <Box
-        className="glass-panel hero-section"
-        sx={{
-          textAlign: "center",
-          py: 6,
-          px: 4,
-          mb: 4,
-          borderRadius: "24px",
-        }}
-      >
-        <Typography
-          variant="h3"
+    <>
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <h1>Welcome to the Home Page</h1>
+        <Button variant="contained" onClick={testProxy}>
+          Test Proxy
+        </Button>
+      </div>
+      <Container maxWidth="xl">
+        {/* Hero Section with Quote */}
+        <Box
+          className="glass-panel hero-section"
           sx={{
-            mb: 3,
-            background:
-              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+            textAlign: "center",
+            py: 6,
+            px: 4,
+            mb: 4,
+            borderRadius: "24px",
           }}
         >
-          Welcome back, {getUserName()}
-        </Typography>
+          <Typography
+            variant="h3"
+            sx={{
+              mb: 3,
+              background:
+                "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            Welcome back, {getUserName()}
+          </Typography>
 
-        {/* Quote Display */}
-        <Box className="quote-container" sx={{ maxWidth: "800px", mx: "auto" }}>
-          {isLoading ? (
-            <CircularProgress />
-          ) : (
-            <>
-              <Typography variant="h5" sx={{ fontStyle: "italic", mb: 2 }}>
-                &quot;{getQuoteText()}&quot;
-              </Typography>
-              <Typography variant="subtitle1">- {getQuoteAuthor()}</Typography>
-            </>
-          )}
+          {/* Quote Display */}
+          <Box
+            className="quote-container"
+            sx={{ maxWidth: "800px", mx: "auto" }}
+          >
+            {isLoading ? (
+              <CircularProgress />
+            ) : (
+              <>
+                <Typography variant="h5" sx={{ fontStyle: "italic", mb: 2 }}>
+                  &quot;{getQuoteText()}&quot;
+                </Typography>
+                <Typography variant="subtitle1">
+                  - {getQuoteAuthor()}
+                </Typography>
+              </>
+            )}
+          </Box>
         </Box>
-      </Box>
 
-      {/* Main Content Stack */}
-      <Stack spacing={4}>
-        {/* Top Row */}
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          spacing={4}
-          sx={{ width: "100%" }}
-        >
-          {/* Mood Analytics Section */}
-          <Card className="glass-panel analytics-card" sx={{ flex: 1 }}>
+        {/* Main Content Stack */}
+        <Stack spacing={4}>
+          {/* Top Row */}
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={4}
+            sx={{ width: "100%" }}
+          >
+            {/* Mood Analytics Section */}
+            <Card className="glass-panel analytics-card" sx={{ flex: 1 }}>
+              <CardContent>
+                <Typography variant="h5" sx={{ mb: 3 }}>
+                  Mood Analytics
+                </Typography>
+                <Box className="mood-chart" sx={{ height: "300px" }}>
+                  {/* Mood chart will go here */}
+                  <div className="mood-graph-placeholder" />
+                </Box>
+              </CardContent>
+            </Card>
+
+            {/* Recent Journal Entries */}
+            <Card className="glass-panel journal-card" sx={{ flex: 1 }}>
+              <CardContent>
+                <Typography variant="h5" sx={{ mb: 3 }}>
+                  Recent Entries
+                </Typography>
+                <Button
+                  component={Link}
+                  to="/journal/new"
+                  className="glass-btn primary"
+                  startIcon={<AddIcon />}
+                >
+                  Add Journal Entry
+                </Button>
+                {/* Journal entries list will go here */}
+              </CardContent>
+            </Card>
+          </Stack>
+
+          {/* Events Section */}
+          <Card className="glass-panel events-card">
             <CardContent>
               <Typography variant="h5" sx={{ mb: 3 }}>
-                Mood Analytics
+                Nearby Events
               </Typography>
-              <Box className="mood-chart" sx={{ height: "300px" }}>
-                {/* Mood chart will go here */}
-                <div className="mood-graph-placeholder" />
-              </Box>
-            </CardContent>
-          </Card>
-
-          {/* Recent Journal Entries */}
-          <Card className="glass-panel journal-card" sx={{ flex: 1 }}>
-            <CardContent>
-              <Typography variant="h5" sx={{ mb: 3 }}>
-                Recent Entries
-              </Typography>
-              <Button
-                component={Link}
-                to="/journal/new"
-                className="glass-btn primary"
-                startIcon={<AddIcon />}
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={2}
+                sx={{ width: "100%" }}
               >
-                Add Journal Entry
-              </Button>
-              {/* Journal entries list will go here */}
+                {/* Events will go here */}
+                <RenderEvents />
+              </Stack>
             </CardContent>
           </Card>
         </Stack>
-
-        {/* Events Section */}
-        <Card className="glass-panel events-card">
-          <CardContent>
-            <Typography variant="h5" sx={{ mb: 3 }}>
-              Nearby Events
-            </Typography>
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={2}
-              sx={{ width: "100%" }}
-            >
-              {/* Events will go here */}
-            </Stack>
-          </CardContent>
-        </Card>
-      </Stack>
-    </Container>
+      </Container>
+    </>
   );
 }
 
