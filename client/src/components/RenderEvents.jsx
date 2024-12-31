@@ -19,109 +19,95 @@ export default function RenderEvents() {
   const [events, setEvents] = useState([])
   const [userLocation, setUserLocation] = useState(null);
 
-  const fetchEventsByLoc = () => {
-    console.log('starting fetchEventsByLoc');
-    console.log('this is navigator.geolocation: ', navigator.geolocation);
-    // if browser supports geolocation webextension
-    if (navigator.geolocation) {
-      // get user location obj
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        console.log('this si pos coords: ', position.coords);
-        console.log('this is lat and long', latitude, longitude);
-
-        axios.get('/api/events/', {
-          params: {
-            latitude: latitude,
-            longitude: longitude,
-          }
-        })
-          .then((response) => {
-            setUserLocation({ latitude, longitude });
-            const events = response.data;
-            setEvents(events);
-          })
-          .catch((err) => {
-            console.error('error with fetcheventsbyloc', err);
-          })
 
 
-      })
+
+  const fetchEvents = () => {
+    if (!userLocation) {
+      console.error('Need users location!');
     }
-  }
-  // const fetchEvents = () => {
-  //   if (!userLocation) {
-  //     console.error('Need users location!');
-  //   }
-  //   return axios.get('/api/events/', {
-  //     params: {
-  //       latitude: userLocation.latitude,
-  //       longitude: userLocation.longitude,
-  //     }
-  //   })
-  //     .then((response) => {
-  //       console.log('sad face', userLocation)
-  //       // assign variable to response data - eventData is used to map over data in render
-  //       const events = response.data;
-  //       // update state
-  //       setEvents(events);
-  //     })
-  //     .catch((err) => {
-  //       console.error('Error fetching events from DB', err);
-  //     })
-  // };
-  //
-  // const getUserLoc = () => {
-  //   return new Promise((resolve, reject) => {
-  //     console.log('Starting getUserLoc');
-  //     // if browser supports geolocation webextension
-  //     if (navigator.geolocation) {
-  //       // get user location obj
-  //       navigator.geolocation.getCurrentPosition((position) => {
-  //           // get access to lat and long values from GeoLocationCoordinates obj
-  //           const { latitude, longitude } = position.coords;
-  //           console.log('Location accessed: ', {latitude, longitude})
-  //           // set user location state
-  //           setUserLocation({ latitude, longitude });
-  //           // resolve promise
-  //           resolve({ latitude, longitude });
-  //         },
-  //         // error case
-  //         (error) => {
-  //           console.error('Failed to get user location');
-  //           reject(error);
-  //         }
-  //       );
-  //     } else {
-  //       console.error('Geolocation not supported by this browser');
-  //       reject(error);
-  //     }
-  //   });
-  // };
-  //
-  //
-  // const fetchEventsByLoc = () => {
-  //   // check if we have the user's location
-  //   if (!userLocation) {
-  //     // if not, request user to grant access
-  //     getUserLoc()
-  //       .then(() => {
-  //         fetchEvents()
-  //       })
-  //       .catch((err) => {
-  //         console.error('Error getting user location and fetching events', err);
-  //       })
-  //   } else {
-  //     // if we already have the user's location
-  //     fetchEvents()
-  //       .catch((err) => {
-  //         console.error('Error fetching events by location', err);
-  //       })
-  //   };
-  // };
+    return axios.get('/api/events/', {
+      params: {
+        userLocation: `${userLocation.latitude}, ${userLocation.longitude}`
+      }
+    })
+      .then((response) => {
+        // console.log('sad face', userLocation)
+        // assign variable to response data - eventData is used to map over data in render
+        const events = response.data;
+        // update state
+        setEvents(events);
+      })
+      .catch((err) => {
+        console.error('Error fetching events from DB', err);
+      })
+  };
+
+
+
+
+  const getUserLoc = () => {
+    return new Promise((resolve, reject) => {
+      console.log('Starting getUserLoc');
+      // if browser supports geolocation webextension
+      if (navigator.geolocation) {
+        // get user location obj
+        navigator.geolocation.getCurrentPosition((position) => {
+            // get access to lat and long values from GeoLocationCoordinates obj
+            const { latitude, longitude } = position.coords;
+            // console.log('Location accessed: ', {latitude, longitude})
+            // set user location state
+            setUserLocation({ latitude, longitude });
+            // resolve promise
+            resolve({ latitude, longitude });
+          },
+          // error case
+          (error) => {
+            console.error('Failed to get user location');
+            reject(error);
+          }
+        );
+      } else {
+        console.error('Geolocation not supported by this browser');
+        reject();
+      }
+    });
+  };
+
+
+  const fetchEventsByLoc = () => {
+    // check if we have the user's location
+    if (!userLocation) {
+      // if not, request user to grant access
+      getUserLoc()
+        .then((location) => {
+          axios.get('/api/geolocate/location', {
+            params: {
+              latlng: `${location.latitude},${location.longitude}`
+            }
+          })
+            .then((city) => {
+              return fetchEvents(city.data);
+            })
+            .catch((err) => {
+              console.error('Error reverse geocoding location in fetchEventsByLoc'. err);
+            })
+        })
+        .catch((err) => {
+          console.error('Error getting user location and fetching events', err);
+        })
+    } else {
+      // if we already have the user's location
+      fetchEvents()
+        .catch((err) => {
+          console.error('Error fetching events by location', err);
+        })
+    };
+  };
 
 
   useEffect(() => {
+    getUserLoc();
     fetchEventsByLoc();
   }, [])
 
