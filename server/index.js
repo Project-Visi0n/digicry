@@ -109,6 +109,11 @@ app.use("/api/journal", journalRoutes);
 // Events Route
 app.use("/api/events", eventRoutes);
 
+// Reverse Geolocation w/ Google Maps API
+const geoLocation = require('./routes/event.js');
+app.use('/api/geolocate', geoLocation);
+
+
 // Log in with google route
 app.get(
   "/auth/google",
@@ -150,6 +155,8 @@ app.get(
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
     res.redirect("http://localhost:8080/");
+    // only use ngrok for local HTTPS testing
+    // res.redirect('https://3686-72-204-159-97.ngrok-free.app/')
   }
 );
 
@@ -163,6 +170,9 @@ app.get("/logout", function (req, res) {
     await req.session.destroy();
     await req.sessionStore.clear();
     res.redirect("http://localhost:8080/");
+    // only use ngrok for local HTTPS testing
+    // res.redirect('https://3686-72-204-159-97.ngrok-free.app/')
+
   });
 });
 
