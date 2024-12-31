@@ -93,9 +93,15 @@ module.exports = {
 
       {
         context: ["/api"],
-        target: "http://localhost:5001",
+        target: "http://127.0.0.1:5001",
         secure: false,
         changeOrigin: true,
+      },
+      {
+        context: ["/authorization"],
+        target: "http://localhost:5000",
+        secure: false,
+        pathRewrite: { "^/authorization": "" },
       },
     ],
   },

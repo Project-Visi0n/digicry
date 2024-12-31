@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 function Login({ validSession, setValidSession, setUser }) {
   const [login, setLogin] = useState(validSession);
-  const [href, setHref] = useState(`http://localhost:5000/auth/google`);
+  const [href, setHref] = useState(`authorization/auth/google`);
   const [inOut, setInOut] = useState(`in`);
 
   // set component for login/out based on validSession bool.
@@ -14,11 +14,11 @@ function Login({ validSession, setValidSession, setUser }) {
     if (validSession) {
       setLogin(true);
       setInOut("out");
-      setHref("http://127.0.0.1:5000/logout");
+      setHref("authorization/logout");
     } else {
       setLogin(false);
       setInOut("in or Sign Up");
-      setHref("http://127.0.0.1:5000/auth/google");
+      setHref("authorization/auth/google");
     }
   }, [validSession]);
 
@@ -26,13 +26,13 @@ function Login({ validSession, setValidSession, setUser }) {
   const handleLogout = () => {
     if (login) {
       axios
-        .post("http://127.0.0.1:5000/logout")
+        .post("authorization/logout")
         .then((success) => {
           setLogin(false);
           setValidSession(false);
           setUser(null);
           setInOut("in or Sign Up");
-          setHref("http://127.0.0.1:5000/auth/google");
+          setHref("authorization/auth/google");
           console.log("You logged out!", success);
         })
         .catch((error) => {

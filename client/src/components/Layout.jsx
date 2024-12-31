@@ -54,7 +54,11 @@ function Layout({ children }) {
                   Events
                 </NavLink>
 
-                <NavLink to="http://127.0.0.1:5000/logout" onClick={logout} className="nav-link">
+                <NavLink
+                  to="authorization/logout"
+                  onClick={logout}
+                  className="nav-link"
+                >
                   Logout
                 </NavLink>
               </>
@@ -77,17 +81,3 @@ Layout.propTypes = {
 };
 
 export default Layout;
-
-/*
-  const logout = useCallback(
-    axios
-      .get("http://127.0.0.1:5000/logout")
-      .then(() => {
-        console.log("you logged out");
-      })
-      .catch((err) => {
-        console.error("error logging out");
-      }),
-      []
-  );
-*/

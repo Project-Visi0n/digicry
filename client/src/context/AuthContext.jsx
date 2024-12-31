@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
   const [validSession, setValidSession] = useState(false);
 
 
-  //Logout
+  // Logout
   const logout = () => {
     setValidSession(false);
     setUser(null);
@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
     const checkSession = async () => {
       try {
         const { data } = await axios.get(
-          "http://127.0.0.1:5000/check-session/"
+          "authorization/check-session/"
         );
         if (data && data[0]) {
           // data[0] contains the User model from MongoDB
