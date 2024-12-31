@@ -55,7 +55,7 @@ function Layout({ children }) {
                 </NavLink>
 
                 <NavLink
-                  to="authorization/logout"
+                  to="/authorization/logout"
                   onClick={logout}
                   className="nav-link"
                 >
