@@ -109,6 +109,11 @@ app.use("/api/journal", journalRoutes);
 // Events Route
 app.use("/api/events", eventRoutes);
 
+// Reverse Geolocation w/ Google Maps API
+const geoLocation = require('./routes/event.js');
+app.use('/api/geolocate', geoLocation);
+
+
 // Log in with google route
 app.get(
   "/auth/google",
