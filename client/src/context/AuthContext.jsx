@@ -23,6 +23,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setValidSession(false);
     setUser(null);
+    axios.get("/authorization/logout")
   };
 
   // Function to update user model
@@ -47,7 +48,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data } = await axios.get("/authorization/check-session/");
+        const { data } = await axios.get("authorization/check-session/");
         if (data && data[0]) {
           // data[0] contains the User model from MongoDB
           setUser(data[0]);
