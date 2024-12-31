@@ -10,10 +10,12 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 // Create new journal entry
 router.post("/", (req, res) => {
+  console.log("[DEBUG] Incoming POST request:", req.body);
   const { userId, title, content, mood } = req.body;
 
   // Validate required fields
   if (!userId || !isValidObjectId(userId)) {
+    console.log("[DEBUG] Invalid userId:", userId);
     return res.sendStatus(400);
   }
 
@@ -26,6 +28,7 @@ router.post("/", (req, res) => {
   }
 
   if (!mood || !["😊", "😐", "😢", "😡", "😴"].includes(mood)) {
+    console.log("[DEBUG] Missing fields:", { title, content, mood });
     return res.sendStatus(400);
   }
 
@@ -47,6 +50,7 @@ router.post("/", (req, res) => {
       return newEntry.save();
     })
     .then((savedEntry) => {
+      console.log("[DEBUG] Entry saved:", savedEntry);
       res.status(201).send(savedEntry);
     })
     .catch((err) => {

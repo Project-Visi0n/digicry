@@ -34,6 +34,7 @@ function JournalEntryForm() {
         const response = await axios.get(`/api/journal/${id}`);
         const entry = response.data;
         setFormData({
+          userId: entry.userId || "",
           title: entry.title || "",
           content: entry.content || "",
           mood: entry.mood || "😊",
@@ -59,19 +60,22 @@ function JournalEntryForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log("[DEBUG] Submitting form data:", formData);
+
     try {
       setIsLoading(true);
-      setError("");
-
       if (id) {
-        await axios.put(`/api/journal/${id}`, formData);
+        await axios.put(`/api/journal/${id}`, formData, { withCredentials: true });
       } else {
-        await axios.post("/api/journal", formData);
+        console.log("Data being sent to backend:", formData);
+        await axios.post("/api/journal", formData, { withCredentials: true });
       }
-
       navigate("/journal");
     } catch (err) {
-      console.error("Error saving entry:", err);
+      console.error(
+        "Error saving entry:",
+        error.toJSON ? error.toJSON() : error,
+      );
       setError("Failed to save journal entry");
     } finally {
       setIsLoading(false);
