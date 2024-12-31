@@ -94,7 +94,7 @@ module.exports = {
 
       {
         context: ["/authorization"],
-        target: "http://127.0.0.1:5000",
+        target: BASE_URL,
         secure: false,
         changeOrigin: true,
         pathRewrite: { "^/authorization": "" },
