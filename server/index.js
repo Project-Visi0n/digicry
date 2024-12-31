@@ -6,6 +6,8 @@ const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors");
 const axios = require("axios");
+const cookieParser = require('cookie-parser');
+
 dotenv.config();
 
 // Import database connection and models
@@ -46,18 +48,19 @@ app.use(express.static(path.join(__dirname, "../dist")));
 // 'next' or 'done' once it is finished. The function automatically receives 2 tokens and
 // a profile.
 
-// this sets it up so that each session gets a cookie with a secret key
+// This sets it up so that each session gets a cookie with a secret key
 app.use(
   session({
-    // creates a new 'session' on requests
+    // Creates a new 'session' on requests
     secret: "your-secret-key",
     resave: true,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 }, // creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
+    cookie: { maxAge: 1000 * 60 * 60 }, // Creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
   })
 );
 
-// set up passport
+// Set up passport
+app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -76,7 +79,7 @@ passport.use(
   )
 );
 
-// save user info session as a cookie
+// Save user info session as a cookie
 passport.serializeUser((user, done) => {
   done(null, user);
 });
@@ -119,6 +122,7 @@ app.get(
 // If there is a session on the request, find or create the user's corresponding model. 
 
 app.get("/check-session", (req, res) => {
+  console.log('checking for existing sessions')
   const key = Object.keys(req.sessionStore.sessions);
   const reqSessions = JSON.parse(req.sessionStore.sessions[key[0]]);
   const {
@@ -149,12 +153,14 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
+    console.log('received')
     res.redirect("http://localhost:8080/");
   }
 );
 
 // logout the user
 app.get("/logout", function (req, res) {
+  console.log('logout received')
   req.logout(async function (err) {
     if (err) {
       console.error(err, "Error in request logout in server");
@@ -162,10 +168,9 @@ app.get("/logout", function (req, res) {
     }
     await req.session.destroy();
     await req.sessionStore.clear();
-    res.redirect("http://127.0.0.1:8080/");
+    res.redirect("http://localhost:8080/");
   });
 });
-
 
 // Start Sever
 app.listen(PORT, "0.0.0.0", () => {

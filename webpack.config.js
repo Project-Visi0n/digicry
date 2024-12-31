@@ -92,17 +92,17 @@ module.exports = {
       },
 
       {
-        context: ["/api"],
-        target: "http://127.0.0.1:5001",
-        secure: false,
-        changeOrigin: true,
-      },
-      {
         context: ["/authorization"],
         target: "http://127.0.0.1:5000",
         secure: false,
         changeOrigin: true,
         pathRewrite: { "^/authorization": "" },
+      },
+      {
+        context: ["/api"],
+        target: "http://127.0.0.1:5001",
+        secure: false,
+        changeOrigin: true,
       },
     ],
   },
