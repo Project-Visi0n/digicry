@@ -8,6 +8,7 @@ const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackBar = require("webpackbar");
+const { BASE_URL } = require("./config/config");
 
 // init path for src directory and dist directory
 const SRC_DIR = path.resolve(__dirname, "client/src");
@@ -93,7 +94,7 @@ module.exports = {
 
       {
         context: ["/api"],
-        target: "http://localhost:5000", // CHANGE THIS AS NEEDED AND RESTART SERVER
+        target: BASE_URL, // CHANGE THIS AS NEEDED AND RESTART SERVER
         secure: false,
         changeOrigin: true,
       },

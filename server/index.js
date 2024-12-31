@@ -140,6 +140,11 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../dist", "index.html"));
 });
 
+// Proxy Test Route
+app.get("/api/test", (req, res) => {
+  res.json({ message: "Proxy is working!" });
+});
+
 // Journal Route
 app.use("/api/journal", journalRoutes);
 
