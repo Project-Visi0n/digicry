@@ -17,7 +17,7 @@ const { User } = require("./models");
 const journalRoutes = require("./routes/journal");
 const eventRoutes = require("./routes/event");
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 connectDB();
