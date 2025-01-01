@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setValidSession(false);
     setUser(null);
-    axios.get("/authorization/logout")
+    axios.get("/logout")
     .then(() => {
       console.log('successful logout')
     })
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data } = await axios.get("authorization/check-session/");
+        const { data } = await axios.get("/check-session/");
         if (data && data[0]) {
           // data[0] contains the User model from MongoDB
           setUser(data[0]);
