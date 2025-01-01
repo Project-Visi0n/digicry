@@ -7,6 +7,7 @@ import JournalEntry from "./pages/JournalEntry";
 import JournalEntryForm from "./pages/JournalEntryForm";
 import Events from "./pages/Events";
 import ProtectedRoute from "./ProtectedRoute";
+import Forums from "./pages/Forums";
 
 function App() {
   return (
@@ -57,7 +58,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="forums"
+          element={
+            <ProtectedRoute>
+              <Forums />
+            </ProtectedRoute>
+          }
+        />
         {/* Fallback route for 404 */}
         <Route
           path="*"
