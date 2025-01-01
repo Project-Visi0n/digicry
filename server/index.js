@@ -1,6 +1,6 @@
 const express = require("express");
-const https = require('https');
-const fs = require('fs');
+const https = require("https");
+const fs = require("fs");
 const passport = require("passport");
 const session = require("express-session");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
@@ -8,7 +8,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors");
 const axios = require("axios");
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 
 dotenv.config();
 
@@ -30,12 +30,12 @@ connectDB();
 const app = express();
 
 // Start server
-if (process.env.DEPLOYMENT === 'true') {
+if (process.env.DEPLOYMENT === "true") {
   // HTTPS / SSL CONFIG
   const options = {
-    cert: fs.readFileSync('/etc/ssl/certs/slayer.events/fullchain1.pem'),
-    key: fs.readFileSync('/etc/ssl/certs/slayer.events/privkey1.pem')
-  }
+    cert: fs.readFileSync("/etc/ssl/certs/slayer.events/fullchain1.pem"),
+    key: fs.readFileSync("/etc/ssl/certs/slayer.events/privkey1.pem"),
+  };
   https.createServer(options, app).listen(443);
 } else {
   // Start Local Server
@@ -54,7 +54,7 @@ app.use(
   cors({
     origin: `http://localhost:8080`,
     credentials: true,
-  })
+  }),
 );
 
 // Serve static files from the dist directory
@@ -74,7 +74,7 @@ app.use(
     resave: true,
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 }, // Creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
-  })
+  }),
 );
 
 // Set up passport
@@ -93,8 +93,8 @@ passport.use(
     },
     async (req, accessToken, refreshToken, profile, done) => {
       return done(null, profile);
-    }
-  )
+    },
+  ),
 );
 
 // Save user info session as a cookie
@@ -137,11 +137,10 @@ app.get(
   passport.authenticate("google", { scope: ["profile"] }),
 );
 
-
-// If there is a session on the request, find or create the user's corresponding model. 
+// If there is a session on the request, find or create the user's corresponding model.
 
 app.get("/check-session", (req, res) => {
-  console.log('checking for existing sessions')
+  console.log("checking for existing sessions");
   const key = Object.keys(req.sessionStore.sessions);
   const reqSessions = JSON.parse(req.sessionStore.sessions[key[0]]);
   const {
@@ -172,14 +171,14 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    console.log('received')
+    console.log("received");
     res.redirect(process.env.HOME_URL);
-  }
+  },
 );
 
 // logout the user
 app.get("/logout", function (req, res) {
-  console.log('logout received')
+  console.log("logout received");
   req.logout(async function (err) {
     if (err) {
       console.error(err, "Error in request logout in server");
@@ -190,5 +189,3 @@ app.get("/logout", function (req, res) {
     res.redirect(process.env.HOME_URL);
   });
 });
-
-

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Box,
   Container,
@@ -10,12 +10,15 @@ import {
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../../context/AuthContext";
 
 function JournalEntryForm() {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [formData, setFormData] = useState({
+    userId: user && user._id ? user._id : "",
     title: "",
     content: "",
     mood: "😊",
@@ -52,6 +55,7 @@ function JournalEntryForm() {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    // Set formData by returning a new object with all previous fields plus the updated field
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -65,17 +69,30 @@ function JournalEntryForm() {
     try {
       setIsLoading(true);
       if (id) {
-        await axios.put(`/api/journal/${id}`, formData, { withCredentials: true });
+        // If we have an id, we're updating
+        await axios
+          .put(`/api/journal/${id}`, formData, {
+            withCredentials: true,
+          })
+          .catch((err) => {
+            console.log("[DEBUG] Error updating entry:", err);
+            setError("Failed to update journal entry");
+          });
       } else {
-        console.log("Data being sent to backend:", formData);
-        await axios.post("/api/journal", formData, { withCredentials: true });
+        // Otherwise, we're creating a new entry
+        await axios
+          .post("/api/journal", formData, { withCredentials: true })
+          .then((response) => {
+            console.log("[DEBUG] Successfully created entry:", response.data);
+          })
+          .catch((err) => {
+            console.log("[DEBUG] Error creating entry:", err);
+            setError("Failed to create journal entry");
+          });
       }
       navigate("/journal");
     } catch (err) {
-      console.error(
-        "Error saving entry:",
-        error.toJSON ? error.toJSON() : error,
-      );
+      console.error("Error saving entry:", err.toJSON ? err.toJSON() : err);
       setError("Failed to save journal entry");
     } finally {
       setIsLoading(false);
