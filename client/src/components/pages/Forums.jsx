@@ -4,6 +4,7 @@ import Goals from "./Goals.jsx";
 
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
+  const [selectedGoal, setSelectedGoal] = useState('?')
   const [goalOptions, setGoalOptions] = useState([
     "Physical Health",
     "Finances",
@@ -16,17 +17,31 @@ function Forums() {
 
   const handleClick = ({ target: { className } }) => {
     console.log("clicked ", className);
+    setSelectedGoal(className);
     const removeSpaces = className.split(" ").join("");
     axios
-      .get("/api/forums", { params: { forumName: removeSpaces }})
+      .get("/api/forums", { params: { forumName: removeSpaces } })
       .then((posts) => {
-        console.log(posts)
+        console.log(posts);
         setGoalPosts(posts);
       })
       .catch((error) => {
-        console.error(error, `error getting ${removeSpaces} forums from server`);
+        console.error(
+          error,
+          `error getting ${removeSpaces} forums from server`
+        );
       });
   };
+
+  const handleSubmit = (e) => {
+    axios.post("api/forums", { data: e })
+    .then((data) => {
+      console.log(data)
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+  }
 
   return (
     <div>
@@ -51,6 +66,13 @@ function Forums() {
           </div>
         );
       })}
+      <form>
+        <label htmlFor="msg">Say Something Positive!</label>
+        <br />
+        <input type="text" id="msg" name="msg" />
+        <br />
+        <button type="button" onClick={handleSubmit}> Submit Post To {selectedGoal} </button>
+      </form>
     </div>
   );
 }
