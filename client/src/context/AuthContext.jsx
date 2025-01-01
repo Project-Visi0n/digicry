@@ -23,13 +23,14 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setValidSession(false);
     setUser(null);
-    axios.get(`${process.env.AUTH_PREFIX}/logout`) // /authorization/logout here when in development
-    .then(() => {
-      console.log('successful logout')
-    })
-    .catch((error) => {
-      console.error('failed logout ', error)
-    })
+    axios
+      .get(`${process.env.AUTH_PREFIX}/logout`) // /authorization/logout here when in development
+      .then(() => {
+        console.log("successful logout");
+      })
+      .catch((error) => {
+        console.error("failed logout ", error);
+      });
   };
 
   // Function to update user model
@@ -40,21 +41,23 @@ export function AuthProvider({ children }) {
       try {
         const { data } = await axios.put(
           `${process.env.SERVER_URL}/api/users/${user.oAuthId}`,
-          updates
+          updates,
         );
         setUser(data);
       } catch (err) {
         console.error("Failed to update user:", err);
       }
     },
-    [user]
+    [user],
   );
 
   // Check session and get user model on mount
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data } = await axios.get(`${process.env.AUTH_PREFIX}/check-session/`); // /authorization/check-session/ here when in development
+        const { data } = await axios.get(
+          `${process.env.AUTH_PREFIX}/check-session/`,
+        ); // /authorization/check-session/ here when in development
         if (data && data[0]) {
           // data[0] contains the User model from MongoDB
           setUser(data[0]);
@@ -82,7 +85,7 @@ export function AuthProvider({ children }) {
       setValidSession,
       updateUserModel,
     }),
-    [user, loading, validSession, updateUserModel]
+    [user, loading, validSession, updateUserModel],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
