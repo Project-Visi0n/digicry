@@ -29,17 +29,20 @@ connectDB();
 // Create an instance of Express
 const app = express();
 
-
-
-// HTTPS / SSL CONFIG
-// vvvvvvvvvvv COMMENT THIS OUT FOR DEVELOPMENT
-const options = {
-  cert: fs.readFileSync('/etc/ssl/certs/slayer.events/fullchain1.pem'),
-  key: fs.readFileSync('/etc/ssl/certs/slayer.events/privkey1.pem')
+// Start server
+if (process.env.DEPLOYMENT === 'true') {
+  // HTTPS / SSL CONFIG
+  const options = {
+    cert: fs.readFileSync('/etc/ssl/certs/slayer.events/fullchain1.pem'),
+    key: fs.readFileSync('/etc/ssl/certs/slayer.events/privkey1.pem')
+  }
+  https.createServer(options, app).listen(443);
+} else {
+  // Start Local Server
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Listening on port: ${PORT}`);
+  });
 }
-https.createServer(options, app).listen(443);
-
-// ^^^^^^^^^^^ COMMENT THIS OUT FOR DEVELOPMENT
 
 // Middleware
 
@@ -170,7 +173,7 @@ app.get(
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
     console.log('received')
-    res.redirect("http://localhost:8080/");
+    res.redirect(process.env.HOME_URL);
   }
 );
 
@@ -184,11 +187,8 @@ app.get("/logout", function (req, res) {
     }
     await req.session.destroy();
     await req.sessionStore.clear();
-    res.redirect("http://localhost:8080/");
+    res.redirect(process.env.HOME_URL);
   });
 });
 
-// Start Sever
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Listening on port: ${PORT}`);
-});
+
