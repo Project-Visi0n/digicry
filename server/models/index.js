@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 // Barrel file to export all models
 const User = require("./User");
 const Journal = require("./Journal");
