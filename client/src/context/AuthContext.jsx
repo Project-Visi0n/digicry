@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setValidSession(false);
     setUser(null);
-    axios.get("/logout")
+    axios.get("/logout") // /authorization/logout here when in development
     .then(() => {
       console.log('successful logout')
     })
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data } = await axios.get("/check-session/");
+        const { data } = await axios.get("/check-session/"); // /authorization/check-session/ here when in development
         if (data && data[0]) {
           // data[0] contains the User model from MongoDB
           setUser(data[0]);

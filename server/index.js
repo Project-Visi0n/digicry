@@ -30,13 +30,16 @@ connectDB();
 const app = express();
 
 
+
 // HTTPS / SSL CONFIG
+// vvvvvvvvvvv COMMENT THIS OUT FOR DEVELOPMENT
 const options = {
   cert: fs.readFileSync('/etc/ssl/certs/slayer.events/fullchain1.pem'),
   key: fs.readFileSync('/etc/ssl/certs/slayer.events/privkey1.pem')
 }
 https.createServer(options, app).listen(443);
 
+// ^^^^^^^^^^^ COMMENT THIS OUT FOR DEVELOPMENT
 
 // Middleware
 
