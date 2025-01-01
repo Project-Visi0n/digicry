@@ -19,12 +19,18 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true); // Indicates if auth state is being determined
   const [validSession, setValidSession] = useState(false);
 
-
-  //Logout
+  // Logout
   const logout = () => {
     setValidSession(false);
     setUser(null);
-  }
+    axios.get("/authorization/logout")
+    .then(() => {
+      console.log('successful logout')
+    })
+    .catch((error) => {
+      console.error('failed logout ', error)
+    })
+  };
 
   // Function to update user model
   const updateUserModel = useCallback(
@@ -48,9 +54,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data } = await axios.get(
-          "http://127.0.0.1:5000/check-session/"
-        );
+        const { data } = await axios.get("authorization/check-session/");
         if (data && data[0]) {
           // data[0] contains the User model from MongoDB
           setUser(data[0]);
@@ -62,7 +66,7 @@ export function AuthProvider({ children }) {
         setValidSession(false);
       } finally {
         setLoading(false);
-      } 
+      }
     };
 
     checkSession();

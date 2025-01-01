@@ -93,6 +93,13 @@ module.exports = {
       },
 
       {
+        context: ["/authorization"],
+        target: BASE_URL,
+        secure: false,
+        changeOrigin: true,
+        pathRewrite: { "^/authorization": "" },
+      },
+      {
         context: ["/api"],
         target: BASE_URL, // CHANGE THIS AS NEEDED AND RESTART SERVER
         secure: false,

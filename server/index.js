@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const cors = require("cors");
 const axios = require("axios");
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 
@@ -30,17 +31,12 @@ const app = express();
 // Parse JSON bodies
 app.use(express.json());
 
-app.use((req, res, next) => {
-  console.log("[DEBUG] Incoming request:", req.method, req.url, req.body);
-  next();
-});
-
 // CORS configuration
 app.use(
   cors({
-    origin: "http://localhost:8080", // Your frontend URL
-    credentials: true, // Allow cookies to be sent
-  }),
+    origin: `http://localhost:8080`,
+    credentials: true,
+  })
 );
 
 // Serve static files from the dist directory
@@ -52,21 +48,19 @@ app.use(express.static(path.join(__dirname, "../dist")));
 // 'next' or 'done' once it is finished. The function automatically receives 2 tokens and
 // a profile.
 
-// this sets it up so that each session gets a cookie with a secret key
+// This sets it up so that each session gets a cookie with a secret key
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "default_secret",
+    // Creates a new 'session' on requests
+    secret: "your-secret-key",
     resave: true,
-    saveUninitialized: false, // Only save sessions when they have data
-    cookie: {
-      httpOnly: true,
-      secure: false, // Set `true` if using HTTPS
-      maxAge: 60 * 60 * 1000, // 1 hour
-    },
-  }),
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 }, // Creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
+  })
 );
 
-// set up passport
+// Set up passport
+app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -74,52 +68,24 @@ app.use(passport.session());
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.CALLBACK_URL,
+      clientID: `${process.env.GOOGLE_CLIENT_ID}`,
+      clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+      callbackURL: `${process.env.CALLBACK_URL}`,
+      passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
-      try {
-        console.log("[DEBUG] Google Profile:", profile);
-
-        // Check if the user exists in the database
-        let user = await User.findOne({ oAuthId: profile.id });
-
-        // If user doesn't exist, create a new one
-        if (!user) {
-          user = await User.create({
-            username: profile.displayName,
-            oAuthId: profile.id,
-          });
-        }
-
-        // Pass the user to Passport
-        return done(null, user);
-      } catch (err) {
-        console.error("[DEBUG] Google Auth Error:", err);
-        return done(err, null);
-      }
-    },
-  ),
+      return done(null, profile);
+    }
+  )
 );
 
-// save user info session as a cookie
+// Save user info session as a cookie
 passport.serializeUser((user, done) => {
-  console.log("[DEBUG] Serialize User:", user);
-  done(null, user._id);
+  done(null, user);
 });
 
-passport.deserializeUser((id, done) => {
-  console.log("[DEBUG] Deserialize User ID:", id);
-  User.findById(id)
-    .then((user) => {
-      console.log("[DEBUG] User found during deserialization:", user);
-      done(null, user);
-    })
-    .catch((err) => {
-      console.error("[DEBUG] Error in deserialization:", err);
-      done(err, null);
-    });
+passport.deserializeUser((user, done) => {
+  done(null, user);
 });
 
 // Quotes endpoint
@@ -140,21 +106,11 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../dist", "index.html"));
 });
 
-// Proxy Test Route
-app.get("/api/test", (req, res) => {
-  res.json({ message: "Proxy is working!" });
-});
-
 // Journal Route
 app.use("/api/journal", journalRoutes);
 
 // Events Route
 app.use("/api/events", eventRoutes);
-
-// Reverse Geolocation w/ Google Maps API
-const geoLocation = require('./routes/event.js');
-app.use('/api/geolocate', geoLocation);
-
 
 // Log in with google route
 app.get(
@@ -162,27 +118,33 @@ app.get(
   passport.authenticate("google", { scope: ["profile"] }),
 );
 
-// If there is a session on the request, find or create the user's corresponding model.
 
-// Check session route
+// If there is a session on the request, find or create the user's corresponding model. 
+
 app.get("/check-session", (req, res) => {
-  console.log("[DEBUG] Session Data:", req.session);
-  console.log("[DEBUG] User from Passport:", req.user);
+  console.log('checking for existing sessions')
+  const key = Object.keys(req.sessionStore.sessions);
+  const reqSessions = JSON.parse(req.sessionStore.sessions[key[0]]);
+  const {
+    passport: { user: googleUser },
+  } = reqSessions;
 
-  if (!req.user) {
-    return res.status(401).send({ error: "No active session found" });
-  }
-
-  return User.findById(req.user._id)
+  User.find({ oAuthId: googleUser.id })
     .then((user) => {
-      if (!user) {
-        return res.status(404).json({ error: "User not found in database" });
+      if (user.length === 0) {
+        User.create({
+          username: googleUser.displayName,
+          name: googleUser.displayName,
+          location: "unknown",
+          oAuthId: googleUser.id,
+        });
+      } else {
+        res.status(200).send(user);
       }
-      return res.status(200).json(user);
     })
     .catch((error) => {
-      console.error("[CHECK-SESSION] Error:", error.message);
-      return res.sendStatus(500);
+      console.error(error, "Check-Session Error, User Not Found");
+      res.sendStatus(500);
     });
 });
 
@@ -191,27 +153,22 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    // On success, redirect to the client
-    console.log("[DEBUG] Successful Login, User:", req.user);
+    console.log('received')
     res.redirect("http://localhost:8080/");
-    // only use ngrok for local HTTPS testing
-    // res.redirect('https://3686-72-204-159-97.ngrok-free.app/')
   }
 );
 
 // logout the user
 app.get("/logout", function (req, res) {
+  console.log('logout received')
   req.logout(async function (err) {
     if (err) {
       console.error(err, "Error in request logout in server");
-      return res.sendStatus(500);
+      res.send(500);
     }
     await req.session.destroy();
     await req.sessionStore.clear();
     res.redirect("http://localhost:8080/");
-    // only use ngrok for local HTTPS testing
-    // res.redirect('https://3686-72-204-159-97.ngrok-free.app/')
-
   });
 });
 
