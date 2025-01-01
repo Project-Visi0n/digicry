@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setValidSession(false);
     setUser(null);
-    axios.get(`${process.env.REACT_APP_AUTH_PREFIX}/logout`) // /authorization/logout here when in development
+    axios.get(`${process.env.AUTH_PREFIX}/logout`) // /authorization/logout here when in development
     .then(() => {
       console.log('successful logout')
     })
@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
 
       try {
         const { data } = await axios.put(
-          `${process.env.REACT_APP_URL}/api/users/${user.oAuthId}`,
+          `${process.env.SERVER_URL}/api/users/${user.oAuthId}`,
           updates
         );
         setUser(data);
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data } = await axios.get(`${process.env.REACT_APP_AUTH_PREFIX}/check-session/`); // /authorization/check-session/ here when in development
+        const { data } = await axios.get(`${process.env.AUTH_PREFIX}/check-session/`); // /authorization/check-session/ here when in development
         if (data && data[0]) {
           // data[0] contains the User model from MongoDB
           setUser(data[0]);

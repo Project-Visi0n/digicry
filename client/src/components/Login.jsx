@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 function Login({ validSession, setValidSession, setUser }) {
   const [login, setLogin] = useState(validSession);
-  const [href, setHref] = useState(`authorization/auth/google`);
+  const [href, setHref] = useState(`${process.env.AUTH_PREFIX}/auth/google`);
   const [inOut, setInOut] = useState(`in`);
 
   // set component for login/out based on validSession bool.
@@ -14,11 +14,11 @@ function Login({ validSession, setValidSession, setUser }) {
     if (validSession) {
       setLogin(true);
       setInOut("out");
-      setHref(`${process.env.REACT_APP_AUTH_PREFIX}/logout`); // /authorization/logout while in development
+      setHref(`${process.env.AUTH_PREFIX}/logout`); // /authorization/logout while in development
     } else {
       setLogin(false);
       setInOut("in or Sign Up");
-      setHref(`${process.env.REACT_APP_AUTH_PREFIX}/auth/google`); // /authorization/auth/google while in development
+      setHref(`${process.env.AUTH_PREFIX}/auth/google`); // /authorization/auth/google while in development
     }
   }, [validSession]);
 

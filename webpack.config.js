@@ -3,7 +3,7 @@
  * HtmlWebPackPlugin - Simplifies creation of HTML files to serve webpack bundles. This will generate an HTML file that includes all webpack bundles in the body using script tags.  https://webpack.js.org/plugins/html-webpack-plugin/
  * CopyPlugin - copies individual files or entire directories, which already exist, to the build directory. https://www.npmjs.com/package/copy-webpack-plugin
  */
-
+const Dotenv = require('dotenv-webpack');
 const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -73,6 +73,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(SRC_DIR, "index.html"),
     }),
+    new Dotenv(),
   ],
 
   devServer: {
