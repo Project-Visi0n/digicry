@@ -14,11 +14,11 @@ function Login({ validSession, setValidSession, setUser }) {
     if (validSession) {
       setLogin(true);
       setInOut("out");
-      setHref("authorization/logout");
+      setHref("/logout");
     } else {
       setLogin(false);
       setInOut("in or Sign Up");
-      setHref("authorization/auth/google");
+      setHref("/auth/google");
     }
   }, [validSession]);
 
