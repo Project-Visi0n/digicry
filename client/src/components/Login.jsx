@@ -14,11 +14,11 @@ function Login({ validSession, setValidSession, setUser }) {
     if (validSession) {
       setLogin(true);
       setInOut("out");
-      setHref("/logout"); // /authorization/logout while in development
+      setHref(`${process.env.REACT_APP_AUTH_PREFIX}/logout`); // /authorization/logout while in development
     } else {
       setLogin(false);
       setInOut("in or Sign Up");
-      setHref("/auth/google"); // /authorization/auth/google while in development
+      setHref(`${process.env.REACT_APP_AUTH_PREFIX}/auth/google`); // /authorization/auth/google while in development
     }
   }, [validSession]);
 
