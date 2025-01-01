@@ -19,6 +19,7 @@ const { User } = require("./models");
 // Import Routes
 const journalRoutes = require("./routes/journal");
 const eventRoutes = require("./routes/event");
+const geolocationRoutes = require("./routes/event");
 
 const PORT = process.env.PORT || 5000;
 
@@ -122,6 +123,7 @@ app.use("/api/journal", journalRoutes);
 
 // Events Route
 app.use("/api/events", eventRoutes);
+app.use("/api/geolocate", geolocationRoutes);
 
 // Log in with google route
 app.get(
