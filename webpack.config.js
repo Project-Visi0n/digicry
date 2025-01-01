@@ -73,7 +73,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(SRC_DIR, "index.html"),
     }),
-    new Dotenv(),
+    new Dotenv({
+      path: './.env.public',
+      systemvars: false, // don't include all env variables - only ones that are defined/used on the client
+    }),
   ],
 
   devServer: {
