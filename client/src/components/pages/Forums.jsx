@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import Goals from "./Goals.jsx";
 
 function Forums() {
-  const [goalForum, setGoalForum] = useState([]);
+  const [goalPosts, setGoalPosts] = useState([]);
   const [goalOptions, setGoalOptions] = useState([
     "Physical Health",
     "Finances",
@@ -11,10 +12,20 @@ function Forums() {
     "Career",
   ]);
 
-  useEffect(() => {}, [goalForum]);
+  useEffect(() => {}, [goalPosts]);
 
   const handleClick = ({ target: { className } }) => {
     console.log("clicked ", className);
+    const removeSpaces = className.split(" ").join("");
+    axios
+      .get("/api/forums", { params: { forumName: removeSpaces }})
+      .then((posts) => {
+        console.log(posts)
+        setGoalPosts(posts);
+      })
+      .catch((error) => {
+        console.error(error, `error getting ${removeSpaces} forums from server`);
+      });
   };
 
   return (
@@ -31,6 +42,13 @@ function Forums() {
           >
             {goal}
           </button>
+        );
+      })}
+      {goalPosts.map((post) => {
+        return (
+          <div>
+            <h1>{post.message}</h1>
+          </div>
         );
       })}
     </div>

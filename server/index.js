@@ -20,6 +20,7 @@ const { User } = require("./models");
 const journalRoutes = require("./routes/journal");
 const eventRoutes = require("./routes/event");
 const geolocationRoutes = require("./routes/event");
+const forumRoutes = require("./routes/forums");
 
 const PORT = process.env.PORT || 5000;
 
@@ -130,6 +131,9 @@ app.use("/api/journal", journalRoutes);
 // Events Route
 app.use("/api/events", eventRoutes);
 app.use("/api/geolocate", geolocationRoutes);
+
+// Forums Route
+app.use("/api/forums", forumRoutes);
 
 // Log in with google route
 app.get(

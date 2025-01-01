@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
-const postSchema = new Schema(
+const forumsSchema = new Schema(
   {
-    forum: { type: String, required: true },
+    forumName: { type: String, required: true },
     user: String,
     message: String,
     upVote: Number,
@@ -14,7 +14,7 @@ const postSchema = new Schema(
 );
 
 
-const Posts = mongoose.model("Posts", postSchema);
+const Forums = mongoose.model("Forums", forumsSchema);
 
 
-module.exports = Posts;
+module.exports = Forums;
