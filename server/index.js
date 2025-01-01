@@ -1,4 +1,6 @@
 const express = require("express");
+const https = require('https');
+const fs = require('fs');
 const passport = require("passport");
 const session = require("express-session");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
@@ -25,6 +27,15 @@ connectDB();
 
 // Create an instance of Express
 const app = express();
+
+
+// HTTPS / SSL CONFIG
+const options = {
+  cert: fs.readFileSync('/etc/ssl/certs/slayer.events/fullchain1.pem'),
+  key: fs.readFileSync('/etc/ssl/certs/slayer.events/privkey1.pem')
+}
+https.createServer(options, app).listen(443);
+
 
 // Middleware
 
