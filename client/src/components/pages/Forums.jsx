@@ -22,7 +22,13 @@ function Forums() {
       <h1> Join a Discussion on Similar Goals! </h1>
       {goalOptions.map((goal) => {
         return (
-          <button className={goal} type="button" onClick={handleClick} key={goal} goal={goal}>
+          <button
+            className={goal}
+            type="button"
+            onClick={handleClick}
+            key={goal}
+            goal={goal}
+          >
             {goal}
           </button>
         );
