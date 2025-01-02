@@ -80,6 +80,8 @@
 
     "@emotion/styled": "^11.14.0",
 
+    "@google-cloud/language": "^6.5.0",
+
     "@mui/icons-material": "^6.2.1",
 
     "@mui/lab": "^6.0.0-beta.21",
