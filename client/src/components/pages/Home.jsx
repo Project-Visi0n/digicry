@@ -14,35 +14,19 @@ import axios from "axios";
 import AddIcon from "@mui/icons-material/Add";
 import { AuthContext } from "../../context/AuthContext";
 import Login from "../Login";
-// import Events from "./Events";
-
 import RenderEvents from "../RenderEvents";
 
 function Home() {
+  const [recentEntries, setRecentEntries] = useState([]);
+  const [quote, setQuote] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  // For error handling
+  const [error, setError] = useState(null);
+  // const navigate = useNavigate();
+
+  // Access user & session from AuthContext
   const { user, setUser, validSession, setValidSession, loading } =
     useContext(AuthContext);
-  // const [recentEntries, setRecentEntries] = useState([]);
-  const [quote, setQuote] = useState(null);
-  // const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // const navigate = useNavigate();
-  // useEffect(() => {
-  //   console.log("[Home] Fetching recent journal entries...");
-  //   axios
-  //     .get("/api/journal")
-  //     .then((response) => {
-  //       console.log("[Home] /api/journal response:", response.data);
-  //       const data = response.data || [];
-  //       // Slice the first 3 or 5 for recent
-  //       const topThree = data.slice(0, 3);
-  //       setRecentEntries(topThree);
-  //     })
-  //     .catch((err) => {
-  //       console.error("[Home] Error fetching recent entries:", err);
-  //       setError("Failed to load recent entries. Please try again later.");
-  //     });
-  // }, []);
 
   // Function to fetch quote from the API
   const fetchQuote = async () => {
@@ -61,45 +45,23 @@ function Home() {
     fetchQuote();
   }, []);
 
-  // Helper function to render quote content based on that state
-  // const renderQuoteContent = () => {
-  //   if (isLoading) {
-  //     // Display a loading spinner while fetching the quote
-  //     return <CircularProgress />;
-  //   }
-  //   if (error) {
-  //     return (
-  //       <Typography variant="body1" color="error">
-  //         {error}
-  //       </Typography>
-  //     );
-  //   }
-  //   if (quote) {
-  //     // Display the fetched quote and author
-  //     return (
-  //       <Box mt={2}>
-  //         <Typography variant="body1" className="motivational-quote">
-  //           &quot;{quote.quote}&quot;
-  //         </Typography>
-  //         <Typography variant="body2" className="quote-author">
-  //           - {quote.author}
-  //         </Typography>
-  //       </Box>
-  //     );
-  //   }
-  //   // In case quote is null but not loading or error
-  //   return null;
-  // };
-
-  /**
-   ***********************************************************************************************
-   * COMMENT OUT WHEN IN DEVELOPMENT MODE
-   Render based on authentication state
-   if (!loading && user) {
-     return <Navigate to="/journal" replace />;
-   }
-   ***********************************************************************************************
-   */
+  // Fetch recent journal entries
+  useEffect(() => {
+    console.log("[Home] Fetching recent journal entries...");
+    axios
+      .get("/api/journal")
+      .then((response) => {
+        console.log("[Home] /api/journal response:", response.data);
+        const data = response.data || [];
+        // Slice the first 3 or 5 for recent
+        const topThree = data.slice(0, 3);
+        setRecentEntries(topThree);
+      })
+      .catch((err) => {
+        console.error("[Home] Error fetching recent entries:", err);
+        setError("Failed to load recent entries. Please try again later.");
+      });
+  }, []);
 
   // Show loading spinner id auth state is loading
   if (loading) {
@@ -117,6 +79,7 @@ function Home() {
     );
   }
 
+  // If no user is logged in, show login section
   if (!user) {
     return (
       <Box
@@ -132,27 +95,14 @@ function Home() {
           backdropFilter: "blur(10px)",
         }}
       >
-        <Typography
-          variant="h3"
-          className="main-title"
-          sx={
-            {
-              /* ... */
-            }
-          }
-        >
+        <Typography variant="h3" className="main-title">
           Welcome to Digi-Cry
         </Typography>
-        <Typography
-          variant="h6"
-          sx={
-            {
-              /* ... */
-            }
-          }
-        >
+
+        <Typography variant="h6">
           Your personal journal to express and analyze your emotions.
         </Typography>
+
         <Login
           validSession={validSession}
           setValidSession={setValidSession}
@@ -161,24 +111,6 @@ function Home() {
       </Box>
     );
   }
-
-  const getQuoteText = () => {
-    if (!quote) return "";
-    return quote.quote || "";
-  };
-
-  const getQuoteAuthor = () => {
-    if (!quote) return "";
-    return quote.author || "";
-  };
-
-  // Get user display name safely
-  const getUserName = () => {
-    if (user && user.name) {
-      return user.name;
-    }
-    return "Friend";
-  };
 
   // If authenticated, render the main content
   return (
@@ -204,7 +136,7 @@ function Home() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Welcome back, {getUserName()}
+          Welcome back, {user.name || "Friend"}
         </Typography>
 
         {/* Quote Display */}
@@ -214,9 +146,9 @@ function Home() {
           ) : (
             <>
               <Typography variant="h5" sx={{ fontStyle: "italic", mb: 2 }}>
-                &quot;{getQuoteText()}&quot;
+                &quot;{quote.quote}&quot;
               </Typography>
-              <Typography variant="subtitle1">- {getQuoteAuthor()}</Typography>
+              <Typography variant="subtitle1">- {quote.author}</Typography>
             </>
           )}
         </Box>
@@ -257,7 +189,46 @@ function Home() {
               >
                 Add Journal Entry
               </Button>
-              {/* Journal entries list will go here */}
+
+              {/* Journal entries list */}
+              {error && (
+                <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+                  {error}
+                </Typography>
+              )}
+
+              {recentEntries && recentEntries.length > 0 ? (
+                recentEntries.map((entry) => (
+                  <Box
+                    key={entry._id}
+                    sx={{
+                      mt: 2,
+                      p: 2,
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.1)",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ mb: 1 }}>
+                      {entry.title}
+                    </Typography>
+                    <Typography variant="body2">
+                      {entry.content.slice(0, 100)}...
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ display: "block", mt: 1 }}
+                    >
+                      Mood: {entry.mood} | Created:{" "}
+                      {new Date(entry.createdAt).toLocaleString()}
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography sx={{ mt: 2 }} variant="body1">
+                  No recent entries found.
+                </Typography>
+              )}
             </CardContent>
           </Card>
         </Stack>
