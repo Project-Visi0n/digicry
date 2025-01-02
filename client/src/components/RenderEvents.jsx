@@ -22,13 +22,14 @@ import { shadows } from "@mui/system";
  */
 
 
-/*
+
 
 export default function RenderEvents() {
   const [events, setEvents] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
 
 
+  /*
   // use geolocation webextension api to get users lat and long
   // we will take the response and use it as a param for our reverse geocoding to get the user's city
   const getUserLoc = () => {
