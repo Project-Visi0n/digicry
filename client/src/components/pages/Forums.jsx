@@ -4,7 +4,7 @@ import Goals from "./Goals.jsx";
 
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
-  const [selectedGoal, setSelectedGoal] = useState('?')
+  const [selectedGoal, setSelectedGoal] = useState("?");
   const [goalOptions, setGoalOptions] = useState([
     "Physical Health",
     "Finances",
@@ -70,10 +70,11 @@ function Forums() {
         <br />
         <button type="submit"> Submit Post To {selectedGoal} </button>
       </form>
-      { goalPosts.map((post, i) => {
+      {goalPosts.map((post, i) => {
         return (
           <div>
-            <h1 key={i} >{post.message}</h1>
+            <h4 id={post._id}>{post.forumName}</h4>
+            <h5 className={post._id}>{post.message}</h5>
           </div>
         );
       })}

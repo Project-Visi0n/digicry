@@ -7,9 +7,9 @@ const { Forums } = require("../models");
 router.post("/", (req, res) => {
   console.log("reached");
   const { message, selectedGoal } = req.body;
-
+  const noSpacesGoal = selectedGoal.split(" ").join("");
   Forums.create({
-    forumName: selectedGoal,
+    forumName: noSpacesGoal,
     user: "anon",
     message,
     upVote: 0,
@@ -26,12 +26,10 @@ router.post("/", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  console.log("getting posts for ", req.query.forumName);
   const { query } = req;
   Forums.find({ forumName: query.forumName })
     .then((posts) => {
       if (posts.length > 0) {
-        console.log(posts)
         res.status(200).send(posts);
       } else {
         res.status(404);
