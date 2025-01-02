@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Goals from "./Goals.jsx";
+import {
+  Box,
+  Button,
+  Typography,
+  Container,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
 
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
