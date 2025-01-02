@@ -151,18 +151,24 @@ app.get("/check-session", (req, res) => {
     passport: { user: googleUser },
   } = reqSessions;
 
-  User.find({ oAuthId: googleUser.id })
-    .then((user) => {
-      if (user.length === 0) {
-        User.create({
+  User.findOne({ oAuthId: googleUser.id })
+    .then((foundUser) => {
+      if (!foundUser) {
+        return User.create({
           username: googleUser.displayName,
           name: googleUser.displayName,
           location: "unknown",
           oAuthId: googleUser.id,
-        });
-      } else {
-        res.status(200).send(user);
+        })
+          .then((newUser) => {
+            return res.status(200).send([newUser]);
+          })
+          .catch((err) => {
+            console.error("Error creating user:", err);
+            return res.sendStatus(500);
+          });
       }
+      return res.status(200).send([foundUser]);
     })
     .catch((error) => {
       console.error(error, "Check-Session Error, User Not Found");

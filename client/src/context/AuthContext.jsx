@@ -47,6 +47,7 @@ export function AuthProvider({ children }) {
       } catch (err) {
         console.error("Failed to update user:", err);
       }
+      console.log("[DEBUG] AuthContext user after check-session:", user);
     },
     [user],
   );
@@ -59,6 +60,7 @@ export function AuthProvider({ children }) {
           `${process.env.AUTH_PREFIX}/check-session/`,
         ); // /authorization/check-session/ here when in development
         if (data && data[0]) {
+          console.log("[DEBUG] check-session response data:", data);
           // data[0] contains the User model from MongoDB
           setUser(data[0]);
           setValidSession(true);

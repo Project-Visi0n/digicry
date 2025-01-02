@@ -83,6 +83,34 @@ router.get("/", (req, res) => {
     });
 });
 
+// Retrieve a single journal entry
+router.get("/:id", (req, res) => {
+  console.log("[DEBUG] GET single entry, ID:", req.params.id);
+  // Extract the id from req.params
+  const { id } = req.params;
+
+  // Validate id is a valid mongoose ObjectId
+  if (!isValidObjectId(id)) {
+    console.log("[DEBUG] Invalid ObjectId");
+    return res.sendStatus(400);
+  }
+
+  // Use findById to get the entry from the database
+  Journal.findById(id)
+    .then((entry) => {
+      if (!entry) {
+        console.log("[DEBUG] No entry found with that ID");
+        return res.sendStatus(404);
+      }
+      console.log("[DEBUG] Single entry found:", entry);
+      res.send(entry);
+    })
+    .catch((err) => {
+      console.error("[DEBUG] Error fetching single entry:", err.message);
+      res.sendStatus(500);
+    });
+});
+
 // Update an existing journal entry
 router.put("/:id", (req, res) => {
   const { id } = req.params;
