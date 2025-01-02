@@ -33,15 +33,19 @@ function Forums() {
       });
   };
 
-  const handleSubmit = (e) => {
-    axios.post("api/forums", { data: e })
-    .then((data) => {
-      console.log(data)
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-  }
+  const handleSubmit = (msg) => {
+    axios
+      .post("api/forums", {
+        message: msg.get("msg"),
+        selectedGoal,
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <div>
@@ -66,12 +70,12 @@ function Forums() {
           </div>
         );
       })}
-      <form>
-        <label htmlFor="msg">Say Something Positive!</label>
+      <form action={handleSubmit}>
+        <label>Say Something Positive!</label>
         <br />
         <input type="text" id="msg" name="msg" />
         <br />
-        <button type="button" onClick={handleSubmit}> Submit Post To {selectedGoal} </button>
+        <button type="submit"> Submit Post To {selectedGoal} </button>
       </form>
     </div>
   );
