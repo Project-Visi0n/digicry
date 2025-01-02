@@ -22,8 +22,8 @@ function Forums() {
     axios
       .get("/api/forums", { params: { forumName: removeSpaces } })
       .then((posts) => {
-        console.log(posts);
-        setGoalPosts(posts);
+        console.log(posts.data);
+        setGoalPosts(posts.data);
       })
       .catch((error) => {
         console.error(
@@ -63,13 +63,6 @@ function Forums() {
           </button>
         );
       })}
-      {goalPosts.map((post) => {
-        return (
-          <div>
-            <h1>{post.message}</h1>
-          </div>
-        );
-      })}
       <form action={handleSubmit}>
         <label>Say Something Positive!</label>
         <br />
@@ -77,6 +70,13 @@ function Forums() {
         <br />
         <button type="submit"> Submit Post To {selectedGoal} </button>
       </form>
+      { goalPosts.map((post, i) => {
+        return (
+          <div>
+            <h1 key={i} >{post.message}</h1>
+          </div>
+        );
+      })}
     </div>
   );
 }

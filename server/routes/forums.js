@@ -31,6 +31,7 @@ router.get("/", (req, res) => {
   Forums.find({ forumName: query.forumName })
     .then((posts) => {
       if (posts.length > 0) {
+        console.log(posts)
         res.status(200).send(posts);
       } else {
         res.status(404);
