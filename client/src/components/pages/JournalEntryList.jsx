@@ -162,7 +162,13 @@ function JournalEntryList({ searchQuery = "" }) {
   };
 
   return (
-    <Box sx={{ width: "100%", position: "relative" }}>
+    <Box
+      sx={{
+        width: "100%",
+        position: "relative",
+        p: { xs: 2, md: 4 },
+      }}
+    >
       <AnimatePresence>
         {filteredEntries.map((entry, index) => (
           <motion.div
@@ -184,9 +190,9 @@ function JournalEntryList({ searchQuery = "" }) {
                   left: "-25px",
                   top: 0,
                   bottom: 0,
-                  width: "2px",
-                  background: `linear-gradient(180deg, 
-                    ${getEmotionColor(entry.mood)} 0%, 
+                  width: "3px",
+                  background: `linear-gradient(180deg,
+                    ${getEmotionColor(entry.mood)} 0%,
                     rgba(255,255,255,0.1) 100%
                   )`,
                 },
@@ -204,7 +210,8 @@ function JournalEntryList({ searchQuery = "" }) {
                   height: "20px",
                   borderRadius: "50%",
                   background: getEmotionColor(entry.mood),
-                  boxShadow: `0 0 20px ${getEmotionColor(entry.mood)}40`,
+                  boxShadow: `0 0 20px ${getEmotionColor(entry.mood)}80`,
+                  border: "2px solid rgba(255, 255, 255, 0.8)",
                   zIndex: 2,
                 }}
               />
@@ -218,16 +225,36 @@ function JournalEntryList({ searchQuery = "" }) {
               >
                 <Box
                   sx={{
-                    background: "rgba(255, 255, 255, 0.03)",
+                    mb: 3,
+                    background: "rgba(255, 255, 255, 0.05)",
                     backdropFilter: "blur(10px)",
-                    borderRadius: "20px",
-                    overflow: "hidden",
+                    borderRadius: "16px",
                     border: "1px solid rgba(255, 255, 255, 0.1)",
-                    transition: "all 0.3s ease",
+                    overflow: "hidden",
+                    transition: "all 0.3s ease-in-out",
+                    position: "relative",
                     "&:hover": {
-                      background: "rgba(255, 255, 255, 0.05)",
-                      transform: "translateX(10px)",
+                      background: "rgba(255, 255, 255, 0.1)",
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                      "&::before": {
+                        opacity: 1,
+                        transform: "translateX(100%)",
+                      },
                     },
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: -200,
+                      width: "200px",
+                      height: "100%",
+                      background:
+                        "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
+                      transform: "skewX(-15deg)",
+                      transition: "transform 0.8s ease-in-out",
+                      opacity: 0,
+                    },
+                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
                   }}
                 >
                   {/* Header Section */}
@@ -237,9 +264,11 @@ function JournalEntryList({ searchQuery = "" }) {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "flex-start",
+                      position: "relative",
+                      zIndex: 1,
                       borderBottom:
                         expandedId === entry._id
-                          ? "1px solid rgba(255,255,255,0.1)"
+                          ? "1px solid rgba(255,255,255,0.2)"
                           : "none",
                     }}
                   >
@@ -248,10 +277,10 @@ function JournalEntryList({ searchQuery = "" }) {
                         variant="h6"
                         sx={{
                           fontWeight: 600,
-                          background: `linear-gradient(45deg, ${getEmotionColor(entry.mood)}, white)`,
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          mb: 1,
+                          color: "white",
+                          tmb: 2,
+                          fontSize: "1.25rem",
+                          textShadow: "0 2px 4px rgba(0,0,0,0.2)",
                         }}
                       >
                         {entry.title}
@@ -261,12 +290,29 @@ function JournalEntryList({ searchQuery = "" }) {
                         sx={{ display: "flex", alignItems: "center", gap: 2 }}
                       >
                         <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            background: "rgba(255, 255, 255, 0.1)",
+                            padding: "4px 12px",
+                            borderRadius: "12px",
+                            backdropFilter: "blur(5px)",
+                          }}
                         >
                           <AccessTimeIcon
-                            sx={{ fontSize: "0.9rem", opacity: 0.7 }}
+                            sx={{
+                              fontSize: "0.9rem",
+                              color: "rgba(255,255,255,0.9)",
+                            }}
                           />
-                          <Typography variant="caption" sx={{ opacity: 0.7 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "rgba(255,255,255,0.9)",
+                              fontSize: "0.85rem",
+                            }}
+                          >
                             {new Date(entry.createdAt).toLocaleDateString(
                               undefined,
                               {
@@ -277,15 +323,18 @@ function JournalEntryList({ searchQuery = "" }) {
                             )}
                           </Typography>
                         </Box>
-                        <Typography
+                        <Box
                           sx={{
-                            fontSize: "1.5rem",
-                            filter:
-                              "drop-shadow(0 0 5px rgba(255,255,255,0.2))",
+                            background: "rgba(255, 255, 255, 0.1)",
+                            borderRadius: "12px",
+                            padding: "4px 12px",
+                            backdropFilter: "blur(5px)",
                           }}
                         >
-                          {entry.mood}
-                        </Typography>
+                          <Typography sx={{ fontSize: "1.2rem" }}>
+                            {entry.mood}
+                          </Typography>
+                        </Box>
                       </Box>
                     </Box>
 
@@ -296,10 +345,15 @@ function JournalEntryList({ searchQuery = "" }) {
                             e.stopPropagation();
                             handleEdit(entry._id);
                           }}
+                          className="glass-button"
                           sx={{
-                            background: "rgba(255,255,255,0.05)",
+                            background: "rgba(255,255,255,0.1)",
+                            backdropFilter: "blur(5px)",
+                            color: "white",
+                            transition: "all 0.3s ease",
                             "&:hover": {
-                              background: "rgba(255,255,255,0.1)",
+                              background: "rgba(255,255,255,0.2)",
+                              transform: "translateY(-2px)",
                             },
                           }}
                         >
@@ -313,9 +367,13 @@ function JournalEntryList({ searchQuery = "" }) {
                             handleDeleteClick(entry._id);
                           }}
                           sx={{
-                            background: "rgba(255,255,255,0.05)",
+                            background: "rgba(255,255,255,0.1)",
+                            backdropFilter: "blur(5px)",
+                            color: "white",
+                            transition: "all 0.3s ease",
                             "&:hover": {
-                              background: "rgba(255,255,255,0.1)",
+                              background: "rgba(255,255,255,0.2)",
+                              transform: "translateY(-2px)",
                             },
                           }}
                         >
@@ -334,13 +392,27 @@ function JournalEntryList({ searchQuery = "" }) {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <Box sx={{ p: 3, pt: 2 }}>
+                        <Box
+                          sx={{
+                            p: 3,
+                            pt: 0,
+                            position: "relative",
+                            zIndex: 1,
+                          }}
+                        >
                           <Typography
                             variant="body1"
                             sx={{
-                              lineHeight: 1.8,
                               color: "rgba(255,255,255,0.8)",
-                              whiteSpace: "pre-line",
+                              fontSize: "1rem",
+                              lineHeight: 1.6,
+                              maxHeight:
+                                expandedId === entry._id ? "none" : "3.2em",
+                              overflow: "hidden",
+                              display: "-webkit-box",
+                              WebkitLineClamp:
+                                expandedId === entry._id ? "unset" : 2,
+                              WebkitBoxOrient: "vertical",
                             }}
                           >
                             {entry.content}
@@ -352,17 +424,26 @@ function JournalEntryList({ searchQuery = "" }) {
 
                   {/* Expand Button */}
                   <Box
+                    onClick={() =>
+                      setExpandedId(expandedId === entry._id ? null : entry._id)
+                    }
                     sx={{
                       display: "flex",
                       justifyContent: "center",
+                      alignItems: "center",
                       p: 1,
                       cursor: "pointer",
+                      background: "rgba(255,255,255,0.05)",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        background: "rgba(255,255,255,0.1)",
+                      },
                     }}
                   >
                     <motion.div
                       animate={{ rotate: expandedId === entry._id ? 180 : 0 }}
                     >
-                      <ExpandMoreIcon />
+                      <ExpandMoreIcon x={{ color: "white" }} />
                     </motion.div>
                   </Box>
                 </Box>
@@ -383,25 +464,30 @@ function JournalEntryList({ searchQuery = "" }) {
               textAlign: "center",
               py: 8,
               px: 2,
+              background: "rgba(20, 20, 25, 0.95)",
+              borderRadius: "24px",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
             }}
           >
             <Typography
               variant="h5"
               sx={{
                 mb: 3,
-                background: "linear-gradient(45deg, var(--pink), var(--blue))",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
+                color: "white",
                 fontWeight: 600,
+                textShadow: "0 2px 4px rgba(0,0,0,0.3)",
               }}
             >
               Your Journal Awaits
             </Typography>
+
             <Typography
               variant="body1"
               sx={{
-                color: "rgba(255,255,255,0.7)",
+                color: "rgba(255,255,255,0.9)",
                 mb: 4,
+                fontSize: "1.1rem",
               }}
             >
               {searchQuery
@@ -422,7 +508,10 @@ function JournalEntryList({ searchQuery = "" }) {
                 borderRadius: "15px",
                 textTransform: "none",
                 fontSize: "1.1rem",
-                boxShadow: "0 5px 15px rgba(0,0,0,0.2)",
+                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                "&:hover": {
+                  boxShadow: "0 12px 40px rgba(0, 0, 0, 0.4)",
+                },
               }}
             >
               Create Your First Entry
