@@ -9,102 +9,127 @@ import { shadows } from "@mui/system";
 
 // UPCOMING EVENTS FEATURE
 /**
- * fetchEvents() - fetches all events from db
  * getUserLoc - gets user location, returns a promise
+ * fetchEvents() - fetches all events from db
  * fetchEventsByLoc - checks for user location before calling fetchEvents
  */
+
+
+/**
+ * CURRENTLY HAVE THIS COMMENTED OUT TO AVOID HITTING ANY API RATE LIMITS
+ * NOT A HUGE ISSUE - FEEL FREE TO UNCOMMENT AND RUN THE CODE TO SEE HOW IT LOOKS
+ * JUST PLS TRY TO AVOID LOADING THIS EVERY TIME YOU'RE TESTING A FEATURE TO AVOID US HITTING API LIMITS
+ */
+
+
+/*
 
 export default function RenderEvents() {
   const [events, setEvents] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
 
-  const fetchEvents = () => {
-    if (!userLocation) {
-      console.error("Need users location!");
-    }
-    return axios
-      .get("/api/events/", {
-        params: {
-          userLocation: `${userLocation.latitude}, ${userLocation.longitude}`,
+
+  // use geolocation webextension api to get users lat and long
+  // we will take the response and use it as a param for our reverse geocoding to get the user's city
+  const getUserLoc = () => {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        // get users lat and long coords
+        navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude, longitude } = position.coords;
+          // set user location
+          setUserLocation({ latitude, longitude });
+          // resolve promise
+          resolve({ latitude, longitude });
         },
-      })
+          // on error
+          (error) => {
+          console.error(`Couldn't getUserLoc`);
+          reject(error);
+          })
+      } else {
+        // if browser doesn't support geolocation
+        console.error('Geolocation not supported by browser');
+        reject(new Error('Geolocation not supported by browser'));
+      }
+    })
+  }
+
+
+
+  // fetches events from SERP API
+  // city param is the returned value from our reverse geocoding - ex: New Orleans
+  const fetchEvents = (city) => {
+    // if we don't have a city value
+    if (!city) {
+      console.error('Need city name to fetchEvents');
+      return;
+    }
+    // use city param for SERP API call to get events relevent to user's city
+    return axios.get('/api/events/events', {
+      params: {
+        userLocation: city,
+      },
+    })
+      // response is a series of objects each representing a unique event from the API
       .then((response) => {
-        // console.log('sad face', userLocation)
-        // assign variable to response data - eventData is used to map over data in render
         const events = response.data;
         // update state
         setEvents(events);
+        return events;
       })
       .catch((err) => {
-        console.error("Error fetching events from DB", err);
-      });
-  };
+        console.error('Error fetching events', err);
+        throw err;
+      })
+  }
 
-  const getUserLoc = () => {
-    return new Promise((resolve, reject) => {
-      console.log("Starting getUserLoc");
-      // if browser supports geolocation webextension
-      if (navigator.geolocation) {
-        // get user location obj
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            // get access to lat and long values from GeoLocationCoordinates obj
-            const { latitude, longitude } = position.coords;
-            // console.log('Location accessed: ', {latitude, longitude})
-            // set user location state
-            setUserLocation({ latitude, longitude });
-            // resolve promise
-            resolve({ latitude, longitude });
+
+  // MAIN FUNCTION
+  const fetchEventsByLoc = async () => {
+    try {
+      // if we don't have the lat and long values in userLocation state
+      if (!userLocation) {
+        // invoke getUserLoc to get coordinates
+        const location = await getUserLoc();
+        // use coordinates in API call param to reverse geocode
+        const city = await axios.get('/api/geolocate/location', {
+          params: {
+            latlng: `${location.latitude},${location.longitude}`,
           },
-          // error case
-          (error) => {
-            console.error("Failed to get user location");
-            reject(error);
-          }
-        );
-      } else {
-        console.error("Geolocation not supported by this browser");
-        reject();
-      }
-    });
-  };
-
-  const fetchEventsByLoc = () => {
-    // check if we have the user's location
-    if (!userLocation) {
-      // if not, request user to grant access
-      getUserLoc()
-        .then((location) => {
-          axios
-            .get("/api/geolocate/location", {
-              params: {
-                latlng: `${location.latitude},${location.longitude}`,
-              },
-            })
-            .then((city) => {
-              return fetchEvents(city.data);
-            })
-            .catch((err) => {
-              console.error(
-                "Error reverse geocoding location in fetchEventsByLoc".err
-              );
-            });
-        })
-        .catch((err) => {
-          console.error("Error getting user location and fetching events", err);
         });
-    } else {
-      // if we already have the user's location
-      fetchEvents().catch((err) => {
-        console.error("Error fetching events by location", err);
-      });
+        // once we have the user's city, invoke the SERP API helper function passing in the user's city
+        await fetchEvents(city.data);
+      } else {
+        // if we already have the user's coords, we can immediately reverse geocode
+        const city = await axios.get('/api/geolocate/location', {
+          params: {
+            latlng: `${userLocation.latitude},${userLocation.longitude}`,
+          },
+        });
+        // when reverse geocode response is returned, use it to fetchEvents from SERP API
+        await fetchEvents(city.data);
+      }
+    } catch (err) {
+      console.error('Error in fetchEventsByLoc: ', err);
     }
   };
 
+  // get users coordinates when component mounts / page loads
   useEffect(() => {
     getUserLoc();
-    fetchEventsByLoc();
   }, []);
+
+
+  // invoke fetchEventsByLoc() when userLocation state changes
+  useEffect(() => {
+    console.log('userLocation state updated: ', userLocation);
+    if (userLocation) {
+      fetchEventsByLoc();
+    }
+  }, [userLocation])
+
+  */
 
   return (
     <Box
