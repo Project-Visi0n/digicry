@@ -2,14 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import {
-  Stack,
   Box,
-  Card,
-  CardContent,
   Typography,
   IconButton,
-  CardActions,
-  Fade,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -18,9 +13,16 @@ import {
   Button,
   Snackbar,
   Alert,
+  Tooltip,
+  Zoom,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 function JournalEntryList({ searchQuery = "" }) {
@@ -37,6 +39,10 @@ function JournalEntryList({ searchQuery = "" }) {
     severity: "success",
   });
   const navigate = useNavigate();
+  const [selectedEntry, setSelectedEntry] = useState(null);
+  const [expandedId, setExpandedId] = useState(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Fetch entries
   useEffect(() => {
@@ -144,74 +150,393 @@ function JournalEntryList({ searchQuery = "" }) {
 
   const filteredEntries = getFilteredEntries();
 
+  const getEmotionColor = (mood) => {
+    const colors = {
+      "😊": "var(--blue)",
+      "😐": "var(--cream)",
+      "😢": "var(--gray)",
+      "😡": "var(--pink)",
+      "😴": "var(--mint)",
+    };
+    return colors[mood] || "var(--blue)";
+  };
+
   return (
-    <>
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        spacing={3}
-        sx={{
-          width: "100%",
-          flexWrap: "wrap",
-          "& > *": {
-            minWidth: {
-              xs: "100%",
-              sm: "calc(50% - 16px)",
-              lg: "calc(33.333% - 16px)",
-            },
-          },
-        }}
-      >
+    <Box
+      sx={{
+        width: "100%",
+        position: "relative",
+        p: { xs: 2, md: 4 },
+      }}
+    >
+      <AnimatePresence>
         {filteredEntries.map((entry, index) => (
-          <Fade
-            in
-            style={{ transitionDelay: `${index * 100}ms` }}
+          <motion.div
             key={entry._id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card
-              className="glass-panel journal-entry-card"
+            <Box
+              className="journal-timeline-entry"
               sx={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
                 position: "relative",
-                overflow: "visible",
+                mb: 4,
+                ml: isMobile ? 3 : 8,
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+                  left: "-25px",
+                  top: 0,
+                  bottom: 0,
+                  width: "3px",
+                  background: `linear-gradient(180deg,
+                    ${getEmotionColor(entry.mood)} 0%,
+                    rgba(255,255,255,0.1) 100%
+                  )`,
+                },
               }}
             >
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  {entry.title}
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 2 }}>
-                  {entry.content}
-                </Typography>
+              {/* Mood Indicator Dot */}
+              <Box
+                component={motion.div}
+                whileHover={{ scale: 1.2 }}
+                sx={{
+                  position: "absolute",
+                  left: "-34px",
+                  top: "20px",
+                  width: "20px",
+                  height: "20px",
+                  borderRadius: "50%",
+                  background: getEmotionColor(entry.mood),
+                  boxShadow: `0 0 20px ${getEmotionColor(entry.mood)}80`,
+                  border: "2px solid rgba(255, 255, 255, 0.8)",
+                  zIndex: 2,
+                }}
+              />
+
+              {/* Entry Card */}
+              <motion.div
+                layoutId={`card-${entry._id}`}
+                onClick={() =>
+                  setExpandedId(expandedId === entry._id ? null : entry._id)
+                }
+              >
                 <Box
                   sx={{
-                    mt: "auto",
-                    display: "flex",
-                    justifyContent: "space-between",
+                    mb: 3,
+                    background: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(10px)",
+                    borderRadius: "16px",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    overflow: "hidden",
+                    transition: "all 0.3s ease-in-out",
+                    position: "relative",
+                    "&:hover": {
+                      background: "rgba(255, 255, 255, 0.1)",
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                      "&::before": {
+                        opacity: 1,
+                        transform: "translateX(100%)",
+                      },
+                    },
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: -200,
+                      width: "200px",
+                      height: "100%",
+                      background:
+                        "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
+                      transform: "skewX(-15deg)",
+                      transition: "transform 0.8s ease-in-out",
+                      opacity: 0,
+                    },
+                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
                   }}
                 >
-                  <Typography variant="caption">
-                    {new Date(entry.createdAt).toLocaleDateString()}
-                  </Typography>
-                  <Typography>{entry.mood}</Typography>
+                  {/* Header Section */}
+                  <Box
+                    sx={{
+                      p: 3,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      position: "relative",
+                      zIndex: 1,
+                      borderBottom:
+                        expandedId === entry._id
+                          ? "1px solid rgba(255,255,255,0.2)"
+                          : "none",
+                    }}
+                  >
+                    <Box>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 600,
+                          color: "white",
+                          tmb: 2,
+                          fontSize: "1.25rem",
+                          textShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                        }}
+                      >
+                        {entry.title}
+                      </Typography>
+
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            background: "rgba(255, 255, 255, 0.1)",
+                            padding: "4px 12px",
+                            borderRadius: "12px",
+                            backdropFilter: "blur(5px)",
+                          }}
+                        >
+                          <AccessTimeIcon
+                            sx={{
+                              fontSize: "0.9rem",
+                              color: "rgba(255,255,255,0.9)",
+                            }}
+                          />
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "rgba(255,255,255,0.9)",
+                              fontSize: "0.85rem",
+                            }}
+                          >
+                            {new Date(entry.createdAt).toLocaleDateString(
+                              undefined,
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              },
+                            )}
+                          </Typography>
+                        </Box>
+                        <Box
+                          sx={{
+                            background: "rgba(255, 255, 255, 0.1)",
+                            borderRadius: "12px",
+                            padding: "4px 12px",
+                            backdropFilter: "blur(5px)",
+                          }}
+                        >
+                          <Typography sx={{ fontSize: "1.2rem" }}>
+                            {entry.mood}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+
+                    <Box sx={{ display: "flex", gap: 1 }}>
+                      <Tooltip title="Edit Entry" arrow>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(entry._id);
+                          }}
+                          className="glass-button"
+                          sx={{
+                            background: "rgba(255,255,255,0.1)",
+                            backdropFilter: "blur(5px)",
+                            color: "white",
+                            transition: "all 0.3s ease",
+                            "&:hover": {
+                              background: "rgba(255,255,255,0.2)",
+                              transform: "translateY(-2px)",
+                            },
+                          }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete Entry" arrow>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(entry._id);
+                          }}
+                          sx={{
+                            background: "rgba(255,255,255,0.1)",
+                            backdropFilter: "blur(5px)",
+                            color: "white",
+                            transition: "all 0.3s ease",
+                            "&:hover": {
+                              background: "rgba(255,255,255,0.2)",
+                              transform: "translateY(-2px)",
+                            },
+                          }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Box>
+
+                  {/* Content Section */}
+                  <AnimatePresence>
+                    {expandedId === entry._id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Box
+                          sx={{
+                            p: 3,
+                            pt: 0,
+                            position: "relative",
+                            zIndex: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              color: "rgba(255,255,255,0.8)",
+                              fontSize: "1rem",
+                              lineHeight: 1.6,
+                              maxHeight:
+                                expandedId === entry._id ? "none" : "3.2em",
+                              overflow: "hidden",
+                              display: "-webkit-box",
+                              WebkitLineClamp:
+                                expandedId === entry._id ? "unset" : 2,
+                              WebkitBoxOrient: "vertical",
+                            }}
+                          >
+                            {entry.content}
+                          </Typography>
+                        </Box>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Expand Button */}
+                  <Box
+                    onClick={() =>
+                      setExpandedId(expandedId === entry._id ? null : entry._id)
+                    }
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      p: 1,
+                      cursor: "pointer",
+                      background: "rgba(255,255,255,0.05)",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        background: "rgba(255,255,255,0.1)",
+                      },
+                    }}
+                  >
+                    <motion.div
+                      animate={{ rotate: expandedId === entry._id ? 180 : 0 }}
+                    >
+                      <ExpandMoreIcon x={{ color: "white" }} />
+                    </motion.div>
+                  </Box>
                 </Box>
-              </CardContent>
-              <CardActions>
-                <IconButton onClick={() => handleEdit(entry._id)} size="small">
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleDeleteClick(entry._id)}
-                  size="small"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </CardActions>
-            </Card>
-          </Fade>
+              </motion.div>
+            </Box>
+          </motion.div>
         ))}
-      </Stack>
+      </AnimatePresence>
+
+      {/* Empty State */}
+      {filteredEntries.length === 0 && !isLoading && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Box
+            sx={{
+              textAlign: "center",
+              py: 8,
+              px: 2,
+              background: "rgba(20, 20, 25, 0.95)",
+              borderRadius: "24px",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{
+                mb: 3,
+                color: "white",
+                fontWeight: 600,
+                textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+              }}
+            >
+              Your Journal Awaits
+            </Typography>
+
+            <Typography
+              variant="body1"
+              sx={{
+                color: "rgba(255,255,255,0.9)",
+                mb: 4,
+                fontSize: "1.1rem",
+              }}
+            >
+              {searchQuery
+                ? "No entries match your search. Try different keywords."
+                : "Start documenting your journey with your first entry."}
+            </Typography>
+            <Button
+              component={motion.button}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate("/journal/new")}
+              sx={{
+                background:
+                  "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
+                color: "white",
+                px: 4,
+                py: 2,
+                borderRadius: "15px",
+                textTransform: "none",
+                fontSize: "1.1rem",
+                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                "&:hover": {
+                  boxShadow: "0 12px 40px rgba(0, 0, 0, 0.4)",
+                },
+              }}
+            >
+              Create Your First Entry
+            </Button>
+          </Box>
+        </motion.div>
+      )}
+
+      {/* Loading State */}
+      {isLoading && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "200px",
+          }}
+        >
+          <CircularProgress
+            sx={{
+              color: "var(--blue)",
+            }}
+          />
+        </Box>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialog.open} onClose={handleDeleteClose}>
@@ -243,7 +568,7 @@ function JournalEntryList({ searchQuery = "" }) {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   );
 }
 
