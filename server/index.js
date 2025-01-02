@@ -21,6 +21,7 @@ const journalRoutes = require("./routes/journal");
 const eventRoutes = require("./routes/event");
 const geolocationRoutes = require("./routes/event");
 const forumRoutes = require("./routes/forums");
+const analyzeSentiment = require("./routes/analyzeSentiment")
 
 const PORT = process.env.PORT || 5000;
 
@@ -131,6 +132,9 @@ app.use("/api/journal", journalRoutes);
 // Events Route
 app.use("/api/events", eventRoutes);
 app.use("/api/geolocate", geolocationRoutes);
+
+// Analyze Sentiment Route
+app.use('/api', analyzeSentiment);
 
 // Forums Route
 app.use("/api/forums", forumRoutes);

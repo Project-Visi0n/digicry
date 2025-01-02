@@ -7,4 +7,5 @@ dist/
 data/
 localhost.pem
 localhost-key.pem
+google-cred.json
 
