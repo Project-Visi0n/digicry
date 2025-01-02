@@ -5,5 +5,7 @@ node_modules
 dist/
 .idea/
 data/
-
+localhost.pem
+localhost-key.pem
+google-cred.json
 
