@@ -20,7 +20,7 @@ function Forums() {
     "Career",
   ]);
 
-  useEffect(() => {}, [goalPosts]);
+
 
   const handleClick = ({ target: { className } }) => {
     console.log("clicked ", className);
@@ -70,13 +70,13 @@ function Forums() {
           </button>
         );
       })}
-      <form action={handleSubmit}>
+      <Box component="form" action={handleSubmit}>
         <label>Say Something Positive!</label>
         <br />
         <input type="text" id="msg" name="msg" />
         <br />
-        <button type="submit"> Submit Post To {selectedGoal} </button>
-      </form>
+        <Button type="submit" variant="outlined"> Submit Post To {selectedGoal} </Button>
+      </Box>
       {goalPosts.map((post, i) => {
         return (
           <div>
