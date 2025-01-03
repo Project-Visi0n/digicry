@@ -85,7 +85,14 @@ const getRanges = async () => {
     magnitudeMax: 13,
   }
 
-  // will need to query the db
+
+  const ranges = {
+    sentimentMin: 2,
+    sentimentMax: -2,
+    magnitudeMin: 101,
+    magnitudeMax: 0,
+  };
+
 
 
   try {
@@ -96,40 +103,29 @@ const getRanges = async () => {
       return defaults;
     }
 
-    // series of forEach statements to find min/max ranges
 
+    // find min/max values of score and magnitude
     // sentiment range is -1 -> 1, so it can never be 2 or -2
-    let sentimentMin = 2;
+    // same logic applies for magnitude
     journals.forEach(journal => {
-      if (journal.sentimentScore < sentimentMin) {
-        sentimentMin = journal.sentimentScore;
+      if (journal.sentimentScore < ranges.sentimentMin) {
+        ranges.sentimentMin = journal.sentimentScore;
       }
-    })
 
-    let sentimentMax = -2;
-    journals.forEach(journal => {
-      if (journal.sentimentScore > sentimentMax) {
-        sentimentMax = journal.sentimentScore;
+      if (journal.sentimentScore > ranges.sentimentMax) {
+        ranges.sentimentMax = journal.sentimentScore;
       }
-    })
+      if (journal.sentimentMagnitude < ranges.magnitudeMin) {
+        ranges.magnitudeMin = journal.sentimentMagnitude;
+      }
+      if (journal.sentimentMagnitude > ranges.magnitudeMax) {
+        ranges.magnitudeMax = journal.sentimentMagnitude;
+      }
+    });
 
-    // same logic as sentiment range statements above
-    let magnitudeMin = 101;
-    journals.forEach((journal => {
-      if (journal.sentimentMagnitude < magnitudeMin) {
-        magnitudeMin = journal.sentimentMagnitude;
-      }
-    }))
-
-    let magnitudeMax = 0;
-    journals.forEach((journal => {
-      if (journal.sentimentMagnitude > magnitudeMax) {
-        magnitudeMax = journal.sentimentMagnitude;
-      }
-    }))
     console.log('Base min/max values found!')
 
-    return { sentimentMin, sentimentMax, magnitudeMin, magnitudeMax };
+    return ranges;
 
   } catch (error) {
     console.error('Error getting base min/max values', error);
@@ -141,77 +137,74 @@ const getRanges = async () => {
 
 // Create new journal entry
 router.post("/", async (req, res) => {
-  console.log("[DEBUG] Incoming POST request:", req.body);
-  const { userId, title, content, mood } = req.body;
 
-  // Validate required fields
-  if (!userId || !isValidObjectId(userId)) {
-    console.log("[DEBUG] Invalid userId:", userId);
-    return res.sendStatus(400);
-  }
+  try {
+    console.log("[DEBUG] Incoming POST request:", req.body);
+    const { userId, title, content, mood } = req.body;
 
-  if (!title || typeof title !== "string" || title.trim() === "") {
-    return res.sendStatus(400);
-  }
+    // Validate required fields
+    if (!userId || !isValidObjectId(userId)) {
+      console.log("[DEBUG] Invalid userId:", userId);
+      return res.sendStatus(400);
+    }
 
-  if (!content || typeof content !== "string" || content.trim() === "") {
-    return res.sendStatus(400);
-  }
+    if (!title || typeof title !== "string" || title.trim() === "") {
+      return res.sendStatus(400);
+    }
 
-  if (!mood || !["😊", "😐", "😢", "😡", "😴"].includes(mood)) {
-    console.log("[DEBUG] Missing fields:", { title, content, mood });
-    return res.sendStatus(400);
-  }
+    if (!content || typeof content !== "string" || content.trim() === "") {
+      return res.sendStatus(400);
+    }
 
-  // Concatenate post title & post content - separate with new line to help GNL parse accurately
-  const analyzeText = `Post Title: ${title}\n  Post Content: ${content}`;
+    if (!mood || !["😊", "😐", "😢", "😡", "😴"].includes(mood)) {
+      console.log("[DEBUG] Missing fields:", { title, content, mood });
+      return res.sendStatus(400);
+    }
 
-  // Call Google NLP
-  const document = {
-    content: analyzeText,
-    type: "PLAIN_TEXT",
-  };
 
-  client
-    .analyzeSentiment({ document })
-    .then((results) => {
-      // results[0] is sentiment response
-      const sentiment = results[0].documentSentiment;
+    // Concatenate post title & post content - separate with new line to help GNL parse accurately
+    const analyzeText = `Post Title: ${title}\n  Post Content: ${content}`;
 
-      // Check if user exists
-      return User.findById(userId).then((user) => {
-        if (!user) {
-          throw new Error("User not found.");
-        }
+    // Call Google NLP
+    const document = {
+      content: analyzeText,
+      type: "PLAIN_TEXT",
+    };
 
-        // Create new journal entry (with sentiment data)
-        const newEntry = new Journal({
-          userId,
-          title: title.trim(),
-          content: content.trim(),
-          mood,
-          normalizedSentiment: await sentimentConverter(sentiment.score, sentiment.magnitude),
-          sentimentScore: sentiment.score,
-          sentimentMagnitude: sentiment.magnitude,
+    const analyzeSentiment = await client.analyzeSentiment({ document });
+    // results[0] is sentiment response
+    const sentiment = analyzeSentiment[0].documentSentiment;
 
-        });
-        console.log(`This is newEntry: ${newEntry}`);
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-        console.log('This should be the converted value', newEntry.normalizedSentiment);
-        return newEntry.save();
-      });
-    })
-    .then((savedEntry) => {
-      console.log("[DEBUG] Entry saved with sentiment:", savedEntry);
-      return res.status(201).send(savedEntry);
-    })
-    .catch((err) => {
-      console.error(
-        "Error creating journal entry with sentiment:",
-        err.message,
-      );
-      return res.sendStatus(500);
+    // Create new journal entry (with sentiment data)
+    const newEntry = new Journal({
+      userId,
+      title: title.trim(),
+      content: content.trim(),
+      mood,
+      normalizedSentiment: await sentimentConverter(sentiment.score, sentiment.magnitude),
+      sentimentScore: sentiment.score,
+      sentimentMagnitude: sentiment.magnitude,
+
     });
+    console.log(`This is newEntry: ${newEntry}`);
+
+    console.log('This should be the converted value', newEntry.normalizedSentiment);
+
+    const savedEntry = await newEntry.save();
+    console.log("[DEBUG] Entry saved with sentiment:", savedEntry);
+    return res.status(201).send(savedEntry);
+
+  } catch (error) {
+    console.error('Error creating journal entry with sentiment:', error.message);
+    return res.sendStatus(500);
+
+  }
 });
 
 // Retrieve all journal entries
