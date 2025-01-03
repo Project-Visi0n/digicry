@@ -21,9 +21,10 @@ function LikeButton({ post }) {
   const [chosen, setChosen] = useState(false);
 
   const handleDislike = ({ target: { value } }) => {
-    if (!disliked) {
+    if (!disliked && !chosen) {
       setDislikes(dislikes - 1);
       setDisliked(true);
+      setChosen(true)
       axios
         .post("api/forums/dislike", {
           postId: value,
@@ -35,7 +36,8 @@ function LikeButton({ post }) {
         .catch((error) => {
           console.error(error);
         });
-    } else {
+    } else if(disliked){
+      setChosen(false)
       setDislikes(dislikes + 1);
       setDisliked(false);
       axios
@@ -53,9 +55,10 @@ function LikeButton({ post }) {
   };
 
   const handleLike = ({ target: { value } }) => {
-    if (!liked) {
+    if (!liked && !chosen) {
       setLikes(likes + 1);
       setLiked(true);
+      setChosen(true)
       axios
         .post("api/forums/like", {
           postId: value,
@@ -67,7 +70,8 @@ function LikeButton({ post }) {
         .catch((error) => {
           console.error(error);
         });
-    } else {
+    } else if (liked) {
+      setChosen(false)
       setLikes(likes - 1);
       setLiked(false);
       axios
