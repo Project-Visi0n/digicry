@@ -41,4 +41,39 @@ router.get("/", (req, res) => {
     });
 });
 
+router.post("/like", (req, res) => {
+  console.log("reached");
+  const { postId } = req.body;
+  Forums.findByIdAndUpdate( postId, {
+    $inc: {
+    upVote: 1
+    }
+  })
+    .then(() => {
+      console.log("successful upvote");
+      res.sendStatus(201);
+    })
+    .catch((error) => {
+      console.error(error, "failed to upvote");
+      res.sendStatus(500);
+    });
+});
+
+router.post("/dislike", (req, res) => {
+  console.log("reached");
+  const { postId } = req.body;
+  Forums.findByIdAndUpdate( postId, {
+    $inc: {
+    downVote: -1
+    }
+  })
+    .then(() => {
+      console.log("successful downvote");
+      res.sendStatus(201);
+    })
+    .catch((error) => {
+      console.error(error, "failed to downvote");
+      res.sendStatus(500);
+    });
+});
 module.exports = router;
