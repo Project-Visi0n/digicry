@@ -11,6 +11,7 @@ import {
   Grid,
   Tooltip,
 } from "@mui/material";
+
 import LikeButton from "./LikeButton";
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
@@ -140,13 +141,14 @@ function Forums() {
         {goalPosts.map((post, i) => {
           return (
             <Box align="center" key={refreshKey} container spacing={5}>
-              <Grid item xs={5}>
+              <Grid item xs={10}>
                 <Box
                   sx={() => ({
-                    bgcolor: "#fff",
+                    bgcolor: 'rgb(255, 255, 255)',
+                    opacity: 0.85, 
                     color: "grey.800",
                     border: "2px solid",
-                    borderColor: "grey.300",
+                    borderColor: "black",
                     p: 2,
                     borderRadius: 2,
                     fontSize: "0.875rem",
@@ -158,13 +160,15 @@ function Forums() {
                   id={selectedGoal}
                 >
                   <div align="left">
-                    <h4 id={post._id}>{post.forumName}</h4>
-                    <h5 className={post._id}>{post.message}</h5>
+                    <h4 style={{ color: 'black' }} id={post._id}>{post.forumName}</h4>
+                    <br/>
+                    <h4 style={{ color: 'black' }} className={post._id}><em>{post.message}</em></h4>
                   </div>
                   <br></br>
                   <LikeButton selectedGoal={selectedGoal} post={post} />
                 </Box>
               </Grid>
+              <div style={{ height: '2px' }} /> 
             </Box>
           );
         })}

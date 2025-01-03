@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
+import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
+import IconButton from "@mui/material/IconButton";
 import {
   Box,
   Button,
@@ -19,13 +22,13 @@ function LikeButton({ post, selectedGoal }) {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [chosen, setChosen] = useState(false);
-  
+  const [likeColor, setLikeColor] = useState("#7e90a3");
 
   const handleDislike = ({ target: { value } }) => {
     if (!disliked && !chosen) {
       setDislikes(dislikes - 1);
       setDisliked(true);
-      setChosen(true)
+      setChosen(true);
       axios
         .post("api/forums/dislike", {
           postId: value,
@@ -37,8 +40,8 @@ function LikeButton({ post, selectedGoal }) {
         .catch((error) => {
           console.error(error);
         });
-    } else if(disliked){
-      setChosen(false)
+    } else if (disliked) {
+      setChosen(false);
       setDislikes(dislikes + 1);
       setDisliked(false);
       axios
@@ -58,8 +61,9 @@ function LikeButton({ post, selectedGoal }) {
   const handleLike = ({ target: { value } }) => {
     if (!liked && !chosen) {
       setLikes(likes + 1);
+      setLikeColor("#00fc15");
       setLiked(true);
-      setChosen(true)
+      setChosen(true);
       axios
         .post("api/forums/like", {
           postId: value,
@@ -72,9 +76,10 @@ function LikeButton({ post, selectedGoal }) {
           console.error(error);
         });
     } else if (liked) {
-      setChosen(false)
+      setChosen(false);
       setLikes(likes - 1);
       setLiked(false);
+      setLikeColor("#7e90a3");
       axios
         .post("api/forums/like", {
           postId: value,
@@ -89,35 +94,32 @@ function LikeButton({ post, selectedGoal }) {
     }
   };
 
-
   return (
-    <Grid container spacing={5}>
+    <Grid container spacing={1}>
       <Grid item xs={2}>
         <Tooltip title="It's okay to love!" enterDelay={500} leaveDelay={200}>
-          <Button
+          <IconButton
             id={selectedGoal}
             value={post._id}
             onClick={handleLike}
             sx={{ typography: { fontSize: 8 } }}
           >
-            Motivational
-          </Button>
+            <SentimentSatisfiedAltIcon style={{ fill: "#00fc15" }} />
+            <h1 style={{ color: "#00fc15" }}>{likes}</h1>
+          </IconButton>
         </Tooltip>
       </Grid>
-      <Grid item xs={4}>
-        <div>{likes} Moto Count</div>
-      </Grid>
+      <Grid item xs={3} />
       <Grid item xs={2}>
-        <Button
+        <IconButton
+          style={{ fill: "#ea0000" }}
           value={post._id}
           onClick={handleDislike}
           sx={{ typography: { fontSize: 8 } }}
         >
-          Unmotivating
-        </Button>
-      </Grid>
-      <Grid item xs={4}>
-        <div>{dislikes} Unmotivating Count</div>
+          <SentimentVeryDissatisfiedIcon style={{ fill: "#ea0000" }} />
+          <h1 style={{ color: "red" }}>{dislikes}</h1>
+        </IconButton>
       </Grid>
     </Grid>
   );
