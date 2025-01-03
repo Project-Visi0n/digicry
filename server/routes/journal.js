@@ -3,7 +3,10 @@ const express = require("express");
 
 const router = express.Router();
 const mongoose = require("mongoose");
+const language = require("@google-cloud/language");
 const { Journal, User } = require("../models");
+
+const client = new language.LanguageServiceClient();
 
 // Utility function to validate ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -32,30 +35,46 @@ router.post("/", (req, res) => {
     return res.sendStatus(400);
   }
 
-  // Check if user exists
-  User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        throw new Error("User not found.");
-      }
+  // Call Google NLP
+  const document = {
+    content,
+    type: "PLAIN_TEXT",
+  };
 
-      // Create new journal entry
-      const newEntry = new Journal({
-        userId,
-        title: title.trim(),
-        content: content.trim(),
-        mood,
+  client
+    .analyzeSentiment({ document })
+    .then((results) => {
+      // results[0] is sentiment response
+      const sentiment = results[0].documentSentiment;
+
+      // Check if user exists
+      return User.findById(userId).then((user) => {
+        if (!user) {
+          throw new Error("User not found.");
+        }
+
+        // Create new journal entry (with sentiment data)
+        const newEntry = new Journal({
+          userId,
+          title: title.trim(),
+          content: content.trim(),
+          mood,
+          sentimentScore: sentiment.score,
+          sentimentMagnitude: sentiment.magnitude,
+        });
+        return newEntry.save();
       });
-
-      return newEntry.save();
     })
     .then((savedEntry) => {
-      console.log("[DEBUG] Entry saved:", savedEntry);
-      res.status(201).send(savedEntry);
+      console.log("[DEBUG] Entry saved with sentiment:", savedEntry);
+      return res.status(201).send(savedEntry);
     })
     .catch((err) => {
-      console.error("Error creating journal entry:", err.message);
-      res.sendStatus(500);
+      console.error(
+        "Error creating journal entry with sentiment:",
+        err.message,
+      );
+      return res.sendStatus(500);
     });
 });
 
