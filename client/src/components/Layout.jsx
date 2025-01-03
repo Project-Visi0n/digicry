@@ -17,14 +17,14 @@ function Layout({ children }) {
       <div className="blob blob-2" />
 
       <Container maxWidth="lg">
-        <Box sx={{ my: 4 }}>
+        <Box className="layout-container">
           {/* App Title */}
           <Typography variant="h2" component="h1" className="main-title">
             Digi-Cry
           </Typography>
 
           {/* Navigation Bar */}
-          <nav className="glass-container nav-container">
+          <nav className="nav-container">
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -66,9 +66,9 @@ function Layout({ children }) {
           </nav>
 
           {/* Page Content */}
-          <Box sx={{ mt: 4 }}>
+          <Box className="page-content">
             {children}
-            <Outlet /> {/* Render child routes here */}
+            <Outlet />
           </Box>
         </Box>
       </Container>
