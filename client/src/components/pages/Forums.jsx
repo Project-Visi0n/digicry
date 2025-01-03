@@ -55,9 +55,11 @@ function Forums() {
 
     if (diffMinutes < 60) {
       return `${diffMinutes} minutes ago`;
-    } else if (diffHours < 24) {
+    }
+    if (diffHours < 24) {
       return `${diffHours}hrs and ${remainingMinutes} minutes ago`;
-    } else if (diffDays < 2) {
+    }
+    if (diffDays < 2) {
       return "yesterday";
     }
     return `${diffDays} days ago`;
