@@ -13,12 +13,13 @@ import {
   Tooltip,
 } from "@mui/material";
 
-function LikeButton({ post }) {
+function LikeButton({ post, selectedGoal }) {
   const [likes, setLikes] = useState(post.upVote);
   const [dislikes, setDislikes] = useState(post.downVote);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [chosen, setChosen] = useState(false);
+  
 
   const handleDislike = ({ target: { value } }) => {
     if (!disliked && !chosen) {
@@ -88,11 +89,13 @@ function LikeButton({ post }) {
     }
   };
 
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={2}>
         <Tooltip title="It's okay to love!" enterDelay={500} leaveDelay={200}>
           <Button
+            id={selectedGoal}
             value={post._id}
             onClick={handleLike}
             sx={{ typography: { fontSize: 8 } }}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import {
   Box,
@@ -15,6 +15,8 @@ import LikeButton from "./LikeButton";
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState("?");
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [submit, setSubmit] = useState(false);
   const [goalOptions, setGoalOptions] = useState([
     "Physical Health",
     "Finances",
@@ -23,7 +25,7 @@ function Forums() {
     "Career",
   ]);
 
-  const handleClick = ({target: {value}}) => {
+  const handleClick = ({ target: { value } }) => {
     console.log(value);
     setSelectedGoal(value);
     const removeSpaces = value.split(" ").join("");
@@ -32,6 +34,7 @@ function Forums() {
       .then((posts) => {
         console.log(posts.data);
         setGoalPosts(posts.data);
+        setRefreshKey((prevKey) => prevKey + 1);
       })
       .catch((error) => {
         console.error(
@@ -42,6 +45,8 @@ function Forums() {
   };
 
   const handleSubmit = (msg) => {
+    const refresh = selectedGoal;
+    setSubmit(!submit);
     axios
       .post("api/forums", {
         message: msg.get("msg"),
@@ -49,30 +54,70 @@ function Forums() {
       })
       .then((data) => {
         console.log(data);
+        setRefreshKey((prevKey) => prevKey + 1);
       })
       .catch((error) => {
         console.error(error);
       });
   };
 
+  useEffect(() => {
+    if (selectedGoal !== "?" && selectedGoal !== "posting...") {
+      const value = selectedGoal;
+      const removeSpaces = value.split(" ").join("");
+      axios
+        .get("/api/forums", { params: { forumName: removeSpaces } })
+        .then((posts) => {
+          console.log(posts.data);
+          setGoalPosts(posts.data);
+          setRefreshKey((prevKey) => prevKey + 1);
+        })
+        .catch((error) => {
+          console.error(
+            error,
+            `error getting ${removeSpaces} forums from server`
+          );
+        });
+    }
+  }, [submit, selectedGoal]);
+
   return (
-    <div>
-      <h1> Join a Discussion on Similar Goals! </h1>
-      {goalOptions.map((goal) => {
-        return (
-          <Button
-            className={goal}
-            type="button"
-            onClick={handleClick}
-            key={goal}
-            goal={goal}
-            value={goal}
-          >
-            {goal}
-          </Button>
-        );
-      })}
-      <Box component="form" action={handleSubmit}>
+    <div key={refreshKey}>
+      <Box
+        sx={() => ({
+          background: "transparent",
+          backdropFilter: "blur(12px)",
+          border: "1px solid",
+          borderRadius: "24px",
+          padding: "2rem",
+          overflow: "hidden",
+          position: "relative",
+          fontSize: "35px",
+        })}
+        align="center"
+      >
+        {" "}
+        Join a Discussion on Similar Goals!{" "}
+      </Box>
+      <br />
+      <div align="center">
+        {goalOptions.map((goal) => {
+          return (
+            <Button
+              className="glass-btn"
+              type="button"
+              onClick={handleClick}
+              key={goal}
+              goal={goal}
+              value={goal}
+            >
+              {goal}
+            </Button>
+          );
+        })}
+      </div>
+      <br />
+      <Box align="center" component="form" action={handleSubmit}>
         <label>Say Something Positive!</label>
         <br />
         <TextField
@@ -90,36 +135,40 @@ function Forums() {
           Submit Post To {selectedGoal}{" "}
         </Button>
       </Box>
-      {goalPosts.map((post, i) => {
-        return (
-          <Grid container spacing={5}>
-            <Grid item xs={8}>
-              <Box
-                sx={() => ({
-                  bgcolor: "#fff",
-                  color: "grey.800",
-                  border: "2px solid",
-                  borderColor: "grey.300",
-                  p: 2,
-                  borderRadius: 2,
-                  fontSize: "0.875rem",
-                  fontWeight: "700",
-                  top: 0,
-                  left: "43%",
-                  zIndex: "modal",
-                })}
-              >
-                <div>
-                  <h4 id={post._id}>{post.forumName}</h4>
-                  <h5 className={post._id}>{post.message}</h5>
-                </div>
-                <br></br>
-                <LikeButton post={post}/>
-              </Box>
-            </Grid>
-          </Grid>
-        );
-      })}
+      <br></br>
+      <div key={refreshKey}>
+        {goalPosts.map((post, i) => {
+          return (
+            <Box align="center" key={refreshKey} container spacing={5}>
+              <Grid item xs={5}>
+                <Box
+                  sx={() => ({
+                    bgcolor: "#fff",
+                    color: "grey.800",
+                    border: "2px solid",
+                    borderColor: "grey.300",
+                    p: 2,
+                    borderRadius: 2,
+                    fontSize: "0.875rem",
+                    fontWeight: "700",
+                    top: 0,
+                    left: "43%",
+                    zIndex: "modal",
+                  })}
+                  id={selectedGoal}
+                >
+                  <div align="left">
+                    <h4 id={post._id}>{post.forumName}</h4>
+                    <h5 className={post._id}>{post.message}</h5>
+                  </div>
+                  <br></br>
+                  <LikeButton selectedGoal={selectedGoal} post={post} />
+                </Box>
+              </Grid>
+            </Box>
+          );
+        })}
+      </div>
     </div>
   );
 }
