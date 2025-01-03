@@ -47,21 +47,32 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
  *
  */
 
-const sentimentConverter = (sentiment, magnitude) => {
-
-  // normalize data via linear scaling
-  const normalizedSentiment = (sentiment - (-0.7)) / (0.9 - (-0.7));
-  const normalizedMagnitude = (magnitude - 0.5) / (13 - 0.5);
+const sentimentConverter = async (sentiment, magnitude) => {
 
 
-  // init weight values
-  const sentimentWeight = 0.70;
-  const magnitudeWeight = 0.30;
+  try {
+    const ranges = await getRanges();
+    // normalize data via linear scaling
+    const normalizedSentiment = (sentiment - ranges.sentimentMin) / (ranges.sentimentMax - ranges.sentimentMin);
+    const normalizedMagnitude = (magnitude - ranges.magnitudeMin) / (ranges.magnitudeMax - ranges.magnitudeMin);
 
 
+    // init weight values
+    const sentimentWeight = 0.70;
+    const magnitudeWeight = 0.30;
+    console.log('WE GOT THE RANGES: ', normalizedMagnitude, normalizedSentiment)
 
-  convertedScore = Math.round((normalizedSentiment * sentimentWeight + normalizedMagnitude * magnitudeWeight) * 100)
-  return convertedScore;
+    return Math.round((normalizedSentiment * sentimentWeight + normalizedMagnitude * magnitudeWeight) * 100)
+
+  } catch (error) {
+    console.error('Error converting sentiment values', error);
+
+    // resort to use defaults on err
+    const normalizedSentiment = (sentiment - (-0.7)) / (0.9 - (-0.7));
+    const normalizedMagnitude = (magnitude - 0.5) / (13 - 0.5);
+    return Math.round((normalizedSentiment * 0.70 + normalizedMagnitude * 0.30) * 100);
+  }
+
 }
 
 // Helper function to query DB to get the ranges for sentiment & magnitude - defaults to ranges found in our test data
@@ -116,10 +127,12 @@ const getRanges = async () => {
         magnitudeMax = journal.sentimentMagnitude;
       }
     }))
+    console.log('Base min/max values found!')
 
     return { sentimentMin, sentimentMax, magnitudeMin, magnitudeMax };
 
-  } catch {
+  } catch (error) {
+    console.error('Error getting base min/max values', error);
     return defaults;
   }
 
@@ -127,7 +140,7 @@ const getRanges = async () => {
 }
 
 // Create new journal entry
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   console.log("[DEBUG] Incoming POST request:", req.body);
   const { userId, title, content, mood } = req.body;
 
@@ -177,7 +190,7 @@ router.post("/", (req, res) => {
           title: title.trim(),
           content: content.trim(),
           mood,
-          normalizedSentiment: sentimentConverter(sentiment.score, sentiment.magnitude),
+          normalizedSentiment: await sentimentConverter(sentiment.score, sentiment.magnitude),
           sentimentScore: sentiment.score,
           sentimentMagnitude: sentiment.magnitude,
 
