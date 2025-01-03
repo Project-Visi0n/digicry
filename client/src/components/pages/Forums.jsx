@@ -54,12 +54,14 @@ function Forums() {
       });
   };
 
-  const handleDislike = () => {
+  const handleDislike = ({ target: { value } }) => {
     console.log("disliked");
+    console.log(value);
   };
 
-  const handleLike = () => {
+  const handleLike = ({ target: { value } }) => {
     console.log("liked");
+    console.log(value);
   };
   return (
     <div>
@@ -121,10 +123,11 @@ function Forums() {
                 <Grid container spacing={5}>
                   <Grid item xs={2}>
                     <Button
+                      value={post._id}
                       onClick={handleLike}
                       sx={{ typography: { fontSize: 8 } }}
                     >
-                      {post.upvotes} Motivational
+                      Motivational
                     </Button>
                   </Grid>
                   <Grid item xs={4}>
@@ -132,6 +135,7 @@ function Forums() {
                   </Grid>
                   <Grid item xs={2}>
                     <Button
+                      value={post._id}
                       onClick={handleDislike}
                       sx={{ typography: { fontSize: 8 } }}
                     >
