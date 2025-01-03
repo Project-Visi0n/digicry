@@ -31,11 +31,12 @@ function Forums() {
   // Gets goals from database based on the elements value.
 
   const getGoals = ({ target: { value } }) => {
-    setSelectedGoal(value);
+    
     const forumName = value.split(" ").join("");
     axios
       .get("/api/forums", { params: { forumName } })
       .then((posts) => {
+        setSelectedGoal(value);
         setGoalPosts(posts.data);
         setRefreshKey((prevKey) => prevKey + 1);
       })
@@ -44,6 +45,8 @@ function Forums() {
       });
   };
 
+  // Sets the age of posts.
+  
   const minutesAgo = (isoDateString) => {
     const date = new Date(isoDateString);
     const now = new Date();
@@ -53,6 +56,9 @@ function Forums() {
     const remainingMinutes = diffMinutes % 60;
     const diffDays = Math.floor(diffHours / 24);
 
+    if (diffMinutes <= 3) {
+      return "just now!";
+    }
     if (diffMinutes < 60) {
       return `${diffMinutes} minutes ago`;
     }
@@ -66,16 +72,14 @@ function Forums() {
   };
 
   const handleSubmit = (msg) => {
-    const refresh = selectedGoal;
     setSubmit(!submit);
     axios
       .post("api/forums", {
         message: msg.get("msg"),
         selectedGoal,
       })
-      .then((data) => {
-        console.log(data);
-        setRefreshKey((prevKey) => prevKey + 1);
+      .then(() => {
+        console.log('post created');
       })
       .catch((error) => {
         console.error(error);
