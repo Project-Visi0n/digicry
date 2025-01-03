@@ -15,9 +15,10 @@ import {
 import LikeButton from "./LikeButton";
 
 function Forums() {
+  // RefreshKey is used to selectively reload certain components on refresh.
+  const [refreshKey, setRefreshKey] = useState(0);
   const [goalPosts, setGoalPosts] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState("?");
-  const [refreshKey, setRefreshKey] = useState(0);
   const [submit, setSubmit] = useState(false);
   const [goalOptions, setGoalOptions] = useState([
     "Physical Health",
@@ -27,22 +28,19 @@ function Forums() {
     "Career",
   ]);
 
-  const handleClick = ({ target: { value } }) => {
-    console.log(value);
+  // Gets goals from database based on the elements value.
+
+  const getGoals = ({ target: { value } }) => {
     setSelectedGoal(value);
-    const removeSpaces = value.split(" ").join("");
+    const forumName = value.split(" ").join("");
     axios
-      .get("/api/forums", { params: { forumName: removeSpaces } })
+      .get("/api/forums", { params: { forumName } })
       .then((posts) => {
-        console.log(posts.data);
         setGoalPosts(posts.data);
         setRefreshKey((prevKey) => prevKey + 1);
       })
       .catch((error) => {
-        console.error(
-          error,
-          `error getting ${removeSpaces} forums from server`
-        );
+        console.error(error, `error getting ${forumName} forums from server`);
       });
   };
 
@@ -56,13 +54,13 @@ function Forums() {
     const diffDays = Math.floor(diffHours / 24);
 
     if (diffMinutes < 60) {
-      return diffMinutes + " minutes ago";
+      return `${diffMinutes} minutes ago`;
     } else if (diffHours < 24) {
-      return diffHours + "hrs" + remainingMinutes + " minutes ago";
+      return `${diffHours}hrs and ${remainingMinutes} minutes ago`;
     } else if (diffDays < 2) {
       return "yesterday";
     }
-    return diffDays + " days ago";
+    return `${diffDays} days ago`;
   };
 
   const handleSubmit = (msg) => {
@@ -127,7 +125,7 @@ function Forums() {
             <Button
               className="glass-btn"
               type="button"
-              onClick={handleClick}
+              onClick={getGoals}
               key={goal}
               goal={goal}
               value={goal}
