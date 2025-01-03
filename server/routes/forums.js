@@ -61,11 +61,11 @@ router.post("/like", (req, res) => {
 
 router.post("/dislike", (req, res) => {
   console.log("reached");
-  const { postId, liked } = req.body;
+  const { postId, disliked } = req.body;
 
   Forums.findByIdAndUpdate(postId, {
     $inc: {
-      downVote: liked ? -1 : 1
+      downVote: disliked ? -1 : 1
     },
   })
     .then(() => {

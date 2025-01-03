@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import {
@@ -17,42 +17,63 @@ function LikeButton({ post }) {
   const [likes, setLikes] = useState(post.upVote);
   const [dislikes, setDislikes] = useState(post.downVote);
   const [liked, setLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
+  const [chosen, setChosen] = useState(false);
 
   const handleDislike = ({ target: { value } }) => {
-    setDislikes(dislikes - 1);
-    axios
-      .post("api/forums/dislike", {
-        postId: value,
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (!disliked) {
+      setDislikes(dislikes - 1);
+      setDisliked(true);
+      axios
+        .post("api/forums/dislike", {
+          postId: value,
+          disliked,
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setDislikes(dislikes + 1);
+      setDisliked(false);
+      axios
+        .post("api/forums/dislike", {
+          postId: value,
+          disliked,
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   const handleLike = ({ target: { value } }) => {
-    if(!liked){
-    setLikes(likes + 1);
-    setLiked(true);
-    axios
-      .post("api/forums/like", {
-        postId: value,
-        liked,
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (!liked) {
+      setLikes(likes + 1);
+      setLiked(true);
+      axios
+        .post("api/forums/like", {
+          postId: value,
+          liked,
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } else {
       setLikes(likes - 1);
       setLiked(false);
       axios
         .post("api/forums/like", {
           postId: value,
+          liked,
         })
         .then((data) => {
           console.log(data);
@@ -96,7 +117,7 @@ function LikeButton({ post }) {
 }
 
 LikeButton.propTypes = {
-  post: PropTypes.shape.isRequired
+  post: PropTypes.shape.isRequired,
 };
 
 export default LikeButton;
