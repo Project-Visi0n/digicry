@@ -54,6 +54,13 @@ function Forums() {
       });
   };
 
+  const handleDislike = () => {
+    console.log("disliked");
+  };
+
+  const handleLike = () => {
+    console.log("liked");
+  };
   return (
     <div>
       <h1> Join a Discussion on Similar Goals! </h1>
@@ -113,20 +120,26 @@ function Forums() {
                 </div>
                 <Grid container spacing={5}>
                   <Grid item xs={2}>
-                    <Button sx={{ typography: { fontSize: 8 } }}>
-                      {post.upvotes} like button
+                    <Button
+                      onClick={handleLike}
+                      sx={{ typography: { fontSize: 8 } }}
+                    >
+                      {post.upvotes} Motivational
                     </Button>
                   </Grid>
                   <Grid item xs={4}>
-                    <div>{post.downvotes} like count</div>
+                    <div>{post.downvotes} Moto Count</div>
                   </Grid>
                   <Grid item xs={2}>
-                    <Button sx={{ typography: { fontSize: 8 } }}>
-                      {post.downvotes} dislike button
+                    <Button
+                      onClick={handleDislike}
+                      sx={{ typography: { fontSize: 8 } }}
+                    >
+                      {post.downvotes} Unmotivating
                     </Button>
                   </Grid>
                   <Grid item xs={4}>
-                    <div>{post.downvotes} dislike count</div>
+                    <div>{post.downvotes} Unmotivating Count</div>
                   </Grid>
                 </Grid>
               </Box>
