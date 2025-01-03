@@ -22,30 +22,21 @@ function Login({ validSession, setValidSession, setUser }) {
     }
   }, [validSession]);
 
-
   return (
-     <Button
+    <Button
       variant="contained"
       size="large"
       href={href}
       startIcon={<GoogleIcon />}
-      sx={{
+      className="glass-btn primary"
+      style={{
         background: "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
         color: "white",
-        px: 4,
-        py: 1.5,
-        borderRadius: "12px",
         textTransform: "none",
-        fontSize: "1.1rem",
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-        "&:hover": {
-          background:
-            "linear-gradient(45deg, var(--pink) 50%, var(--blue) 110%)",
-        },
       }}
     >
       Sign {inOut} with Google
-     </Button>
+    </Button>
   );
 }
 

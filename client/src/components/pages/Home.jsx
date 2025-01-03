@@ -63,7 +63,7 @@ function Home() {
       });
   }, []);
 
-  // Show loading spinner id auth state is loading
+  // Show spinner auth is loading
   if (loading) {
     return (
       <Box

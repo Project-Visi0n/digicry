@@ -5,7 +5,6 @@ import LocationOnTwoToneIcon from "@mui/icons-material/LocationOnTwoTone";
 import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
 import Button from "@mui/material/Button";
 import ArrowOutwardTwoToneIcon from "@mui/icons-material/ArrowOutwardTwoTone";
-import { shadows } from "@mui/system";
 
 // UPCOMING EVENTS FEATURE
 /**

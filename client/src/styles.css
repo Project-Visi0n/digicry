@@ -68,6 +68,15 @@ body {
   margin: 0 auto !important;
 }
 
+.layout-container {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+.page-content {
+  margin-top: 2rem;
+}
+
 /***************************************************************
  * Typography
  ***************************************************************/
