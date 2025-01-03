@@ -8,6 +8,7 @@ import {
   TextField,
   InputAdornment,
   positions,
+  Grid,
 } from "@mui/material";
 
 function Forums() {
@@ -89,27 +90,48 @@ function Forums() {
       </Box>
       {goalPosts.map((post, i) => {
         return (
-          <Box
-            sx={() => ({
-              bgcolor: "#fff",
-              color: "grey.800",
-              border: "2px solid",
-              borderColor: "grey.300",
-              p: 2,
-              borderRadius: 2,
-              fontSize: "0.875rem",
-              fontWeight: "700",
-              top: 0,
-              left: "43%",
-              zIndex: "modal",
-              
-            })}
-          >
-            <div>
-              <h4 id={post._id}>{post.forumName}</h4>
-              <h5 className={post._id}>{post.message}</h5>
-            </div>
-          </Box>
+          <Grid container spacing={5}>
+            <Grid item xs={8}>
+              <Box
+                sx={() => ({
+                  bgcolor: "#fff",
+                  color: "grey.800",
+                  border: "2px solid",
+                  borderColor: "grey.300",
+                  p: 2,
+                  borderRadius: 2,
+                  fontSize: "0.875rem",
+                  fontWeight: "700",
+                  top: 0,
+                  left: "43%",
+                  zIndex: "modal",
+                })}
+              >
+                <div>
+                  <h4 id={post._id}>{post.forumName}</h4>
+                  <h5 className={post._id}>{post.message}</h5>
+                </div>
+                <Grid container spacing={5}>
+                  <Grid item xs={2}>
+                    <Button sx={{ typography: { fontSize: 8 } }}>
+                      {post.upvotes} like button
+                    </Button>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <div>{post.downvotes} like count</div>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button sx={{ typography: { fontSize: 8 } }}>
+                      {post.downvotes} dislike button
+                    </Button>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <div>{post.downvotes} dislike count</div>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Grid>
+          </Grid>
         );
       })}
     </div>
