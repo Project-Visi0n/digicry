@@ -56,13 +56,29 @@ function Forums() {
   };
 
   const handleDislike = ({ target: { value } }) => {
-    console.log("disliked");
-    console.log(value);
+    axios
+    .post("api/forums/dislike", {
+      postId: value,
+    })
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   };
 
   const handleLike = ({ target: { value } }) => {
-    console.log("liked");
-    console.log(value);
+    axios
+    .post("api/forums/like", {
+      postId: value,
+    })
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   };
   return (
     <div>
@@ -124,14 +140,18 @@ function Forums() {
                 <br></br>
                 <Grid container spacing={5}>
                   <Grid item xs={2}>
-                  <Tooltip title="It's okay to love!" enterDelay={500} leaveDelay={200}>
-                    <Button
-                      value={post._id}
-                      onClick={handleLike}
-                      sx={{ typography: { fontSize: 8 } }}
+                    <Tooltip
+                      title="It's okay to love!"
+                      enterDelay={500}
+                      leaveDelay={200}
                     >
-                      Motivational
-                    </Button>
+                      <Button
+                        value={post._id}
+                        onClick={handleLike}
+                        sx={{ typography: { fontSize: 8 } }}
+                      >
+                        Motivational
+                      </Button>
                     </Tooltip>
                   </Grid>
                   <Grid item xs={4}>
