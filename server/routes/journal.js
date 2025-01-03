@@ -123,7 +123,7 @@ const getRanges = async (userId) => {
       }
     });
 
-    
+
 
     console.log('Base min/max values found!')
 
