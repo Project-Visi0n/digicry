@@ -11,6 +11,11 @@ const client = new language.LanguageServiceClient();
 // Utility function to validate ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+// Helper function to convert Natural Language sentimentScore & sentimentMagnitude into more human readable values
+const sentimentConverter = () => {
+
+}
+
 // Create new journal entry
 router.post("/", (req, res) => {
   console.log("[DEBUG] Incoming POST request:", req.body);
@@ -35,9 +40,12 @@ router.post("/", (req, res) => {
     return res.sendStatus(400);
   }
 
+  // Concatenate post title & post content - separate with new line to help GNL parse accurately
+  const analyzeText = `Post Title: ${title}\n  Post Content: ${content}`;
+
   // Call Google NLP
   const document = {
-    content,
+    content: analyzeText,
     type: "PLAIN_TEXT",
   };
 
