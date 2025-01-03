@@ -43,11 +43,11 @@ router.get("/", (req, res) => {
 
 router.post("/like", (req, res) => {
   console.log("reached");
-  const { postId } = req.body;
-  Forums.findByIdAndUpdate( postId, {
+  const { postId, liked } = req.body;
+  Forums.findByIdAndUpdate(postId, {
     $inc: {
-    upVote: 1
-    }
+      upVote: liked ? 1 : -1,
+    },
   })
     .then(() => {
       console.log("successful upvote");
@@ -61,11 +61,12 @@ router.post("/like", (req, res) => {
 
 router.post("/dislike", (req, res) => {
   console.log("reached");
-  const { postId } = req.body;
-  Forums.findByIdAndUpdate( postId, {
+  const { postId, liked } = req.body;
+
+  Forums.findByIdAndUpdate(postId, {
     $inc: {
-    downVote: -1
-    }
+      downVote: liked ? -1 : 1
+    },
   })
     .then(() => {
       console.log("successful downvote");
