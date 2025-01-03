@@ -11,6 +11,49 @@ const client = new language.LanguageServiceClient();
 // Utility function to validate ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+// Helper function to normalize the sentimentScore and sentimentMagnitude into a 1-100 value where smaller numbers represent negative sentiment while larger numbers represent positive sentiment
+
+/**
+ *
+ * Helpful Links:
+ * https://developers.google.com/machine-learning/crash-course/numerical-data/normalization
+ * ^ see linear scaling alg for more info
+ * https://www.indeed.com/career-advice/career-development/normalization-formula
+ * https://medium.com/@chuntcdj/feature-normalization-the-essential-step-in-machine-learning-when-dealing-with-numbers-03030aaed65e
+ *
+ *
+ *
+ * Ranges from our test data:
+ * magnitude: 0.5 -> 13
+ * sentiment: -0.7 -> 0.9
+ *
+ * first step is to normalize this data to get a value between 0 and 1
+ * then assign values for magnitude and sentiment's 'weight' to decide the value priority of each
+ *
+ * the results from our test data (small sample size fyi) imply that magnitude can vary greatly
+ * thus, i'll be giving sentiment a weight of 75% and magnitude a weight of 25%
+ *
+ * our goal is to get a convertedScore that ranges from 0-100, taking into account 25% of the weighted value and 75% of the sentiment value
+ *
+ *
+ */
+
+const sentimentConverter = (sentiment, magnitude) => {
+
+  // normalize data via linear scaling
+  const normalizedSentiment = (sentiment - (-0.7)) / (0.9 - (-0.7));
+  const normalizedMagnitude = (magnitude - 0.5) / (13 - 0.5);
+
+  // init weight values
+  const sentimentWeight = 0.75;
+  const magnitudeWeight = 0.25;
+
+
+
+  convertedScore = Math.round((normalizedSentiment * sentimentWeight + normalizedMagnitude * magnitudeWeight) * 100)
+  return convertedScore;
+}
+
 // Create new journal entry
 router.post("/", (req, res) => {
   console.log("[DEBUG] Incoming POST request:", req.body);
@@ -35,9 +78,12 @@ router.post("/", (req, res) => {
     return res.sendStatus(400);
   }
 
+  // Concatenate post title & post content - separate with new line to help GNL parse accurately
+  const analyzeText = `Post Title: ${title}\n  Post Content: ${content}`;
+
   // Call Google NLP
   const document = {
-    content,
+    content: analyzeText,
     type: "PLAIN_TEXT",
   };
 
@@ -59,9 +105,14 @@ router.post("/", (req, res) => {
           title: title.trim(),
           content: content.trim(),
           mood,
+          normalizedSentiment: sentimentConverter(sentiment.score, sentiment.magnitude),
           sentimentScore: sentiment.score,
           sentimentMagnitude: sentiment.magnitude,
+
         });
+        console.log(`This is newEntry: ${newEntry}`);
+        console.log('test', newEntry);
+        console.log('This should be the converted value', newEntry.normalizedSentiment);
         return newEntry.save();
       });
     })
