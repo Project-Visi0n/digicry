@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "digicry",
+  "private_key_id": "a62e140e2dbf2b67518ce1eaa6d6d9182baa9d59",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCho4qGM1FJ6ZiT\n7CFF7Wpfk0QsGMiQmGbgF4MVtM0YoczkUdXHMxv4dU3ZIXtQ4K/AHwMWeCY86rt4\nuQTVjJJ9qkeuBRoWRaYji9NJMo25rWHdorlzHQXqIvklJ6QEYeFvyYVa7dKpv6HO\ndpy/UhMSGmgSTAWgKyRYFepsOLZ+YuOxg0SnYUEFXiPvcMoqbeJDIQvUpNNMlmlq\nC37XXSwKqkVfrIYrYDr8syLQ5HAdYJicUIdXzlMuiHihFgFQP3PFLkdUre572NLe\nos442wGOS7VOSx1Ha0AC1RJzGBbZ0jj2J3OFRy7jEHEPKYaAtgHl92Eol7s8M1vt\nP46LzDKVAgMBAAECggEAUJqGFH/4tFv5iyJAQWewGPMOFtNRCNIG0w7GfoeHkxX0\nX5LzgP9anl6YsINCxEUXPz33wzetEcmYLQ5Oe9M6pdHJJt1CcgLPY4Bxn1nHVOVC\nHUztH5tEfMpt5XpMDydkTON4Tay01ZNLM/LwHXPnMKrcZOtmDsYUvJxJJyhs0L7h\nieYob/Dm3eAt4TJzzgyDdRiW8YC3zioLc/o76IWUEkK0djvyn5n926AFNDlte+vk\nAANMDMq7f/AjvV0KEYnAUmy0q48Q4+mGT1RJMLe3KLhYk7HachohJ9uXKV/6DUHY\nzHmfbghpc5JkGdpqjrNrIPPfS89r3incdqePw30A7QKBgQDhedUL/9hirY7Kt0UT\nc55i9sRKqx6BySn3FhQ+d+L6zIBE35iQd+5FVuN2uIdFQmaYc7/xRQjfkGApDrhE\nSaBPaWC7LGSDl3Z5RznxAFq24vIS7NhAGojgZZoNCXLCIHg3NNh5WhCp3ouqhLlJ\n1BjnNjr8/xPKj0s7VJxucz4xBwKBgQC3hVmeeoucl5CXDXICfU/HejPRQkfSa0ZV\nMB2CmvuqDpofQxuzPy20Vi/LxWeEeTDJjaSxnVANPTsnBcyjiiTljMLEpCYiAuRB\ncUnDCrNZnqP8Un/Xt0NG9oA0ZaZWjiDUyBi/gAZ7ZgNbOwM3wQkIYo3uFeUrZ6eZ\ne8V0l+MEgwKBgBCYvy3a7zqUO+aABv2fjRELyPcWEXDMNeKSJXtTp8l+NBLdwoUf\nztIbyzJ58rsOYC7olkBULIsIPYvIIZglMz+lKhGc+ukUxQu4SnOK6yJ7IgZymJhf\nW6Po1qYPA/t2GGM36JdGIePfFbi/fEQK8KpUO5NT00kdsxPy7nDS2skRAoGAJIpn\nqrdpvvcqsfjaX4aF8Qjy8lKJLGtxqJqY9Z1YSKb5pwncpRcKSaLzh1Y541WiEi+i\nwD67ZrdvZLix40opSI97ZF3uvcznl+QvtKcXyNteeWoPzGrP+XwxUL2AnjFUdimV\nS+P45m8McgjQ/jPwUXwWGHbBl5/e7h+H1Ew9xnMCgYBBxpoxxkFwH1b8gv6MbJvh\n7GMdGS4voRewv92nkLIiGwUrBVCHW++DuKPT0zh/BpneCP4rkSyHqhUtPidXJ4Zh\n3RVo6xwR/3vWeyXHWbV/ilApAuw+wsbhIOyahCKp5o3FMMjLe+tTYFOo3Mr7cVJD\ncsEUOBda6VhoH1bY1wfJGQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "digicry-sentiment-analyzer@digicry.iam.gserviceaccount.com",
+  "client_id": "112418355929580156121",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/digicry-sentiment-analyzer%40digicry.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
