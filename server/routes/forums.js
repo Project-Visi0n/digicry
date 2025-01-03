@@ -8,12 +8,18 @@ router.post("/", (req, res) => {
   console.log("reached");
   const { message, selectedGoal } = req.body;
   const noSpacesGoal = selectedGoal.split(" ").join("");
+  const date = new Date();
+
+  // add a day
+  const expiration = date.setDate(date.getDate() + 3);
+
   Forums.create({
     forumName: noSpacesGoal,
     user: "anon",
     message,
     upVote: 0,
     downVote: 0,
+    expireAt: expiration,
   })
     .then(() => {
       console.log("successful creation");
@@ -78,4 +84,8 @@ router.post("/dislike", (req, res) => {
       res.sendStatus(500);
     });
 });
+
+router.get("/trimForums", (req, res) => {
+
+})
 module.exports = router;
