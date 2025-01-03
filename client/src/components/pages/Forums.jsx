@@ -9,6 +9,7 @@ import {
   InputAdornment,
   positions,
   Grid,
+  Tooltip,
 } from "@mui/material";
 
 function Forums() {
@@ -120,8 +121,10 @@ function Forums() {
                   <h4 id={post._id}>{post.forumName}</h4>
                   <h5 className={post._id}>{post.message}</h5>
                 </div>
+                <br></br>
                 <Grid container spacing={5}>
                   <Grid item xs={2}>
+                  <Tooltip title="It's okay to love!" enterDelay={500} leaveDelay={200}>
                     <Button
                       value={post._id}
                       onClick={handleLike}
@@ -129,6 +132,7 @@ function Forums() {
                     >
                       Motivational
                     </Button>
+                    </Tooltip>
                   </Grid>
                   <Grid item xs={4}>
                     <div>{post.downvotes} Moto Count</div>
