@@ -7,6 +7,7 @@ import {
   Container,
   TextField,
   InputAdornment,
+  positions,
 } from "@mui/material";
 
 function Forums() {
@@ -19,8 +20,6 @@ function Forums() {
     "Mental Health",
     "Career",
   ]);
-
-
 
   const handleClick = ({ target: { className } }) => {
     console.log("clicked ", className);
@@ -73,16 +72,44 @@ function Forums() {
       <Box component="form" action={handleSubmit}>
         <label>Say Something Positive!</label>
         <br />
-        <input type="text" id="msg" name="msg" />
+        <TextField
+          sx={(theme) => ({
+            bgcolor: "#fff",
+          })}
+          type="text"
+          id="msg"
+          name="msg"
+          placeholder="Spread love!"
+        />
         <br />
-        <Button type="submit" variant="outlined"> Submit Post To {selectedGoal} </Button>
+        <Button type="submit" variant="outlined">
+          {" "}
+          Submit Post To {selectedGoal}{" "}
+        </Button>
       </Box>
       {goalPosts.map((post, i) => {
         return (
-          <div>
-            <h4 id={post._id}>{post.forumName}</h4>
-            <h5 className={post._id}>{post.message}</h5>
-          </div>
+          <Box
+            sx={() => ({
+              bgcolor: "#fff",
+              color: "grey.800",
+              border: "2px solid",
+              borderColor: "grey.300",
+              p: 2,
+              borderRadius: 2,
+              fontSize: "0.875rem",
+              fontWeight: "700",
+              top: 0,
+              left: "43%",
+              zIndex: "modal",
+              
+            })}
+          >
+            <div>
+              <h4 id={post._id}>{post.forumName}</h4>
+              <h5 className={post._id}>{post.message}</h5>
+            </div>
+          </Box>
         );
       })}
     </div>
