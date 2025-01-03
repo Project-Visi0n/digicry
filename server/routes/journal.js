@@ -33,9 +33,7 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
  * the results from our test data (small sample size fyi) imply that magnitude can vary greatly
  * thus, i'll be giving sentiment a weight of 75% and magnitude a weight of 25%
  *
- * our goal is to get a convertedScore that ranges from 0-100
- *
- *
+ * our goal is to get a convertedScore that ranges from 0-100, taking into account 25% of the weighted value and 75% of the sentiment value
  *
  *
  */
@@ -51,8 +49,8 @@ const sentimentConverter = (sentiment, magnitude) => {
   const magnitudeWeight = 0.25;
 
 
-  
-  convertedScore = (normalizedSentiment * sentimentWeight) + (normalizedMagnitude * magnitudeWeight)
+
+  convertedScore = Math.round((normalizedSentiment * sentimentWeight + normalizedMagnitude * magnitudeWeight) * 100)
   return convertedScore;
 }
 
@@ -107,9 +105,14 @@ router.post("/", (req, res) => {
           title: title.trim(),
           content: content.trim(),
           mood,
+          normalizedSentiment: sentimentConverter(sentiment.score, sentiment.magnitude),
           sentimentScore: sentiment.score,
           sentimentMagnitude: sentiment.magnitude,
+
         });
+        console.log(`This is newEntry: ${newEntry}`);
+        console.log('test', newEntry);
+        console.log('This should be the converted value', newEntry.normalizedSentiment);
         return newEntry.save();
       });
     })
