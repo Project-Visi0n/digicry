@@ -1,7 +1,7 @@
-import RenderEvents from '../RenderEvents';
+import RenderEvents from "../RenderEvents";
 
 function Events() {
-  return <RenderEvents />
+  return <RenderEvents />;
 }
 
 export default Events;

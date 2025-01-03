@@ -5,7 +5,6 @@ import LocationOnTwoToneIcon from "@mui/icons-material/LocationOnTwoTone";
 import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
 import Button from "@mui/material/Button";
 import ArrowOutwardTwoToneIcon from "@mui/icons-material/ArrowOutwardTwoTone";
-import { shadows } from "@mui/system";
 
 // UPCOMING EVENTS FEATURE
 /**
@@ -14,77 +13,73 @@ import { shadows } from "@mui/system";
  * fetchEventsByLoc - checks for user location before calling fetchEvents
  */
 
-
 /**
  * CURRENTLY HAVE THIS COMMENTED OUT TO AVOID HITTING ANY API RATE LIMITS
  * NOT A HUGE ISSUE - FEEL FREE TO UNCOMMENT AND RUN THE CODE TO SEE HOW IT LOOKS
  * JUST PLS TRY TO AVOID LOADING THIS EVERY TIME YOU'RE TESTING A FEATURE TO AVOID US HITTING API LIMITS
  */
 
-
-
-
 export default function RenderEvents() {
   const [events, setEvents] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
-
-
-  /*
+/*
   // use geolocation webextension api to get users lat and long
   // we will take the response and use it as a param for our reverse geocoding to get the user's city
   const getUserLoc = () => {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         // get users lat and long coords
-        navigator.geolocation.getCurrentPosition((position) => {
-          const { latitude, longitude } = position.coords;
-          // set user location
-          setUserLocation({ latitude, longitude });
-          // resolve promise
-          resolve({ latitude, longitude });
-        },
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            // set user location
+            setUserLocation({ latitude, longitude });
+            // resolve promise
+            resolve({ latitude, longitude });
+          },
           // on error
           (error) => {
-          console.error(`Couldn't getUserLoc`);
-          reject(error);
-          })
+            console.error(`Couldn't getUserLoc`);
+            reject(error);
+          },
+        );
       } else {
         // if browser doesn't support geolocation
-        console.error('Geolocation not supported by browser');
-        reject(new Error('Geolocation not supported by browser'));
+        console.error("Geolocation not supported by browser");
+        reject(new Error("Geolocation not supported by browser"));
       }
-    })
-  }
-
-
+    });
+  };
 
   // fetches events from SERP API
   // city param is the returned value from our reverse geocoding - ex: New Orleans
   const fetchEvents = (city) => {
     // if we don't have a city value
     if (!city) {
-      console.error('Need city name to fetchEvents');
+      console.error("Need city name to fetchEvents");
       return;
     }
     // use city param for SERP API call to get events relevent to user's city
-    return axios.get('/api/events/events', {
-      params: {
-        userLocation: city,
-      },
-    })
-      // response is a series of objects each representing a unique event from the API
-      .then((response) => {
-        const events = response.data;
-        // update state
-        setEvents(events);
-        return events;
-      })
-      .catch((err) => {
-        console.error('Error fetching events', err);
-        throw err;
-      })
-  }
-
+    return (
+      axios
+        .get("/api/events/events", {
+          params: {
+            userLocation: city,
+          },
+        })
+        // response is a series of objects each representing a unique event from the API
+        .then((response) => {
+          const events = response.data;
+          // update state
+          setEvents(events);
+          return events;
+        })
+        .catch((err) => {
+          console.error("Error fetching events", err);
+          throw err;
+        })
+    );
+  };
 
   // MAIN FUNCTION
   const fetchEventsByLoc = async () => {
@@ -94,7 +89,7 @@ export default function RenderEvents() {
         // invoke getUserLoc to get coordinates
         const location = await getUserLoc();
         // use coordinates in API call param to reverse geocode
-        const city = await axios.get('/api/geolocate/location', {
+        const city = await axios.get("/api/geolocate/location", {
           params: {
             latlng: `${location.latitude},${location.longitude}`,
           },
@@ -103,7 +98,7 @@ export default function RenderEvents() {
         await fetchEvents(city.data);
       } else {
         // if we already have the user's coords, we can immediately reverse geocode
-        const city = await axios.get('/api/geolocate/location', {
+        const city = await axios.get("/api/geolocate/location", {
           params: {
             latlng: `${userLocation.latitude},${userLocation.longitude}`,
           },
@@ -112,7 +107,7 @@ export default function RenderEvents() {
         await fetchEvents(city.data);
       }
     } catch (err) {
-      console.error('Error in fetchEventsByLoc: ', err);
+      console.error("Error in fetchEventsByLoc: ", err);
     }
   };
 
@@ -121,17 +116,14 @@ export default function RenderEvents() {
     getUserLoc();
   }, []);
 
-
   // invoke fetchEventsByLoc() when userLocation state changes
   useEffect(() => {
-    console.log('userLocation state updated: ', userLocation);
+    console.log("userLocation state updated: ", userLocation);
     if (userLocation) {
       fetchEventsByLoc();
     }
-  }, [userLocation])
-
-  */
-
+  }, [userLocation]);
+*/
   return (
     <Box
       sx={{
@@ -211,11 +203,11 @@ export default function RenderEvents() {
           >
             Learn More
           </Button>
-          {/*<Typography variant="body2">{event.location[1]}</Typography>*/}
-          {/*<Typography variant="body2">{event.description}</Typography>*/}
-          {/*<Typography variant="body2">{event.venueName}</Typography>*/}
-          {/*<Typography variant="body2">{event.linkUrl}</Typography>*/}
-          {/*<Typography variant="body2">{event.thumbnail}</Typography>*/}
+          {/* <Typography variant="body2">{event.location[1]}</Typography> */}
+          {/* <Typography variant="body2">{event.description}</Typography> */}
+          {/* <Typography variant="body2">{event.venueName}</Typography> */}
+          {/* <Typography variant="body2">{event.linkUrl}</Typography> */}
+          {/* <Typography variant="body2">{event.thumbnail}</Typography> */}
         </Box>
       ))}
     </Box>
