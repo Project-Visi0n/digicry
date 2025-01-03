@@ -11,7 +11,7 @@ import {
   Grid,
   Tooltip,
 } from "@mui/material";
-
+import LikeButton from "./LikeButton";
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState("?");
@@ -138,38 +138,7 @@ function Forums() {
                   <h5 className={post._id}>{post.message}</h5>
                 </div>
                 <br></br>
-                <Grid container spacing={5}>
-                  <Grid item xs={2}>
-                    <Tooltip
-                      title="It's okay to love!"
-                      enterDelay={500}
-                      leaveDelay={200}
-                    >
-                      <Button
-                        value={post._id}
-                        onClick={handleLike}
-                        sx={{ typography: { fontSize: 8 } }}
-                      >
-                        Motivational
-                      </Button>
-                    </Tooltip>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <div>{post.downvotes} Moto Count</div>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Button
-                      value={post._id}
-                      onClick={handleDislike}
-                      sx={{ typography: { fontSize: 8 } }}
-                    >
-                      {post.downvotes} Unmotivating
-                    </Button>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <div>{post.downvotes} Unmotivating Count</div>
-                  </Grid>
-                </Grid>
+                <LikeButton post={post}/>
               </Box>
             </Grid>
           </Grid>
