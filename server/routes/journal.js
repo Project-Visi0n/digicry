@@ -11,6 +11,15 @@ const client = new language.LanguageServiceClient();
 // Utility function to validate ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+
+
+
+
+
+
+
+
+
 // Helper function to normalize the sentimentScore and sentimentMagnitude into a 1-100 value where smaller numbers represent negative sentiment while larger numbers represent positive sentiment
 
 /**
@@ -44,14 +53,77 @@ const sentimentConverter = (sentiment, magnitude) => {
   const normalizedSentiment = (sentiment - (-0.7)) / (0.9 - (-0.7));
   const normalizedMagnitude = (magnitude - 0.5) / (13 - 0.5);
 
+
   // init weight values
-  const sentimentWeight = 0.75;
-  const magnitudeWeight = 0.25;
+  const sentimentWeight = 0.70;
+  const magnitudeWeight = 0.30;
 
 
 
   convertedScore = Math.round((normalizedSentiment * sentimentWeight + normalizedMagnitude * magnitudeWeight) * 100)
   return convertedScore;
+}
+
+// Helper function to query DB to get the ranges for sentiment & magnitude - defaults to ranges found in our test data
+const getRanges = async () => {
+  // will use defaults if not enough data found in db
+  const defaults = {
+    sentimentMin: -0.7,
+    sentimentMax: 0.9,
+    magnitudeMin: 0.5,
+    magnitudeMax: 13,
+  }
+
+  // will need to query the db
+
+
+  try {
+    const journals = await Journal.find({});
+
+    // if we dont have enough data resort to defaults
+    if (journals.length < 10) {
+      return defaults;
+    }
+
+    // series of forEach statements to find min/max ranges
+
+    // sentiment range is -1 -> 1, so it can never be 2 or -2
+    let sentimentMin = 2;
+    journals.forEach(journal => {
+      if (journal.sentimentScore < sentimentMin) {
+        sentimentMin = journal.sentimentScore;
+      }
+    })
+
+    let sentimentMax = -2;
+    journals.forEach(journal => {
+      if (journal.sentimentScore > sentimentMax) {
+        sentimentMax = journal.sentimentScore;
+      }
+    })
+
+    // same logic as sentiment range statements above
+    let magnitudeMin = 101;
+    journals.forEach((journal => {
+      if (journal.sentimentMagnitude < magnitudeMin) {
+        magnitudeMin = journal.sentimentMagnitude;
+      }
+    }))
+
+    let magnitudeMax = 0;
+    journals.forEach((journal => {
+      if (journal.sentimentMagnitude > magnitudeMax) {
+        magnitudeMax = journal.sentimentMagnitude;
+      }
+    }))
+
+    return { sentimentMin, sentimentMax, magnitudeMin, magnitudeMax };
+
+  } catch {
+    return defaults;
+  }
+
+
 }
 
 // Create new journal entry
@@ -111,7 +183,7 @@ router.post("/", (req, res) => {
 
         });
         console.log(`This is newEntry: ${newEntry}`);
-        console.log('test', newEntry);
+
         console.log('This should be the converted value', newEntry.normalizedSentiment);
         return newEntry.save();
       });
