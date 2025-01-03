@@ -41,16 +41,18 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 const sentimentConverter = (sentiment, magnitude) => {
 
   // normalize data via linear scaling
-  const normalizedSentiment = (sentiment - (-0.7)) / (0.9 - (-0.7));
+  const normalizedSentiment = (sentiment - -0.7) / (0.9 - -0.7);
   const normalizedMagnitude = (magnitude - 0.5) / (13 - 0.5);
 
   // init weight values
   const sentimentWeight = 0.75;
   const magnitudeWeight = 0.25;
 
-
-
-  convertedScore = Math.round((normalizedSentiment * sentimentWeight + normalizedMagnitude * magnitudeWeight) * 100)
+  const convertedScore = Math.round(
+    (normalizedSentiment * sentimentWeight +
+      normalizedMagnitude * magnitudeWeight) *
+      100,
+  );
   return convertedScore;
 }
 
@@ -105,14 +107,20 @@ router.post("/", (req, res) => {
           title: title.trim(),
           content: content.trim(),
           mood,
-          normalizedSentiment: sentimentConverter(sentiment.score, sentiment.magnitude),
+          normalizedSentiment: sentimentConverter(
+            sentiment.score,
+            sentiment.magnitude,
+          ),
           sentimentScore: sentiment.score,
           sentimentMagnitude: sentiment.magnitude,
 
         });
         console.log(`This is newEntry: ${newEntry}`);
-        console.log('test', newEntry);
-        console.log('This should be the converted value', newEntry.normalizedSentiment);
+        console.log("test", newEntry);
+        console.log(
+          "This should be the converted value",
+          newEntry.normalizedSentiment,
+        );
         return newEntry.save();
       });
     })
@@ -261,7 +269,10 @@ router.delete("/:id", (req, res) => {
       return Journal.findByIdAndDelete(id);
     })
     .then((deletedEntry) => {
-      res.send({ message: "Journal entry deleted successfully." });
+      res.send({
+        message: "Journal entry deleted successfully:",
+        deletedEntry,
+      });
     })
     .catch((err) => {
       console.error("Error deleting journal entry:", err.message);
