@@ -23,10 +23,10 @@ function Forums() {
     "Career",
   ]);
 
-  const handleClick = ({ target: { className } }) => {
-    console.log("clicked ", className);
-    setSelectedGoal(className);
-    const removeSpaces = className.split(" ").join("");
+  const handleClick = ({target: {value}}) => {
+    console.log(value);
+    setSelectedGoal(value);
+    const removeSpaces = value.split(" ").join("");
     axios
       .get("/api/forums", { params: { forumName: removeSpaces } })
       .then((posts) => {
@@ -55,45 +55,21 @@ function Forums() {
       });
   };
 
-  const handleDislike = ({ target: { value } }) => {
-    axios
-    .post("api/forums/dislike", {
-      postId: value,
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  };
-
-  const handleLike = ({ target: { value } }) => {
-    axios
-    .post("api/forums/like", {
-      postId: value,
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  };
   return (
     <div>
       <h1> Join a Discussion on Similar Goals! </h1>
       {goalOptions.map((goal) => {
         return (
-          <button
+          <Button
             className={goal}
             type="button"
             onClick={handleClick}
             key={goal}
             goal={goal}
+            value={goal}
           >
             {goal}
-          </button>
+          </Button>
         );
       })}
       <Box component="form" action={handleSubmit}>
