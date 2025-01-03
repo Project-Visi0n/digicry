@@ -25,6 +25,9 @@ const journalEntrySchema = new Schema(
       required: [true, "Mood is required"],
       enum: ["😊", "😐", "😢", "😡", "😴"],
     },
+    normalizedSentiment: {
+      type: Number,
+    },
     sentimentScore: {
       type: Number,
       default: 0,
