@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 
 import LikeButton from "./LikeButton";
+
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState("?");
@@ -43,6 +44,25 @@ function Forums() {
           `error getting ${removeSpaces} forums from server`
         );
       });
+  };
+
+  const minutesAgo = (isoDateString) => {
+    const date = new Date(isoDateString);
+    const now = new Date();
+    const diffMilliseconds = now.getTime() - date.getTime();
+    const diffMinutes = Math.floor(diffMilliseconds / (1000 * 60));
+    const diffHours = Math.floor(diffMinutes / 60);
+    const remainingMinutes = diffMinutes % 60;
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMinutes < 60) {
+      return diffMinutes + " minutes ago";
+    } else if (diffHours < 24) {
+      return diffHours + "hrs" + remainingMinutes + " minutes ago";
+    } else if (diffDays < 2) {
+      return "yesterday";
+    }
+    return diffDays + " days ago";
   };
 
   const handleSubmit = (msg) => {
@@ -124,6 +144,7 @@ function Forums() {
         <TextField
           sx={(theme) => ({
             bgcolor: "#fff",
+            width: "500px",
           })}
           type="text"
           id="msg"
@@ -131,21 +152,32 @@ function Forums() {
           placeholder="Spread love!"
         />
         <br />
-        <Button type="submit" variant="outlined">
+        <br />
+        <Button
+          type="submit"
+          variant="outlined"
+          sx={() => ({
+            ":hover": {
+              boxShadow: 6, // theme.shadows[20]
+              opacity: 0.95,
+              bgcolor: "#FAF3DD",
+            },
+          })}
+        >
           {" "}
           Submit Post To {selectedGoal}{" "}
         </Button>
       </Box>
       <br></br>
       <div key={refreshKey}>
-        {goalPosts.map((post, i) => {
+        {goalPosts.reverse().map((post, i) => {
           return (
             <Box align="center" key={refreshKey} container spacing={5}>
               <Grid item xs={10}>
                 <Box
                   sx={() => ({
-                    bgcolor: 'rgb(255, 255, 255)',
-                    opacity: 0.85, 
+                    bgcolor: "rgb(255, 255, 255)",
+                    opacity: 0.65,
                     color: "grey.800",
                     border: "2px solid",
                     borderColor: "black",
@@ -156,19 +188,30 @@ function Forums() {
                     top: 0,
                     left: "43%",
                     zIndex: "modal",
+                    width: "700px",
+                    ":hover": {
+                      boxShadow: 20, // theme.shadows[20]
+                      opacity: 0.95,
+                    },
                   })}
                   id={selectedGoal}
                 >
                   <div align="left">
-                    <h4 style={{ color: 'black' }} id={post._id}>{post.forumName}</h4>
-                    <br/>
-                    <h4 style={{ color: 'black' }} className={post._id}><em>{post.message}</em></h4>
+                    <h4 style={{ color: "black" }} id={post._id}>
+                      {post.forumName}
+                    </h4>
+                    <br />
+                    <h4 style={{ color: "black" }} className={post._id}>
+                      <em>{post.message}</em>
+                    </h4>
+                    <br />
+                    <h6>{minutesAgo(post.createdAt)}</h6>
                   </div>
                   <br></br>
                   <LikeButton selectedGoal={selectedGoal} post={post} />
                 </Box>
               </Grid>
-              <div style={{ height: '2px' }} /> 
+              <div style={{ height: "2px" }} />
             </Box>
           );
         })}
