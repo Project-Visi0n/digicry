@@ -47,11 +47,11 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
  *
  */
 
-const sentimentConverter = async (sentiment, magnitude) => {
+const sentimentConverter = async (sentiment, magnitude, userId) => {
 
 
   try {
-    const ranges = await getRanges();
+    const ranges = await getRanges(userId);
     // normalize data via linear scaling
     const normalizedSentiment = (sentiment - ranges.sentimentMin) / (ranges.sentimentMax - ranges.sentimentMin);
     const normalizedMagnitude = (magnitude - ranges.magnitudeMin) / (ranges.magnitudeMax - ranges.magnitudeMin);
@@ -76,7 +76,7 @@ const sentimentConverter = async (sentiment, magnitude) => {
 }
 
 // Helper function to query DB to get the ranges for sentiment & magnitude - defaults to ranges found in our test data
-const getRanges = async () => {
+const getRanges = async (userId) => {
   // will use defaults if not enough data found in db
   const defaults = {
     sentimentMin: -0.7,
@@ -96,7 +96,7 @@ const getRanges = async () => {
 
 
   try {
-    const journals = await Journal.find({});
+    const journals = await Journal.find({ userId });
 
     // if we dont have enough data resort to defaults
     if (journals.length < 10) {
@@ -122,6 +122,8 @@ const getRanges = async () => {
         ranges.magnitudeMax = journal.sentimentMagnitude;
       }
     });
+
+    
 
     console.log('Base min/max values found!')
 
@@ -187,7 +189,7 @@ router.post("/", async (req, res) => {
       title: title.trim(),
       content: content.trim(),
       mood,
-      normalizedSentiment: await sentimentConverter(sentiment.score, sentiment.magnitude),
+      normalizedSentiment: await sentimentConverter(sentiment.score, sentiment.magnitude, userId),
       sentimentScore: sentiment.score,
       sentimentMagnitude: sentiment.magnitude,
 
