@@ -15,6 +15,7 @@ const olderEntries = [
     title: "My day at the park",
     content: "It was a sunny day and I felt so relaxed and happy.",
     mood: "😊",
+    sentimentScore: 78,
     createdAt: new Date("2023-01-10"),
   },
   {
@@ -22,6 +23,7 @@ const olderEntries = [
     title: "A tough evening",
     content: "Everything felt overwhelming and stressful last night.",
     mood: "😡",
+    sentimentScore: 50,
     createdAt: new Date("2023-01-12"),
   },
   {
@@ -30,6 +32,7 @@ const olderEntries = [
     content:
       "The constant rain made me feel a bit gloomy. I stayed in all day.",
     mood: "😢",
+    sentimentScore: 60,
     createdAt: new Date("2023-02-03"),
   },
   {
@@ -38,6 +41,7 @@ const olderEntries = [
     content:
       "Went to the gym and felt an incredible rush of energy afterwards!",
     mood: "😊",
+    sentimentScore: 85,
     createdAt: new Date("2023-02-08"),
   },
   {
@@ -46,6 +50,7 @@ const olderEntries = [
     content:
       "Traffic was awful. I was late to work and felt angry at the delay.",
     mood: "😡",
+    sentimentScore: 40,
     createdAt: new Date("2023-02-14"),
   },
   {
@@ -53,6 +58,7 @@ const olderEntries = [
     title: "Peaceful Morning",
     content: "Woke up early, had a nice coffee, and read a book quietly.",
     mood: "😊",
+    sentimentScore: 70,
     createdAt: new Date("2023-02-18"),
   },
   {
@@ -60,6 +66,7 @@ const olderEntries = [
     title: "Overworked",
     content: "Stayed at the office way too late. Feeling totally drained.",
     mood: "😴",
+    sentimentScore: 60,
     createdAt: new Date("2023-02-20"),
   },
   {
@@ -67,6 +74,7 @@ const olderEntries = [
     title: "Family Visit",
     content: "My parents visited. We had laughs and great food!",
     mood: "😊",
+    sentimentScore: 80,
     createdAt: new Date("2023-03-01"),
   },
   {
@@ -74,6 +82,7 @@ const olderEntries = [
     title: "Creative Spark",
     content: "Wrote some code and felt so inspired today!",
     mood: "😊",
+    sentimentScore: 80,
     createdAt: new Date("2023-03-05"),
   },
   {
@@ -81,6 +90,7 @@ const olderEntries = [
     title: "Night of Regret",
     content: "Had an argument with a friend. Now I feel guilty and sad.",
     mood: "😢",
+    sentimentScore: 50,
     createdAt: new Date("2023-03-07"),
   },
 ];
