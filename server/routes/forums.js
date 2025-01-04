@@ -6,15 +6,16 @@ const { Forums } = require("../models");
 
 // Creates a post and saves it to Forums model, sets an expiration date of 3 days
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { message, selectedGoal } = req.body;
   const noSpacesGoal = selectedGoal.split(" ").join("");
   const date = new Date();
-
+  console.log('forums post / reached')
+  console.log(message, selectedGoal, noSpacesGoal)
   // Add a day
   const expiration = date.setDate(date.getDate() + 3);
-
-  Forums.create({
+  console.log(expiration)
+  await Forums.create({
     forumName: noSpacesGoal,
     user: "anon",
     message,
@@ -34,10 +35,13 @@ router.post("/", (req, res) => {
 
 // Gets all posts from forums based on query
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+  
   const { query } = req;
-  Forums.find({ forumName: query.forumName })
+  console.log('attempting to get the values of', query.forumName )
+  await Forums.find({ forumName: query.forumName })
     .then((posts) => {
+      console.log('posts returned ', posts)
       if (posts.length > 0) {
         res.status(200).send(posts);
       } else {
