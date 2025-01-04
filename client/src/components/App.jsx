@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Journal from "./pages/Journal";
 import JournalEntry from "./pages/JournalEntry";
 import JournalEntryForm from "./pages/JournalEntryForm";
+import MoodAnalytics from "./pages/MoodAnalytics";
 import Events from "./pages/Events";
 import ProtectedRoute from "./ProtectedRoute";
 import Forums from "./pages/Forums";
@@ -47,6 +48,14 @@ function App() {
           element={
             <ProtectedRoute>
               <JournalEntry />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="analyze"
+          element={
+            <ProtectedRoute>
+              <MoodAnalytics />
             </ProtectedRoute>
           }
         />
