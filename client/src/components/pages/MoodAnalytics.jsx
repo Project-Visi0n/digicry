@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
-import { Container, Typography, Box, Card, CardContent } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
+import {
+  Container,
+  Typography,
+  Box,
+  Card,
+  CardContent,
+  Stack,
+} from "@mui/material";
 import { Line, Bar } from "react-chartjs-2";
 import axios from "axios";
 
@@ -96,46 +102,50 @@ function MoodAnalytics() {
         </Typography>
       </Box>
 
-      <Grid container spacing={4}>
+      <Stack spacing={4}>
         {/* Mood Over Time */}
-        <Grid xs={12}>
-          <Card className="glass-panel">
-            <CardContent>
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                Mood Trends Over Time
-              </Typography>
-              <Box sx={{ height: 400 }}>
-                {processTimeSeriesData() && (
-                  <Line
-                    data={processTimeSeriesData()}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          max: 100,
-                          grid: {
-                            color: "rgba(255, 255, 255, 0.1)",
-                          },
-                        },
-                        x: {
-                          grid: {
-                            color: "rgba(255, 255, 255, 0.1)",
-                          },
+        <Card className="glass-panel">
+          <CardContent>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Mood Trends Over Time
+            </Typography>
+            <Box sx={{ height: 400 }}>
+              {processTimeSeriesData() && (
+                <Line
+                  data={processTimeSeriesData()}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                          color: "rgba(255, 255, 255, 0.1)",
                         },
                       },
-                    }}
-                  />
-                )}
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+                      x: {
+                        grid: {
+                          color: "rgba(255, 255, 255, 0.1)",
+                        },
+                      },
+                    },
+                  }}
+                />
+              )}
+            </Box>
+          </CardContent>
+        </Card>
 
-        {/* Mood Distribution */}
-        <Grid xs={12} md={6}>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={4}
+          sx={{ width: "100%" }}
+        >
+          {/* Mood Distribution */}
           <Card className="glass-panel">
+            {" "}
+            sx={{ flex: 1 }}
             <CardContent>
               <Typography variant="h6" sx={{ mb: 2 }}>
                 Mood Distribution
@@ -166,11 +176,11 @@ function MoodAnalytics() {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
 
-        {/* Mood Statistics */}
-        <Grid xs={12} md={6}>
+          {/* Mood Statistics */}
           <Card className="glass-panel">
+            {" "}
+            sx={{ flex: 1 }}
             <CardContent>
               <Typography variant="h6" sx={{ mb: 2 }}>
                 Mood Statistics
@@ -207,8 +217,8 @@ function MoodAnalytics() {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </Stack>
+      </Stack>
     </Container>
   );
 }
