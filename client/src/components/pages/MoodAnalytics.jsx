@@ -86,9 +86,23 @@ function MoodAnalytics() {
   };
 
   return (
-    <>
-    </>
-  )
+    <Container maxWidth="xl">
+      <Box className="glass-panel" sx={{ mb: 4, p: 3 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            background:
+              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            fontWeight: "bold",
+          }}
+        >
+          Mood Analytics
+        </Typography>
+      </Box>
+    </Container>
+  );
 }
 
 export default MoodAnalytics;
