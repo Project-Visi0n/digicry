@@ -56,7 +56,7 @@ function Forums() {
     const remainingMinutes = diffMinutes % 60;
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffMinutes <= 3) {
+    if (diffMinutes <= 2) {
       return "just now!";
     }
     if (diffMinutes < 60) {
@@ -71,7 +71,9 @@ function Forums() {
     return `${diffDays} days ago`;
   };
 
-  const handleSubmit = (msg) => {
+  // Post element msg to the server
+   
+  const postMsg = (msg) => {
     setSubmit(!submit);
     axios
       .post("api/forums", {
@@ -86,21 +88,22 @@ function Forums() {
       });
   };
 
+  const removeSpaces = (string) => {
+    return string.split(" ").join("");
+  }
+
   useEffect(() => {
-    if (selectedGoal !== "?" && selectedGoal !== "posting...") {
-      const value = selectedGoal;
-      const removeSpaces = value.split(" ").join("");
+    if (selectedGoal !== "?") {
+      const forumName = removeSpaces(selectedGoal);
       axios
-        .get("/api/forums", { params: { forumName: removeSpaces } })
+        .get("/api/forums", { params: { forumName, } })
         .then((posts) => {
-          console.log(posts.data);
           setGoalPosts(posts.data);
-          setRefreshKey((prevKey) => prevKey + 1);
         })
         .catch((error) => {
           console.error(
             error,
-            `error getting ${removeSpaces} forums from server`
+            `Error getting ${forumName} forums from server`
           );
         });
     }
@@ -142,7 +145,7 @@ function Forums() {
         })}
       </div>
       <br />
-      <Box align="center" component="form" action={handleSubmit}>
+      <Box align="center" component="form" action={postMsg}>
         <label>Say Something Positive!</label>
         <br />
         <TextField
