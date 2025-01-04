@@ -12,6 +12,8 @@ import {
 import { Link } from "react-router-dom";
 import axios from "axios";
 import AddIcon from "@mui/icons-material/Add";
+
+// Chart.js imports & registration
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -23,11 +25,15 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+
+// Importing custom components
 import { AuthContext } from "../../context/AuthContext";
 import Login from "../Login";
 import RenderEvents from "../RenderEvents";
 import MoodPreview from "./MoodPreview";
+// import ForumsPreview from "./ForumsPreview";
 
+// Register Chart.js modules
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -170,7 +176,7 @@ function Home() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Welcome back, {user.name || "Friend"}
+          Welcome back, {user.name}
         </Typography>
 
         {/* Quote Display */}
@@ -202,8 +208,15 @@ function Home() {
               <Typography variant="h5" sx={{ mb: 3 }}>
                 Mood Analytics
               </Typography>
+
+              {/* Description for Mood Analytics */}
+              <Typography variant="body2" className="section-description">
+                Track your emotional trends over time to gain insights into your
+                well-being.
+              </Typography>
+
               <Box className="mood-chart" sx={{ height: "300px" }}>
-                {/* Render mini chart with a new subcomponent */}
+                {/* Render mini chart with a new sub component */}
                 <MoodPreview entries={recentEntries} />
               </Box>
             </CardContent>
@@ -213,8 +226,15 @@ function Home() {
           <Card className="glass-panel journal-card" sx={{ flex: 1 }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 3 }}>
-                Recent Entries
+                Recent Journal Entries
               </Typography>
+
+              {/* Description for Recent Journal Entries */}
+              <Typography variant="body2" className="section-description">
+                Digi-Cry today? Writing down your feelings can help you process
+                and understand them better.
+              </Typography>
+
               <Button
                 component={Link}
                 to="/journal/new"
@@ -267,22 +287,60 @@ function Home() {
           </Card>
         </Stack>
 
-        {/* Events Section */}
-        <Card className="glass-panel events-card">
-          <CardContent>
-            <Typography variant="h5" sx={{ mb: 3 }}>
-              Nearby Events
-            </Typography>
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={2}
-              sx={{ width: "100%" }}
-            >
-              {/* Events will go here */}
-              <RenderEvents />
-            </Stack>
-          </CardContent>
-        </Card>
+        {/* Middle Row: Forums Preview */}
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={4}
+          sx={{ width: "100%" }}
+        >
+          {/* Forums Preview Section */}
+          <Card className="glass-panel forums-card" sx={{ flex: 1 }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ mb: 1 }}>
+                Forums
+              </Typography>
+              {/* Description for Forums */}
+              <Typography variant="body2" className="section-description">
+                Engage with our community, share your goals, and receive support
+                from others.
+              </Typography>
+
+              {/* Render Forums Preview */}
+              {/* <ForumsPreview /> */}
+            </CardContent>
+          </Card>
+
+          {/* Existing Mood Analytics Section or other cards can go here if needed */}
+        </Stack>
+
+        {/* Bottom Row */}
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={4}
+          sx={{ width: "100%" }}
+        >
+          {/* Nearby Events Section */}
+          <Card className="glass-panel events-card" sx={{ flex: 1 }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ mb: 1 }}>
+                Nearby Events
+              </Typography>
+              {/* Description for Nearby Events */}
+              <Typography variant="body2" className="section-description">
+                Discover events in your area to connect and engage with your
+                community.
+              </Typography>
+
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={2}
+                sx={{ width: "100%" }}
+              >
+                <RenderEvents />
+              </Stack>
+            </CardContent>
+          </Card>
+        </Stack>
       </Stack>
     </Container>
   );
