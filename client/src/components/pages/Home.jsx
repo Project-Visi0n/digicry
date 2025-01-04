@@ -12,23 +12,48 @@ import {
 import { Link } from "react-router-dom";
 import axios from "axios";
 import AddIcon from "@mui/icons-material/Add";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 import { AuthContext } from "../../context/AuthContext";
 import Login from "../Login";
 import RenderEvents from "../RenderEvents";
+import MoodPreview from "./MoodPreview";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 function Home() {
   const [recentEntries, setRecentEntries] = useState([]);
   const [quote, setQuote] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
   // For error handling
   const [error, setError] = useState(null);
-  // const navigate = useNavigate();
 
   // Access user & session from AuthContext
   const { user, setUser, validSession, setValidSession, loading } =
     useContext(AuthContext);
 
-  // Function to fetch quote from the API
+  /** *******************************
+   * FETCH MOTIVATIONAL QUOTE
+   ******************************** */
+
   const fetchQuote = async () => {
     try {
       setIsLoading(true);
@@ -45,7 +70,9 @@ function Home() {
     fetchQuote();
   }, []);
 
-  // Fetch recent journal entries
+  /** **********************************
+   * FETCH RECENT JOURNAL ENTRIES
+   *********************************** */
   useEffect(() => {
     console.log("[Home] Fetching recent journal entries...");
     axios
@@ -53,7 +80,7 @@ function Home() {
       .then((response) => {
         console.log("[Home] /api/journal response:", response.data);
         const data = response.data || [];
-        // Slice the first 3 or 5 for recent
+        // Just keep the top 3 for display
         const topThree = data.slice(0, 3);
         setRecentEntries(topThree);
       })
@@ -63,8 +90,11 @@ function Home() {
       });
   }, []);
 
-  // Show spinner auth is loading
+  /** **********************************
+   * SHOW LOADING SPINNER IF NEEDED
+   *********************************** */
   if (loading) {
+    // If Auth Context is still checking for a user session, show spinner
     return (
       <Box
         sx={{
@@ -79,7 +109,9 @@ function Home() {
     );
   }
 
-  // If no user is logged in, show login section
+  /** **********************************
+   * IF NO USER, SHOW LOGIN PROMPT
+   *********************************** */
   if (!user) {
     return (
       <Box
@@ -112,7 +144,9 @@ function Home() {
     );
   }
 
-  // If authenticated, render the main content
+  /** **********************************
+   * IF AUTHENTICATED, SHOW MAIN UI
+   *********************************** */
   return (
     <Container maxWidth="xl">
       {/* Hero Section with Quote */}
@@ -169,8 +203,8 @@ function Home() {
                 Mood Analytics
               </Typography>
               <Box className="mood-chart" sx={{ height: "300px" }}>
-                {/* Mood chart will go here */}
-                <div className="mood-graph-placeholder" />
+                {/* Render mini chart with a new subcomponent */}
+                <MoodPreview entries={recentEntries} />
               </Box>
             </CardContent>
           </Card>

@@ -341,7 +341,10 @@ router.delete("/:id", (req, res) => {
       return Journal.findByIdAndDelete(id);
     })
     .then((deletedEntry) => {
-      res.send({ message: "Journal entry deleted successfully." });
+      res.send({
+        message: "Journal entry deleted successfully:",
+        deletedEntry,
+      });
     })
     .catch((err) => {
       console.error("Error deleting journal entry:", err.message);

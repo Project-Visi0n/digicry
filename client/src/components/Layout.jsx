@@ -46,6 +46,15 @@ function Layout({ children }) {
                 </NavLink>
 
                 <NavLink
+                  to="/analytics"
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
+                  Mood Analytics
+                </NavLink>
+
+                <NavLink
                   to="/events"
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"

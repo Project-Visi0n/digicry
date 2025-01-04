@@ -86,7 +86,7 @@
 
     "@mui/lab": "^6.0.0-beta.21",
 
-    "@mui/material": "^6.2.1",
+    "@mui/material": "^6.3.1",
 
     "@mui/x-charts": "^7.23.2",
 
@@ -95,6 +95,8 @@
     "bcrypt": "^5.0.1",
 
     "body-parser": "^1.18.2",
+
+    "chart.js": "^4.4.7",
 
     "connect-flash": "^0.1.1",
 
@@ -132,9 +134,11 @@
 
     "prop-types": "^15.8.1",
 
-    "react": "^19.0.0",
+    "react": "^18.2.0",
 
-    "react-dom": "^19.0.0",
+    "react-chartjs-2": "^5.3.0",
+
+    "react-dom": "^18.2.0",
 
     "react-router": "^6.28.1",
 
