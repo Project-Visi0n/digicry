@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-  Container,
-  Typography,
-  Box,
-  Card,
-  CardContent,
-} from "@mui/material";
-import Grid from '@mui/material/Unstable_Grid2';
+import { Container, Typography, Box, Card, CardContent } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 import { Line, Bar } from "react-chartjs-2";
 import axios from "axios";
 
@@ -107,7 +101,9 @@ function MoodAnalytics() {
         <Grid xs={12}>
           <Card className="glass-panel">
             <CardContent>
-              <Typography variant="h6" sx={{ mb: 2 }}>Mood Trends Over Time</Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Mood Trends Over Time
+              </Typography>
               <Box sx={{ height: 400 }}>
                 {processTimeSeriesData() && (
                   <Line
@@ -120,15 +116,15 @@ function MoodAnalytics() {
                           beginAtZero: true,
                           max: 100,
                           grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                          }
+                            color: "rgba(255, 255, 255, 0.1)",
+                          },
                         },
                         x: {
                           grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                          }
-                        }
-                      }
+                            color: "rgba(255, 255, 255, 0.1)",
+                          },
+                        },
+                      },
                     }}
                   />
                 )}
@@ -137,6 +133,82 @@ function MoodAnalytics() {
           </Card>
         </Grid>
 
+        {/* Mood Distribution */}
+        <Grid xs={12} md={6}>
+          <Card className="glass-panel">
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Mood Distribution
+              </Typography>
+              <Box sx={{ height: 300 }}>
+                {processMoodDistribution() && (
+                  <Bar
+                    data={processMoodDistribution()}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          grid: {
+                            color: "rgba(255, 255, 255, 0.1)",
+                          },
+                        },
+                        x: {
+                          grid: {
+                            color: "rgba(255, 255, 255, 0.1)",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                )}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Mood Statistics */}
+        <Grid xs={12} md={6}>
+          <Card className="glass-panel">
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Mood Statistics
+              </Typography>
+              <Box sx={{ p: 2 }}>
+                {entries.length > 0 && (
+                  <>
+                    <Typography variant="body1" sx={{ mb: 1 }}>
+                      Average Mood Score:{" "}
+                      {Math.round(
+                        entries.reduce(
+                          (acc, entry) => acc + entry.normalizedSentiment,
+                          0,
+                        ) / entries.length,
+                      )}
+                      %
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 1 }}>
+                      Total Entries: {entries.length}
+                    </Typography>
+                    <Typography variant="body1">
+                      Most Common Mood:{" "}
+                      {
+                        Object.entries(
+                          entries.reduce((acc, entry) => {
+                            acc[entry.mood] = (acc[entry.mood] || 0) + 1;
+                            return acc;
+                          }, {}),
+                        ).sort((a, b) => b[1] - a[1])[0][0]
+                      }
+                    </Typography>
+                  </>
+                )}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
     </Container>
   );
 }
