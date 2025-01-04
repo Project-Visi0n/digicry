@@ -33,13 +33,13 @@ function Forums() {
     };
   // Gets goals from database based on the elements value.
 
-  const getGoals = async ({ target: { value } }) => {
+  const getGoals = ({ target: { value } }) => {
     console.log("getGoals function triggered")
     const forumName = removeSpaces(value);
     console.log('forumName is', forumName)
-    await setSelectedGoal(value);
+    setSelectedGoal(value);
     console.log(selectedGoal)
-    await axios
+    axios
       .get("/api/forums", { params: { forumName } })
       .then((posts) => {
         setGoalPosts(posts.data);
@@ -77,11 +77,11 @@ function Forums() {
 
   // Post element msg to the server
 
-  const postMsg = async (e) => {
+  const postMsg = (e) => {
     e.preventDefault()
     const msg = e.target[0].value;
     
-    await axios
+    axios
       .post("api/forums", {
         message: msg,
         selectedGoal,
@@ -97,22 +97,22 @@ function Forums() {
 
   // Reloads the page contents when things are submitted.
 
-  // useEffect(() => {
-  //   if (selectedGoal !== "?") {
-  //     const forumName = removeSpaces(selectedGoal);
-  //     axios
-  //       .get("/api/forums", { params: { forumName } })
-  //       .then((posts) => {
-  //         setGoalPosts(posts.data);
-  //       })
-  //       .catch((error) => {
-  //         console.error(error, `Error getting ${forumName} forums from server`);
-  //       });
-  //   }
-  // }, [submit, selectedGoal]);
+  useEffect(() => {
+    if (selectedGoal !== "?") {
+      const forumName = removeSpaces(selectedGoal);
+      axios
+        .get("/api/forums", { params: { forumName } })
+        .then((posts) => {
+          setGoalPosts(posts.data);
+        })
+        .catch((error) => {
+          console.error(error, `Error getting ${forumName} forums from server`);
+        });
+    }
+  }, [submit, selectedGoal]);
 
   return (
-    <div>
+    <Box>
       <Box
         sx={() => ({
           background: "transparent",
@@ -130,7 +130,7 @@ function Forums() {
         Join a Discussion on Similar Goals!{" "}
       </Box>
       <br />
-      <div align="center">
+      <Box align="center">
         {goalOptions.map((goal) => {
           return (
             <Button
@@ -145,7 +145,7 @@ function Forums() {
             </Button>
           );
         })}
-      </div>
+      </Box>
       <br />
       <Box align="center" component="form" onSubmit={postMsg}>
         <label>Say Something Positive!</label>
@@ -178,7 +178,7 @@ function Forums() {
         </Button>
       </Box>
       <br></br>
-      <div>
+      <Box>
         {goalPosts.reverse().map((post, i) => {
           return (
             <Box align="center" container spacing={5}>
@@ -205,7 +205,7 @@ function Forums() {
                   })}
                   id={selectedGoal}
                 >
-                  <div align="left">
+                  <Box align="left">
                     <h4 style={{ color: "black" }} id={post._id}>
                       {post.forumName}
                     </h4>
@@ -215,17 +215,17 @@ function Forums() {
                     </h4>
                     <br />
                     <h6>{minutesAgo(post.createdAt)}</h6>
-                  </div>
+                  </Box>
                   <br></br>
                   <LikeButton selectedGoal={selectedGoal} post={post} />
                 </Box>
               </Grid>
-              <div style={{ height: "2px" }} />
+              <Box style={{ height: "2px" }} />
             </Box>
           );
         })}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
