@@ -92,7 +92,10 @@ function Forums() {
       .catch((error) => {
         console.debug(error, "Failed to create post");
       })
-      .finally(() => { setSubmit(!submit) })
+      .finally(() => { 
+        setSubmit(!submit) 
+        e.target[0].value = ""
+      })
   };
 
   // Reloads the page contents when things are submitted.
