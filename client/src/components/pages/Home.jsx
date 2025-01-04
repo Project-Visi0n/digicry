@@ -31,7 +31,7 @@ import { AuthContext } from "../../context/AuthContext";
 import Login from "../Login";
 import RenderEvents from "../RenderEvents";
 import MoodPreview from "./MoodPreview";
-// import ForumsPreview from "./ForumsPreview";
+import ForumsPreview from "./ForumsPreview";
 
 // Register Chart.js modules
 ChartJS.register(
@@ -306,11 +306,9 @@ function Home() {
               </Typography>
 
               {/* Render Forums Preview */}
-              {/* <ForumsPreview /> */}
+              <ForumsPreview />
             </CardContent>
           </Card>
-
-          {/* Existing Mood Analytics Section or other cards can go here if needed */}
         </Stack>
 
         {/* Bottom Row */}
