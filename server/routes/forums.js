@@ -4,13 +4,15 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const { Forums } = require("../models");
 
+
+// Creates a post and saves it to Forums model, sets an expiration date of 3 days
+
 router.post("/", (req, res) => {
-  console.log("reached");
   const { message, selectedGoal } = req.body;
   const noSpacesGoal = selectedGoal.split(" ").join("");
   const date = new Date();
 
-  // add a day
+  // Add a day
   const expiration = date.setDate(date.getDate() + 3);
 
   Forums.create({
@@ -31,6 +33,8 @@ router.post("/", (req, res) => {
     });
 });
 
+// Gets all posts from forums based on query 
+
 router.get("/", (req, res) => {
   const { query } = req;
   Forums.find({ forumName: query.forumName })
@@ -46,6 +50,8 @@ router.get("/", (req, res) => {
       res.send(500);
     });
 });
+
+// Updates the like status of a post
 
 router.post("/like", (req, res) => {
   console.log("reached");
@@ -66,10 +72,10 @@ router.post("/like", (req, res) => {
     });
 });
 
+// Updates the dislike status of a post
+
 router.post("/dislike", (req, res) => {
-  console.log("reached");
   const { postId, disliked } = req.body;
-  console.log(disliked)
   Forums.findByIdAndUpdate(postId, {
     $inc: {
       downVote: disliked ? 1 : -1
@@ -85,7 +91,4 @@ router.post("/dislike", (req, res) => {
     });
 });
 
-router.get("/trimForums", (req, res) => {
-
-})
 module.exports = router;
