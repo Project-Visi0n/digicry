@@ -4,7 +4,6 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const { Forums } = require("../models");
 
-
 // Creates a post and saves it to Forums model, sets an expiration date of 3 days
 
 router.post("/", (req, res) => {
@@ -33,7 +32,7 @@ router.post("/", (req, res) => {
     });
 });
 
-// Gets all posts from forums based on query 
+// Gets all posts from forums based on query
 
 router.get("/", (req, res) => {
   const { query } = req;
@@ -56,7 +55,7 @@ router.get("/", (req, res) => {
 router.post("/like", (req, res) => {
   console.log("reached");
   const { postId, liked } = req.body;
-  console.log(liked)
+  console.log(liked);
   Forums.findByIdAndUpdate(postId, {
     $inc: {
       upVote: liked ? -1 : 1,
@@ -78,7 +77,7 @@ router.post("/dislike", (req, res) => {
   const { postId, disliked } = req.body;
   Forums.findByIdAndUpdate(postId, {
     $inc: {
-      downVote: disliked ? 1 : -1
+      downVote: disliked ? 1 : -1,
     },
   })
     .then(() => {

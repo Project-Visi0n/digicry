@@ -209,6 +209,11 @@ export default function RenderEvents() {
           >
             Learn More
           </Button>
+          {/* <Typography variant="body2">{event.location[1]}</Typography> */}
+          {/* <Typography variant="body2">{event.description}</Typography> */}
+          {/* <Typography variant="body2">{event.venueName}</Typography> */}
+          {/* <Typography variant="body2">{event.linkUrl}</Typography> */}
+          {/* <Typography variant="body2">{event.thumbnail}</Typography> */}
         </Box>
       ))}
     </Box>
