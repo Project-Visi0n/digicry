@@ -15,8 +15,6 @@ import {
 import LikeButton from "./LikeButton";
 
 function Forums() {
-  // RefreshKey is used to selectively reload certain components on refresh.
-  const [refreshKey, setRefreshKey] = useState(0);
   const [goalPosts, setGoalPosts] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState("?");
   const [submit, setSubmit] = useState(false);
@@ -38,7 +36,6 @@ function Forums() {
       .then((posts) => {
         setSelectedGoal(value);
         setGoalPosts(posts.data);
-        setRefreshKey((prevKey) => prevKey + 1);
       })
       .catch((error) => {
         console.error(error, `error getting ${forumName} forums from server`);
@@ -93,7 +90,7 @@ function Forums() {
   }
 
   // Reloads the page contents when things are submitted.
-  
+
   useEffect(() => {
     if (selectedGoal !== "?") {
       const forumName = removeSpaces(selectedGoal);
@@ -111,8 +108,9 @@ function Forums() {
     }
   }, [submit, selectedGoal]);
 
+
   return (
-    <div key={refreshKey}>
+    <div>
       <Box
         sx={() => ({
           background: "transparent",
@@ -178,10 +176,10 @@ function Forums() {
         </Button>
       </Box>
       <br></br>
-      <div key={refreshKey}>
+      <div>
         {goalPosts.reverse().map((post, i) => {
           return (
-            <Box align="center" key={refreshKey} container spacing={5}>
+            <Box align="center" container spacing={5}>
               <Grid item xs={10}>
                 <Box
                   sx={() => ({
