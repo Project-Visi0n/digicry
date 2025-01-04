@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const { Schema } = mongoose;
 
 const forumsSchema = new Schema(
@@ -10,15 +9,14 @@ const forumsSchema = new Schema(
     message: String,
     upVote: Number,
     downVote: Number,
-    expireAt: Date
+    expireAt: Date,
   },
-  { timestamps: true } // Every postSchema will now have a createdAt && updatedAt value
+  { timestamps: true }, // Every postSchema will now have a createdAt && updatedAt value
 );
 
 // Sets expiration date for posts
-forumsSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 })
+forumsSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
 const Forums = mongoose.model("Forums", forumsSchema);
-
 
 module.exports = Forums;

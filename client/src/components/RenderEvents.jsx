@@ -22,7 +22,7 @@ import ArrowOutwardTwoToneIcon from "@mui/icons-material/ArrowOutwardTwoTone";
 export default function RenderEvents() {
   const [events, setEvents] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
-/*
+
   // use geolocation webextension api to get users lat and long
   // we will take the response and use it as a param for our reverse geocoding to get the user's city
   const getUserLoc = () => {
@@ -123,7 +123,7 @@ export default function RenderEvents() {
       fetchEventsByLoc();
     }
   }, [userLocation]);
-*/
+
   return (
     <Box
       sx={{

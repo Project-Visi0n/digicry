@@ -63,7 +63,11 @@ function Layout({ children }) {
                   Events
                 </NavLink>
 
-                <NavLink to="/forums" className="nav-link">
+                <NavLink to="/forums"
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                >
                   Forums
                 </NavLink>
 
