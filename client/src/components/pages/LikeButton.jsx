@@ -26,7 +26,7 @@ function LikeButton({ post, selectedGoal }) {
 
   // Increments/Decrements or does nothing depending on which button is clicked
 
-  const handleDislike = ({ target: { value } }) => {
+  const handleDislike = ({ currentTarget: { value }}) => {
     if (!disliked && !chosen) {
       setDislikes(dislikes - 1);
       setDisliked(true);
@@ -56,7 +56,7 @@ function LikeButton({ post, selectedGoal }) {
     }
   };
 
-  const handleLike = ({ target: { value } }) => {
+  const handleLike = ({ currentTarget: { value }}) => {
     if (!liked && !chosen) {
       setLikes(likes + 1);
       setLikeColor("#00fc15");
@@ -89,7 +89,7 @@ function LikeButton({ post, selectedGoal }) {
   };
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} id={selectedGoal}>
       <Grid item xs={2}>
         <Tooltip title="It's okay to love!" enterDelay={500} leaveDelay={200}>
           <IconButton
