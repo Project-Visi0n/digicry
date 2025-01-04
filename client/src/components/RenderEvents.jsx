@@ -6,60 +6,66 @@ import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
 import Button from "@mui/material/Button";
 import ArrowOutwardTwoToneIcon from "@mui/icons-material/ArrowOutwardTwoTone";
 
-// UPCOMING EVENTS FEATURE
+
 /**
- * getUserLoc - gets user location, returns a promise
- * fetchEvents() - fetches all events from db
- * fetchEventsByLoc - checks for user location before calling fetchEvents
+ * This file handles the upcoming events feature.
+ *
+ * It includes a getUserLoc() function that uses the Geolocation API to retrieve the coordinates of the User.
+ * Those coordinates are then used in the fetchEventsByLoc() function as part of an API call to Google Maps.
+ * The Google Maps API performs a reverse geocoding of the coordinates to an address.
+ * Through the Google Maps API response, we extract the User's city.
+ * Lastly, we use the User's city in our SERP API call to retrieve upcoming events in the User's city.
  */
 
 /**
- * CURRENTLY HAVE THIS COMMENTED OUT TO AVOID HITTING ANY API RATE LIMITS
- * NOT A HUGE ISSUE - FEEL FREE TO UNCOMMENT AND RUN THE CODE TO SEE HOW IT LOOKS
- * JUST PLS TRY TO AVOID LOADING THIS EVERY TIME YOU'RE TESTING A FEATURE TO AVOID US HITTING API LIMITS
+ * getUserLoc - Retrieves User's coordinates via Geolocation API, returns a promise containing the User's coordinates
+ * fetchEvents() - Receives a city name and retrieves upcoming events in the User's city via SERP API
+ * fetchEventsByLoc - Main function purposed to take the User's coordinates and convert them to a city via Google Maps API and then invokes fetchEvents with the response (city).
  */
+
+
 
 export default function RenderEvents() {
   const [events, setEvents] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
-/*
-  // use geolocation webextension api to get users lat and long
-  // we will take the response and use it as a param for our reverse geocoding to get the user's city
+
+
+  // getUserLoc - Retrieves User's coordinates via Geolocation API, returns a promise containing the User's coordinates
   const getUserLoc = () => {
     return new Promise((resolve, reject) => {
+      // If  browser supports Geolocation API
       if (navigator.geolocation) {
-        // get users lat and long coords
+        // This will prompt User to accept sharing their location
         navigator.geolocation.getCurrentPosition(
           (position) => {
+            // Direct access to latitude and longitude values in position.coords object
             const { latitude, longitude } = position.coords;
-            // set user location
             setUserLocation({ latitude, longitude });
-            // resolve promise
             resolve({ latitude, longitude });
           },
-          // on error
+          // If User rejects browser prompt or an unknown bug is encountered
           (error) => {
-            console.error(`Couldn't getUserLoc`);
+            console.error(`Couldn't get the User's location`, error);
             reject(error);
           },
         );
       } else {
-        // if browser doesn't support geolocation
+        // If browser doesn't support geolocation
         console.error("Geolocation not supported by browser");
         reject(new Error("Geolocation not supported by browser"));
       }
     });
   };
 
-  // fetches events from SERP API
-  // city param is the returned value from our reverse geocoding - ex: New Orleans
+
+  // fetchEvents() - Receives a city name and retrieves upcoming events in User city via SERP API
   const fetchEvents = (city) => {
-    // if we don't have a city value
+    // Parameter error handling
     if (!city) {
-      console.error("Need city name to fetchEvents");
+      console.error("Error: Missing city parameter in fetchEvents");
       return;
     }
-    // use city param for SERP API call to get events relevent to user's city
+    // SERP API - returns upcoming events
     return (
       axios
         .get("/api/events/events", {
@@ -67,10 +73,8 @@ export default function RenderEvents() {
             userLocation: city,
           },
         })
-        // response is a series of objects each representing a unique event from the API
         .then((response) => {
-          const events = response.data;
-          // update state
+          const events = response.data; // A series of objects, each representing a unique event
           setEvents(events);
           return events;
         })
@@ -84,26 +88,25 @@ export default function RenderEvents() {
   // MAIN FUNCTION
   const fetchEventsByLoc = async () => {
     try {
-      // if we don't have the lat and long values in userLocation state
+      // Check if we have the User coordinates
       if (!userLocation) {
-        // invoke getUserLoc to get coordinates
+        // If we don't have User coordinates, invoke getUserLoc
         const location = await getUserLoc();
-        // use coordinates in API call param to reverse geocode
+        // Use coordinates in API param to reverse geocode
         const city = await axios.get("/api/geolocate/location", {
           params: {
-            latlng: `${location.latitude},${location.longitude}`,
+            latlng: `${location.latitude},${location.longitude}`, // Google Maps API expects 'latlng' instead of separate lat and long params
           },
         });
-        // once we have the user's city, invoke the SERP API helper function passing in the user's city
-        await fetchEvents(city.data);
+        // Retrieve upcoming events in User city via fetchEvents() function
+        await fetchEvents(city.data); // city.data is the city name string response from Google Maps API
       } else {
-        // if we already have the user's coords, we can immediately reverse geocode
+        // If we already have User coords, we can immediately reverse geocode to get User city location and then invoke fetchEvents(city.data)
         const city = await axios.get("/api/geolocate/location", {
           params: {
             latlng: `${userLocation.latitude},${userLocation.longitude}`,
           },
         });
-        // when reverse geocode response is returned, use it to fetchEvents from SERP API
         await fetchEvents(city.data);
       }
     } catch (err) {
@@ -111,19 +114,22 @@ export default function RenderEvents() {
     }
   };
 
-  // get users coordinates when component mounts / page loads
+  // Retrieve User coordinates when component mounts / page loads
   useEffect(() => {
     getUserLoc();
   }, []);
 
-  // invoke fetchEventsByLoc() when userLocation state changes
+  // Invoke fetchEventsByLoc() when userLocation state changes
   useEffect(() => {
-    console.log("userLocation state updated: ", userLocation);
     if (userLocation) {
       fetchEventsByLoc();
     }
   }, [userLocation]);
-*/
+
+
+
+
+
   return (
     <Box
       sx={{
@@ -203,11 +209,6 @@ export default function RenderEvents() {
           >
             Learn More
           </Button>
-          {/* <Typography variant="body2">{event.location[1]}</Typography> */}
-          {/* <Typography variant="body2">{event.description}</Typography> */}
-          {/* <Typography variant="body2">{event.venueName}</Typography> */}
-          {/* <Typography variant="body2">{event.linkUrl}</Typography> */}
-          {/* <Typography variant="body2">{event.thumbnail}</Typography> */}
         </Box>
       ))}
     </Box>
