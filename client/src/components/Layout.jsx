@@ -46,7 +46,7 @@ function Layout({ children }) {
                 </NavLink>
 
                 <NavLink
-                  to="/analyze"
+                  to="/analytics"
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
-import { Line } from "react-chartjs-2";
+import { Typography } from "@mui/material";
+import PropTypes from "prop-types";
+
+// Import Chart.js items & register them:
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,9 +13,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import PropTypes from "prop-types";
+import { Line } from "react-chartjs-2";
 
-// Register ChartJS components
+// Register Chart.js modules
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,75 +29,84 @@ ChartJS.register(
 function MoodPreview({ entries }) {
   const [chartData, setChartData] = useState(null);
 
-  useEffect(() => {
-    if (!entries || entries.length === 0) return;
+  // Helper to transform the entries into chart-friendly data
+  function prepareChartDataMini(journalEntries) {
+    // Limit to the first 5 entries for demonstration
+    const sliceEntries = journalEntries.slice(0, 5);
 
-    // Process last 7 days of entries
-    const last7Days = entries.slice(0, 7).reverse();
+    // Create arrays for labels and data
+    const labels = [];
+    const dataPoints = [];
 
-    const data = {
-      labels: last7Days.map((entry) =>
-        new Date(entry.createdAt).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        }),
-      ),
+    sliceEntries.forEach((entry) => {
+      // Convert createdAt to a short date string
+      const dateObj = new Date(entry.createdAt);
+      const shortDate = `${dateObj.getMonth() + 1}/${dateObj.getDate()}`;
+
+      labels.push(shortDate);
+
+      // Use normalizedSentiment if present, else sentimentScore * 100 as fallback
+      const sentiment =
+        entry.normalizedSentiment ||
+        (entry.sentimentScore ? entry.sentimentScore * 50 + 50 : 0);
+      // sentimentScore is typically -1 to +1.
+      // Multiplying by 50 then adding 50 yields a 0 to 100 scale, roughly.
+
+      dataPoints.push(Math.round(sentiment));
+    });
+
+    // Return in the shape react-chartjs-2 expects
+    return {
+      labels,
       datasets: [
         {
-          label: "Mood Score",
-          data: last7Days.map((entry) => entry.normalizedSentiment),
-          borderColor: "#AED9E0",
-          backgroundColor: "#B8F2E6",
-          tension: 0.4,
+          label: "Recent Mood",
+          data: dataPoints,
+          borderColor: "#FFA69E", // Pink color
+          backgroundColor: "rgba(255, 166, 158, 0.2)",
+          borderWidth: 2,
+          tension: 0.3,
+          pointRadius: 4,
         },
       ],
     };
-
-    setChartData(data);
+  }
+  // Build the chart data whenever `entries` change
+  useEffect(() => {
+    if (entries && entries.length > 0) {
+      const prepared = prepareChartDataMini(entries);
+      setChartData(prepared);
+    } else {
+      setChartData(null);
+    }
   }, [entries]);
 
-  if (!entries || entries.length === 0) {
+  // If we have no chartData, we can show a placeholder
+  if (!chartData) {
     return (
-      <Box sx={{ p: 2, textAlign: "center" }}>
-        <Typography>No mood data available</Typography>
-      </Box>
+      <Typography variant="body2">
+        Not enough data to display a chart.
+      </Typography>
     );
   }
 
-  if (!chartData) {
-    return <CircularProgress />;
-  }
+  // Chart options for a small preview
+  const previewOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+      },
+    },
+  };
 
-  return (
-    <Box sx={{ height: "100%", p: 2 }}>
-      <Line
-        data={chartData}
-        options={{
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100,
-              grid: {
-                color: "rgba(255, 255, 255, 0.1)",
-              },
-            },
-            x: {
-              grid: {
-                color: "rgba(255, 255, 255, 0.1)",
-              },
-            },
-          },
-          plugins: {
-            legend: {
-              display: false,
-            },
-          },
-        }}
-      />
-    </Box>
-  );
+  return <Line data={chartData} options={previewOptions} />;
 }
 
 MoodPreview.propTypes = {

@@ -52,7 +52,7 @@ function App() {
           }
         />
         <Route
-          path="analyze"
+          path="analytics"
           element={
             <ProtectedRoute>
               <MoodAnalytics />
