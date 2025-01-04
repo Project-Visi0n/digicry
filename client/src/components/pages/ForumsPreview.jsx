@@ -4,25 +4,64 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import LikeButton from "./LikeButton";
 
+/**
+forumNames is a static array that doesn’t change between renders, so we have to define it outside of the component.
+We have to do this so that it doesn’t get recreated on every render, and the useEffect hook can safely depend on it without triggering unnecessary re-executions.
+*/
+
+// Define the list of forumNames
+const forumNames = [
+  "Physical Health",
+  "Finances",
+  "Personal Development",
+  "Mental Health",
+  "Career",
+];
+
 function ForumsPreview() {
   const [recentPosts, setRecentPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // Fetch recent forum posts
   useEffect(() => {
-    axios
-      .get("/api/forums", { params: { forumName: "all" } })
-      .then((response) => {
-        // Limit to 3 posts
-        setRecentPosts(response.data.slice(0, 3));
+    // Function to fetch posts for a single forumName
+    const fetchPosts = async (forumName) => {
+      try {
+        const response = await axios.get("/api/forums", {
+          params: { forumName },
+        });
+        return response.data;
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          // No posts found for this forumName
+          return [];
+        }
+        console.error(`Error fetching posts for ${forumName}:`, err);
+        return [];
+      }
+    };
+
+    // Fetch all posts concurrently
+    const fetchAllPosts = async () => {
+      try {
+        const allPostsPromises = forumNames.map((name) => fetchPosts(name));
+        const allPostsArrays = await Promise.all(allPostsPromises);
+        // Flatten the array of arrays
+        const allPosts = allPostsArrays.flat();
+        // Sort by createdAt descending
+        allPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        // Limit to recent 5 posts
+        const limitedPosts = allPosts.slice(0, 5);
+        setRecentPosts(limitedPosts);
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching forums:", err);
+      } catch (err) {
+        console.error("Error fetching all forum posts:", err);
         setError(true);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchAllPosts();
   }, []);
 
   // Displays a spinner while data is being fetched
@@ -60,12 +99,16 @@ function ForumsPreview() {
             }}
           >
             <Typography variant="h6" sx={{ mb: 1 }}>
-              {post.message.slice(0, 50)}...
+              {post.message.length > 50
+                ? `${post.message.slice(0, 50)}...`
+                : post.message}
             </Typography>
             <Typography variant="caption" sx={{ display: "block", mb: 1 }}>
-              Posted: {new Date(post.createdAt).toLocaleString()}
+              Posted in <strong>{post.forumName}</strong> |{" "}
+              {new Date(post.createdAt).toLocaleString()}
             </Typography>
 
+            {/* LikeButton component */}
             <LikeButton post={post} selectedGoal={post.forumName} />
           </Box>
         ))
