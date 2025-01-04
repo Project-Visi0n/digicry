@@ -25,15 +25,23 @@ function Forums() {
     "Mental Health",
     "Career",
   ]);
-
+  
+  
+    const removeSpaces = (string) => {
+      const copy = string.split(" ").join("");
+      return copy
+    };
   // Gets goals from database based on the elements value.
 
-  const getGoals = ({ target: { value } }) => {
-    const forumName = value.split(" ").join("");
-    axios
+  const getGoals = async ({ target: { value } }) => {
+    console.log("getGoals function triggered")
+    const forumName = removeSpaces(value);
+    console.log('forumName is', forumName)
+    await setSelectedGoal(value);
+    console.log(selectedGoal)
+    await axios
       .get("/api/forums", { params: { forumName } })
       .then((posts) => {
-        setSelectedGoal(value);
         setGoalPosts(posts.data);
       })
       .catch((error) => {
@@ -69,11 +77,13 @@ function Forums() {
 
   // Post element msg to the server
 
-  const postMsg = (msg) => {
-    setSubmit(!submit);
-    axios
+  const postMsg = async (e) => {
+    e.preventDefault()
+    const msg = e.target[0].value;
+    
+    await axios
       .post("api/forums", {
-        message: msg.get("msg"),
+        message: msg,
         selectedGoal,
       })
       .then(() => {
@@ -81,28 +91,25 @@ function Forums() {
       })
       .catch((error) => {
         console.debug(error, "Failed to create post");
-      });
-  };
-
-  const removeSpaces = (string) => {
-    return string.split(" ").join("");
+      })
+      .finally(() => { setSubmit(!submit) })
   };
 
   // Reloads the page contents when things are submitted.
 
-  useEffect(() => {
-    if (selectedGoal !== "?") {
-      const forumName = removeSpaces(selectedGoal);
-      axios
-        .get("/api/forums", { params: { forumName } })
-        .then((posts) => {
-          setGoalPosts(posts.data);
-        })
-        .catch((error) => {
-          console.error(error, `Error getting ${forumName} forums from server`);
-        });
-    }
-  }, [submit, selectedGoal]);
+  // useEffect(() => {
+  //   if (selectedGoal !== "?") {
+  //     const forumName = removeSpaces(selectedGoal);
+  //     axios
+  //       .get("/api/forums", { params: { forumName } })
+  //       .then((posts) => {
+  //         setGoalPosts(posts.data);
+  //       })
+  //       .catch((error) => {
+  //         console.error(error, `Error getting ${forumName} forums from server`);
+  //       });
+  //   }
+  // }, [submit, selectedGoal]);
 
   return (
     <div>
@@ -140,7 +147,7 @@ function Forums() {
         })}
       </div>
       <br />
-      <Box align="center" component="form" action={postMsg}>
+      <Box align="center" component="form" onSubmit={postMsg}>
         <label>Say Something Positive!</label>
         <br />
         <TextField
@@ -148,9 +155,9 @@ function Forums() {
             bgcolor: "#fff",
             width: "500px",
           })}
-          type="text"
+          type="msg"
           id="msg"
-          name="msg"
+          name={selectedGoal}
           placeholder="Spread love!"
         />
         <br />
