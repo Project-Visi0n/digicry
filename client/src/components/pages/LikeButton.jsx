@@ -56,6 +56,11 @@ function LikeButton({ post, selectedGoal }) {
     }
   };
 
+  useEffect(() => {
+    setLikes(post.upVote);
+    setDislikes(post.downVote);
+  },[post.upVote, post.downVote]);
+  
   const handleLike = ({ currentTarget: { value }}) => {
     if (!liked && !chosen) {
       setLikes(likes + 1);
@@ -93,7 +98,7 @@ function LikeButton({ post, selectedGoal }) {
       <Grid2 item xs={2}>
         <Tooltip title="It's okay to love!" enterDelay={500} leaveDelay={200}>
           <IconButton
-            id={selectedGoal}
+            id={post._id}
             value={post._id}
             onClick={handleLike}
             sx={{ typography: { fontSize: 8 } }}
