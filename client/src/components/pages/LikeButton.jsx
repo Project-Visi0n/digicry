@@ -24,7 +24,11 @@ function LikeButton({ post, selectedGoal }) {
   const [chosen, setChosen] = useState(false);
   const [likeColor, setLikeColor] = useState("#7e90a3")
 
+  
+  // Increments/Decrements or does nothing depending on which button is clicked
+
   const handleDislike = ({ target: { value } }) => {
+
     if (!disliked && !chosen) {
       setDislikes(dislikes - 1);
       setDisliked(true);
@@ -56,7 +60,9 @@ function LikeButton({ post, selectedGoal }) {
     }
   };
 
+
   const handleLike = ({ target: { value } }) => {
+    
     if (!liked && !chosen) {
       setLikes(likes + 1);
       setLikeColor("#00fc15")
