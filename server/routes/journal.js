@@ -11,6 +11,15 @@ const client = new language.LanguageServiceClient();
 // Utility function to validate ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+
+
+
+
+
+
+
+
+
 // Helper function to normalize the sentimentScore and sentimentMagnitude into a 1-100 value where smaller numbers represent negative sentiment while larger numbers represent positive sentiment
 
 /**
@@ -38,103 +47,166 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
  *
  */
 
-const sentimentConverter = (sentiment, magnitude) => {
+const sentimentConverter = async (sentiment, magnitude, userId) => {
 
-  // normalize data via linear scaling
-  const normalizedSentiment = (sentiment - -0.7) / (0.9 - -0.7);
-  const normalizedMagnitude = (magnitude - 0.5) / (13 - 0.5);
 
-  // init weight values
-  const sentimentWeight = 0.75;
-  const magnitudeWeight = 0.25;
+  try {
+    const ranges = await getRanges(userId);
+    // normalize data via linear scaling
+    const normalizedSentiment = (sentiment - ranges.sentimentMin) / (ranges.sentimentMax - ranges.sentimentMin);
+    const normalizedMagnitude = (magnitude - ranges.magnitudeMin) / (ranges.magnitudeMax - ranges.magnitudeMin);
 
-  const convertedScore = Math.round(
-    (normalizedSentiment * sentimentWeight +
-      normalizedMagnitude * magnitudeWeight) *
-      100,
-  );
-  return convertedScore;
+
+    // init weight values
+    const sentimentWeight = 0.70;
+    const magnitudeWeight = 0.30;
+    console.log('WE GOT THE RANGES: ', normalizedMagnitude, normalizedSentiment)
+
+    return Math.round((normalizedSentiment * sentimentWeight + normalizedMagnitude * magnitudeWeight) * 100)
+
+  } catch (error) {
+    console.error('Error converting sentiment values', error);
+
+    // resort to use defaults on err
+    const normalizedSentiment = (sentiment - (-0.7)) / (0.9 - (-0.7));
+    const normalizedMagnitude = (magnitude - 0.5) / (13 - 0.5);
+    return Math.round((normalizedSentiment * 0.70 + normalizedMagnitude * 0.30) * 100);
+  }
+
+}
+
+// Helper function to query DB to get the ranges for sentiment & magnitude - defaults to ranges found in our test data
+const getRanges = async (userId) => {
+  // will use defaults if not enough data found in db
+  const defaults = {
+    sentimentMin: -0.7,
+    sentimentMax: 0.9,
+    magnitudeMin: 0.5,
+    magnitudeMax: 13,
+  }
+
+
+  const ranges = {
+    sentimentMin: 2,
+    sentimentMax: -2,
+    magnitudeMin: 101,
+    magnitudeMax: 0,
+  };
+
+
+
+  try {
+    const journals = await Journal.find({ userId });
+
+    // if we dont have enough data resort to defaults
+    if (journals.length < 10) {
+      return defaults;
+    }
+
+
+    // find min/max values of score and magnitude
+    // sentiment range is -1 -> 1, so it can never be 2 or -2
+    // same logic applies for magnitude
+    journals.forEach(journal => {
+      if (journal.sentimentScore < ranges.sentimentMin) {
+        ranges.sentimentMin = journal.sentimentScore;
+      }
+
+      if (journal.sentimentScore > ranges.sentimentMax) {
+        ranges.sentimentMax = journal.sentimentScore;
+      }
+      if (journal.sentimentMagnitude < ranges.magnitudeMin) {
+        ranges.magnitudeMin = journal.sentimentMagnitude;
+      }
+      if (journal.sentimentMagnitude > ranges.magnitudeMax) {
+        ranges.magnitudeMax = journal.sentimentMagnitude;
+      }
+    });
+
+
+
+    console.log('Base min/max values found!')
+
+    return ranges;
+
+  } catch (error) {
+    console.error('Error getting base min/max values', error);
+    return defaults;
+  }
+
+
 }
 
 // Create new journal entry
-router.post("/", (req, res) => {
-  console.log("[DEBUG] Incoming POST request:", req.body);
-  const { userId, title, content, mood } = req.body;
+router.post("/", async (req, res) => {
 
-  // Validate required fields
-  if (!userId || !isValidObjectId(userId)) {
-    console.log("[DEBUG] Invalid userId:", userId);
-    return res.sendStatus(400);
-  }
+  try {
+    console.log("[DEBUG] Incoming POST request:", req.body);
+    const { userId, title, content, mood } = req.body;
 
-  if (!title || typeof title !== "string" || title.trim() === "") {
-    return res.sendStatus(400);
-  }
+    // Validate required fields
+    if (!userId || !isValidObjectId(userId)) {
+      console.log("[DEBUG] Invalid userId:", userId);
+      return res.sendStatus(400);
+    }
 
-  if (!content || typeof content !== "string" || content.trim() === "") {
-    return res.sendStatus(400);
-  }
+    if (!title || typeof title !== "string" || title.trim() === "") {
+      return res.sendStatus(400);
+    }
 
-  if (!mood || !["😊", "😐", "😢", "😡", "😴"].includes(mood)) {
-    console.log("[DEBUG] Missing fields:", { title, content, mood });
-    return res.sendStatus(400);
-  }
+    if (!content || typeof content !== "string" || content.trim() === "") {
+      return res.sendStatus(400);
+    }
 
-  // Concatenate post title & post content - separate with new line to help GNL parse accurately
-  const analyzeText = `Post Title: ${title}\n  Post Content: ${content}`;
+    if (!mood || !["😊", "😐", "😢", "😡", "😴"].includes(mood)) {
+      console.log("[DEBUG] Missing fields:", { title, content, mood });
+      return res.sendStatus(400);
+    }
 
-  // Call Google NLP
-  const document = {
-    content: analyzeText,
-    type: "PLAIN_TEXT",
-  };
 
-  client
-    .analyzeSentiment({ document })
-    .then((results) => {
-      // results[0] is sentiment response
-      const sentiment = results[0].documentSentiment;
+    // Concatenate post title & post content - separate with new line to help GNL parse accurately
+    const analyzeText = `Post Title: ${title}\n  Post Content: ${content}`;
 
-      // Check if user exists
-      return User.findById(userId).then((user) => {
-        if (!user) {
-          throw new Error("User not found.");
-        }
+    // Call Google NLP
+    const document = {
+      content: analyzeText,
+      type: "PLAIN_TEXT",
+    };
 
-        // Create new journal entry (with sentiment data)
-        const newEntry = new Journal({
-          userId,
-          title: title.trim(),
-          content: content.trim(),
-          mood,
-          normalizedSentiment: sentimentConverter(
-            sentiment.score,
-            sentiment.magnitude,
-          ),
-          sentimentScore: sentiment.score,
-          sentimentMagnitude: sentiment.magnitude,
+    const analyzeSentiment = await client.analyzeSentiment({ document });
+    // results[0] is sentiment response
+    const sentiment = analyzeSentiment[0].documentSentiment;
 
-        });
-        console.log(`This is newEntry: ${newEntry}`);
-        console.log("test", newEntry);
-        console.log(
-          "This should be the converted value",
-          newEntry.normalizedSentiment,
-        );
-        return newEntry.save();
-      });
-    })
-    .then((savedEntry) => {
-      console.log("[DEBUG] Entry saved with sentiment:", savedEntry);
-      return res.status(201).send(savedEntry);
-    })
-    .catch((err) => {
-      console.error(
-        "Error creating journal entry with sentiment:",
-        err.message,
-      );
-      return res.sendStatus(500);
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Create new journal entry (with sentiment data)
+    const newEntry = new Journal({
+      userId,
+      title: title.trim(),
+      content: content.trim(),
+      mood,
+      normalizedSentiment: await sentimentConverter(sentiment.score, sentiment.magnitude, userId),
+      sentimentScore: sentiment.score,
+      sentimentMagnitude: sentiment.magnitude,
+
     });
+    console.log(`This is newEntry: ${newEntry}`);
+
+    console.log('This should be the converted value', newEntry.normalizedSentiment);
+
+    const savedEntry = await newEntry.save();
+    console.log("[DEBUG] Entry saved with sentiment:", savedEntry);
+    return res.status(201).send(savedEntry);
+
+  } catch (error) {
+    console.error('Error creating journal entry with sentiment:', error.message);
+    return res.sendStatus(500);
+
+  }
 });
 
 // Retrieve all journal entries
