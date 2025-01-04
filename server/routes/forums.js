@@ -10,11 +10,13 @@ router.post("/", (req, res) => {
   const { message, selectedGoal } = req.body;
   const noSpacesGoal = selectedGoal.split(" ").join("");
   const date = new Date();
+
   console.log('forums post / reached')
   console.log(message, selectedGoal, noSpacesGoal)
   // Add a day
   const expiration = date.setDate(date.getDate() + 3);
   console.log(expiration)
+  if(noSpacesGoal !== "?"){
   Forums.create({
     forumName: noSpacesGoal,
     user: "anon",
@@ -31,6 +33,9 @@ router.post("/", (req, res) => {
       console.error(error, "failed to create forum");
       res.sendStatus(500);
     });
+  } else {
+    res.sendStatus(404)
+  }
 });
 
 // Gets all posts from forums based on query
