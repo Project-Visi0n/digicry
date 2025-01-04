@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
-import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
-import IconButton from "@mui/material/IconButton";
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import IconButton from '@mui/material/IconButton';
 import {
   Box,
   Button,
@@ -22,26 +22,29 @@ function LikeButton({ post, selectedGoal }) {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [chosen, setChosen] = useState(false);
-  const [likeColor, setLikeColor] = useState("#7e90a3");
+  const [likeColor, setLikeColor] = useState("#7e90a3")
+
+  
+  // Increments/Decrements or does nothing depending on which button is clicked
 
   const handleDislike = ({ target: { value } }) => {
+
     if (!disliked && !chosen) {
       setDislikes(dislikes - 1);
       setDisliked(true);
-      setChosen(true);
+      setChosen(true)
       axios
         .post("api/forums/dislike", {
           postId: value,
           disliked,
         })
-        .then((data) => {
-          console.log(data);
+        .then(() => {
         })
         .catch((error) => {
           console.error(error);
         });
-    } else if (disliked) {
-      setChosen(false);
+    } else if(disliked){
+      setChosen(false)
       setDislikes(dislikes + 1);
       setDisliked(false);
       axios
@@ -49,8 +52,7 @@ function LikeButton({ post, selectedGoal }) {
           postId: value,
           disliked,
         })
-        .then((data) => {
-          console.log(data);
+        .then(() => {
         })
         .catch((error) => {
           console.error(error);
@@ -58,41 +60,42 @@ function LikeButton({ post, selectedGoal }) {
     }
   };
 
+
   const handleLike = ({ target: { value } }) => {
+    
     if (!liked && !chosen) {
       setLikes(likes + 1);
-      setLikeColor("#00fc15");
+      setLikeColor("#00fc15")
       setLiked(true);
-      setChosen(true);
+      setChosen(true)
       axios
         .post("api/forums/like", {
           postId: value,
           liked,
         })
-        .then((data) => {
-          console.log(data);
+        .then(() => {
         })
         .catch((error) => {
           console.error(error);
         });
     } else if (liked) {
-      setChosen(false);
+      setChosen(false)
       setLikes(likes - 1);
       setLiked(false);
-      setLikeColor("#7e90a3");
+      setLikeColor("#7e90a3")
       axios
         .post("api/forums/like", {
           postId: value,
           liked,
         })
-        .then((data) => {
-          console.log(data);
+        .then(() => {
         })
         .catch((error) => {
           console.error(error);
         });
     }
   };
+
 
   return (
     <Grid container spacing={1}>
@@ -104,23 +107,24 @@ function LikeButton({ post, selectedGoal }) {
             onClick={handleLike}
             sx={{ typography: { fontSize: 8 } }}
           >
-            <SentimentSatisfiedAltIcon style={{ fill: "#00fc15" }} />
+            <SentimentSatisfiedAltIcon style={{ fill: "#00fc15"}}/>
             <h1 style={{ color: "#00fc15" }}>{likes}</h1>
           </IconButton>
         </Tooltip>
       </Grid>
-      <Grid item xs={3} />
+      <Grid item xs={3}/>
       <Grid item xs={2}>
-        <IconButton
-          style={{ fill: "#ea0000" }}
+        <IconButton 
+          style={{ fill: '#ea0000' }}
           value={post._id}
           onClick={handleDislike}
-          sx={{ typography: { fontSize: 8 } }}
+          sx={{ typography: { fontSize: 8 }}}
         >
-          <SentimentVeryDissatisfiedIcon style={{ fill: "#ea0000" }} />
-          <h1 style={{ color: "red" }}>{dislikes}</h1>
+          <SentimentVeryDissatisfiedIcon style={{ fill: '#ea0000' }}/>
+          <h1 style={{ color: 'red' }}>{dislikes}</h1>
         </IconButton>
       </Grid>
+ 
     </Grid>
   );
 }

@@ -17,7 +17,6 @@ import LikeButton from "./LikeButton";
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState("?");
-  const [refreshKey, setRefreshKey] = useState(0);
   const [submit, setSubmit] = useState(false);
   const [goalOptions, setGoalOptions] = useState([
     "Physical Health",
@@ -27,24 +26,22 @@ function Forums() {
     "Career",
   ]);
 
-  const handleClick = ({ target: { value } }) => {
-    console.log(value);
-    setSelectedGoal(value);
-    const removeSpaces = value.split(" ").join("");
+  // Gets goals from database based on the elements value.
+
+  const getGoals = ({ target: { value } }) => {
+    const forumName = value.split(" ").join("");
     axios
-      .get("/api/forums", { params: { forumName: removeSpaces } })
+      .get("/api/forums", { params: { forumName } })
       .then((posts) => {
-        console.log(posts.data);
+        setSelectedGoal(value);
         setGoalPosts(posts.data);
-        setRefreshKey((prevKey) => prevKey + 1);
       })
       .catch((error) => {
-        console.error(
-          error,
-          `error getting ${removeSpaces} forums from server`
-        );
+        console.error(error, `error getting ${forumName} forums from server`);
       });
   };
+
+  // Sets the age of posts.
 
   const minutesAgo = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -55,55 +52,60 @@ function Forums() {
     const remainingMinutes = diffMinutes % 60;
     const diffDays = Math.floor(diffHours / 24);
 
+    if (diffMinutes <= 2) {
+      return "just now!";
+    }
     if (diffMinutes < 60) {
-      return diffMinutes + " minutes ago";
-    } else if (diffHours < 24) {
-      return diffHours + "hrs" + remainingMinutes + " minutes ago";
-    } else if (diffDays < 2) {
+      return `${diffMinutes} minutes ago`;
+    }
+    if (diffHours < 24) {
+      return `${diffHours}hrs and ${remainingMinutes} minutes ago`;
+    }
+    if (diffDays < 2) {
       return "yesterday";
     }
-    return diffDays + " days ago";
+    return `${diffDays} days ago`;
   };
 
-  const handleSubmit = (msg) => {
-    const refresh = selectedGoal;
+  // Post element msg to the server
+
+  const postMsg = (msg) => {
     setSubmit(!submit);
     axios
       .post("api/forums", {
         message: msg.get("msg"),
         selectedGoal,
       })
-      .then((data) => {
-        console.log(data);
-        setRefreshKey((prevKey) => prevKey + 1);
+      .then(() => {
+        console.log("Post created");
       })
       .catch((error) => {
-        console.error(error);
+        console.debug(error, "Failed to create post");
       });
   };
 
+  const removeSpaces = (string) => {
+    return string.split(" ").join("");
+  };
+
+  // Reloads the page contents when things are submitted.
+
   useEffect(() => {
-    if (selectedGoal !== "?" && selectedGoal !== "posting...") {
-      const value = selectedGoal;
-      const removeSpaces = value.split(" ").join("");
+    if (selectedGoal !== "?") {
+      const forumName = removeSpaces(selectedGoal);
       axios
-        .get("/api/forums", { params: { forumName: removeSpaces } })
+        .get("/api/forums", { params: { forumName } })
         .then((posts) => {
-          console.log(posts.data);
           setGoalPosts(posts.data);
-          setRefreshKey((prevKey) => prevKey + 1);
         })
         .catch((error) => {
-          console.error(
-            error,
-            `error getting ${removeSpaces} forums from server`
-          );
+          console.error(error, `Error getting ${forumName} forums from server`);
         });
     }
   }, [submit, selectedGoal]);
 
   return (
-    <div key={refreshKey}>
+    <div>
       <Box
         sx={() => ({
           background: "transparent",
@@ -127,7 +129,7 @@ function Forums() {
             <Button
               className="glass-btn"
               type="button"
-              onClick={handleClick}
+              onClick={getGoals}
               key={goal}
               goal={goal}
               value={goal}
@@ -138,7 +140,7 @@ function Forums() {
         })}
       </div>
       <br />
-      <Box align="center" component="form" action={handleSubmit}>
+      <Box align="center" component="form" action={postMsg}>
         <label>Say Something Positive!</label>
         <br />
         <TextField
@@ -169,10 +171,10 @@ function Forums() {
         </Button>
       </Box>
       <br></br>
-      <div key={refreshKey}>
+      <div>
         {goalPosts.reverse().map((post, i) => {
           return (
-            <Box align="center" key={refreshKey} container spacing={5}>
+            <Box align="center" container spacing={5}>
               <Grid item xs={10}>
                 <Box
                   sx={() => ({
@@ -190,7 +192,7 @@ function Forums() {
                     zIndex: "modal",
                     width: "700px",
                     ":hover": {
-                      boxShadow: 20, // theme.shadows[20]
+                      boxShadow: 20, 
                       opacity: 0.95,
                     },
                   })}
