@@ -46,7 +46,7 @@ function Forums() {
   };
 
   // Sets the age of posts.
-  
+
   const minutesAgo = (isoDateString) => {
     const date = new Date(isoDateString);
     const now = new Date();
@@ -79,10 +79,10 @@ function Forums() {
         selectedGoal,
       })
       .then(() => {
-        console.log('post created');
+        console.log("Post created");
       })
       .catch((error) => {
-        console.error(error);
+        console.debug(error, "Failed to create post");
       });
   };
 
