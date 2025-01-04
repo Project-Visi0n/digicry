@@ -3,10 +3,10 @@ import {
   Container,
   Typography,
   Box,
-  Grid,
   Card,
   CardContent,
 } from "@mui/material";
+import Grid from '@mui/material/Unstable_Grid2';
 import { Line, Bar } from "react-chartjs-2";
 import axios from "axios";
 
@@ -101,6 +101,42 @@ function MoodAnalytics() {
           Mood Analytics
         </Typography>
       </Box>
+
+      <Grid container spacing={4}>
+        {/* Mood Over Time */}
+        <Grid xs={12}>
+          <Card className="glass-panel">
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>Mood Trends Over Time</Typography>
+              <Box sx={{ height: 400 }}>
+                {processTimeSeriesData() && (
+                  <Line
+                    data={processTimeSeriesData()}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          max: 100,
+                          grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                          }
+                        },
+                        x: {
+                          grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                          }
+                        }
+                      }
+                    }}
+                  />
+                )}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
     </Container>
   );
 }
