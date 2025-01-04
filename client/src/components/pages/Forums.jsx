@@ -185,7 +185,7 @@ function Forums() {
         {goalPosts.reverse().map((post, i) => {
           return (
             <Box align="center" container spacing={5}>
-              <Grid item xs={10}>
+              
                 <Box
                   sx={() => ({
                     bgcolor: "rgb(255, 255, 255)",
@@ -222,7 +222,7 @@ function Forums() {
                   <br></br>
                   <LikeButton selectedGoal={selectedGoal} post={post} />
                 </Box>
-              </Grid>
+              
               <Box style={{ height: "2px" }} />
             </Box>
           );
