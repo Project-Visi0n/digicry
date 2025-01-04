@@ -29,11 +29,13 @@ function Forums() {
   // Gets goals from database based on the elements value.
 
   const getGoals = ({ target: { value } }) => {
-    const forumName = value.split(" ").join("");
+    console.log("getGoals function triggered")
+    const forumName = removeSpaces(value);
+    console.log('forumName is', forumName)
+    setSelectedGoal(value);
     axios
       .get("/api/forums", { params: { forumName } })
       .then((posts) => {
-        setSelectedGoal(value);
         setGoalPosts(posts.data);
       })
       .catch((error) => {
