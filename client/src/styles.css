@@ -102,8 +102,12 @@ body {
 }
 
 .section-description {
-  opacity: 0.8;
-  margin-bottom: 2rem !important;
+  opacity: 0.9;
+  margin-bottom: 1.5rem !important;
+  color: rgba(94, 100, 114, 0.95);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem; /* Adjust as needed */
+  line-height: 1.5;
 }
 
 /***************************************************************
