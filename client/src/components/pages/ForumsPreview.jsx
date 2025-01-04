@@ -25,6 +25,24 @@ function ForumsPreview() {
       });
   }, []);
 
+  // Displays a spinner while data is being fetched
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Shows an error message if fetching fails
+  if (error) {
+    return (
+      <Typography variant="body2" color="error">
+        Unable to load forum posts.
+      </Typography>
+    );
+  }
+
   // Rendering Logic
   return (
 
