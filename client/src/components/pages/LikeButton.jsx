@@ -12,7 +12,7 @@ import {
   TextField,
   InputAdornment,
   positions,
-  Grid,
+  Grid2,
   Tooltip,
 } from "@mui/material";
 
@@ -89,8 +89,8 @@ function LikeButton({ post, selectedGoal }) {
   };
 
   return (
-    <Grid container spacing={1} id={selectedGoal}>
-      <Grid item xs={2}>
+    <Grid2 container spacing={1} >
+      <Grid2 item xs={2}>
         <Tooltip title="It's okay to love!" enterDelay={500} leaveDelay={200}>
           <IconButton
             id={selectedGoal}
@@ -102,9 +102,9 @@ function LikeButton({ post, selectedGoal }) {
             <h1 style={{ color: "#00fc15" }}>{likes}</h1>
           </IconButton>
         </Tooltip>
-      </Grid>
-      <Grid item xs={3} />
-      <Grid item xs={2}>
+      </Grid2>
+      <Grid2 item xs={3} />
+      <Grid2 item xs={2}>
         <IconButton
           style={{ fill: "#ea0000" }}
           value={post._id}
@@ -114,8 +114,8 @@ function LikeButton({ post, selectedGoal }) {
           <SentimentVeryDissatisfiedIcon style={{ fill: "#ea0000" }} />
           <h1 style={{ color: "red" }}>{dislikes}</h1>
         </IconButton>
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }
 
