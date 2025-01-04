@@ -72,7 +72,7 @@ function Forums() {
   };
 
   // Post element msg to the server
-   
+
   const postMsg = (msg) => {
     setSubmit(!submit);
     axios
@@ -92,6 +92,8 @@ function Forums() {
     return string.split(" ").join("");
   }
 
+  // Reloads the page contents when things are submitted.
+  
   useEffect(() => {
     if (selectedGoal !== "?") {
       const forumName = removeSpaces(selectedGoal);
