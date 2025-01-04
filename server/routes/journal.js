@@ -1,83 +1,88 @@
 /* eslint-disable consistent-return */
 const express = require("express");
-
 const router = express.Router();
 const mongoose = require("mongoose");
 const language = require("@google-cloud/language");
 const { Journal, User } = require("../models");
-
 const client = new language.LanguageServiceClient();
 
 // Utility function to validate ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 
-
-
-
-
-
-
-
-
-// Helper function to normalize the sentimentScore and sentimentMagnitude into a 1-100 value where smaller numbers represent negative sentiment while larger numbers represent positive sentiment
-
 /**
+ * This file handles the CRUD operations of Journal entries with integrated sentiment analysis via Google's Natural Language (GNL) API.
+ * GNL analyzes the title and body content of journal entries and responds with raw sentiment scores.
+ * Ex: { sentimentScore: 0.13494829, magnitudeScore: 13.03938449 }
+ * We convert the raw sentiment score into a normalized value on a 0-100 scale.
+ * The normalized score value is added to the normalizedSentiment property in the DB.
  *
  * Helpful Links:
  * https://developers.google.com/machine-learning/crash-course/numerical-data/normalization
- * ^ see linear scaling alg for more info
  * https://www.indeed.com/career-advice/career-development/normalization-formula
  * https://medium.com/@chuntcdj/feature-normalization-the-essential-step-in-machine-learning-when-dealing-with-numbers-03030aaed65e
+ */
+
+
+
+/**
+ * This function converts Google's NLP's raw sentiment into a normalized value on a 0-100 scale
+ * Lower numbers represent negative sentiment
+ * Middle numbers represent neutral sentiment
+ * Higher numbers represent positive sentiment
+ *
+ * @param sentiment - Raw sentiment score from Google NLP. Represents positive/negative sentiment. Ranges from -1 to 1.
+ * @param magnitude - Raw magnitude score from Google NLP. Represents intensity of emotion. Ranges from 0 to 100.
+ * @param userId - Id of the user in DB
+ * @returns {Promise<number>}
  *
  *
- *
- * Ranges from our test data:
- * magnitude: 0.5 -> 13
- * sentiment: -0.7 -> 0.9
- *
- * first step is to normalize this data to get a value between 0 and 1
- * then assign values for magnitude and sentiment's 'weight' to decide the value priority of each
- *
- * the results from our test data (small sample size fyi) imply that magnitude can vary greatly
- * thus, i'll be giving sentiment a weight of 75% and magnitude a weight of 25%
- *
- * our goal is to get a convertedScore that ranges from 0-100, taking into account 25% of the weighted value and 75% of the sentiment value
+ * This function uses getRanges() function to get sentimentScore ranges from User's previous journal entries.
+ * Then, we normalize sentimentScore and magnitudeScore to 0-1 scale using min-max normalization.
+ * Then we apply a 70% weight to sentiment (indicator of positive/negative) and a 30% weight to magnitude (emotional intensity).
+ * The function then scales the result to a 0-100 range.
  *
  *
  */
-
 const sentimentConverter = async (sentiment, magnitude, userId) => {
 
 
   try {
+    // Get ranges for this user's sentimentScores in DB, if User hasn't submitted enough journal entries then our default ranges will be used.
     const ranges = await getRanges(userId);
-    // normalize data via linear scaling
+    // Normalize data using min-max scaling (x - min) / (max - min)
     const normalizedSentiment = (sentiment - ranges.sentimentMin) / (ranges.sentimentMax - ranges.sentimentMin);
     const normalizedMagnitude = (magnitude - ranges.magnitudeMin) / (ranges.magnitudeMax - ranges.magnitudeMin);
 
 
-    // init weight values
+    // Initialize weights and scale to 0-100
     const sentimentWeight = 0.70;
     const magnitudeWeight = 0.30;
-    console.log('WE GOT THE RANGES: ', normalizedMagnitude, normalizedSentiment)
-
     return Math.round((normalizedSentiment * sentimentWeight + normalizedMagnitude * magnitudeWeight) * 100)
 
   } catch (error) {
     console.error('Error converting sentiment values', error);
 
-    // resort to use defaults on err
+    // Resort to use default ranges on error - these values are based on our analysis of test data (small data set! so not super accurate)
     const normalizedSentiment = (sentiment - (-0.7)) / (0.9 - (-0.7));
     const normalizedMagnitude = (magnitude - 0.5) / (13 - 0.5);
     return Math.round((normalizedSentiment * 0.70 + normalizedMagnitude * 0.30) * 100);
   }
-
 }
 
-// Helper function to query DB to get the ranges for sentiment & magnitude - defaults to ranges found in our test data
+
+
+
+/**
+ * This function queries the DB to find the range of sentiment scores for a User.
+ * This will normalize the scores within the context of a User's emotional expression patterns.
+ *
+ * @param userId - Id of the user in DB
+ * @returns {Promise<{sentimentMin: number, sentimentMax: number, magnitudeMin: number, magnitudeMax: number}>} - Object containing min/max values for sentiment and magnitude
+ *
+ * Will resort to defaults for min/max values if User does not have 10+ journal entries in DB (insufficient data)
+ */
 const getRanges = async (userId) => {
-  // will use defaults if not enough data found in db
   const defaults = {
     sentimentMin: -0.7,
     sentimentMax: 0.9,
@@ -85,7 +90,7 @@ const getRanges = async (userId) => {
     magnitudeMax: 13,
   }
 
-
+  // Initialize ranges with impossible values to ensure first comparison works
   const ranges = {
     sentimentMin: 2,
     sentimentMax: -2,
@@ -94,24 +99,21 @@ const getRanges = async (userId) => {
   };
 
 
-
   try {
+    // Get all journal entries for User
     const journals = await Journal.find({ userId });
 
-    // if we dont have enough data resort to defaults
+    // If insufficient data, return defaults
     if (journals.length < 10) {
       return defaults;
     }
 
 
-    // find min/max values of score and magnitude
-    // sentiment range is -1 -> 1, so it can never be 2 or -2
-    // same logic applies for magnitude
+    // Find min/max values from User's past journal entries
     journals.forEach(journal => {
       if (journal.sentimentScore < ranges.sentimentMin) {
         ranges.sentimentMin = journal.sentimentScore;
       }
-
       if (journal.sentimentScore > ranges.sentimentMax) {
         ranges.sentimentMax = journal.sentimentScore;
       }
@@ -123,18 +125,12 @@ const getRanges = async (userId) => {
       }
     });
 
-
-
-    console.log('Base min/max values found!')
-
     return ranges;
 
   } catch (error) {
-    console.error('Error getting base min/max values', error);
+    console.error('Error getting User min/max sentimentScores - using default min/max values instead.', error);
     return defaults;
   }
-
-
 }
 
 // Create new journal entry
@@ -164,17 +160,17 @@ router.post("/", async (req, res) => {
     }
 
 
-    // Concatenate post title & post content - separate with new line to help GNL parse accurately
+    // Concatenate post title & post content - separate with new line to help GNL analyze all content accurately
     const analyzeText = `Post Title: ${title}\n  Post Content: ${content}`;
 
-    // Call Google NLP
+    // Initialize NLP request
     const document = {
       content: analyzeText,
       type: "PLAIN_TEXT",
     };
 
+    // Get sentiment analysis from Google NLP
     const analyzeSentiment = await client.analyzeSentiment({ document });
-    // results[0] is sentiment response
     const sentiment = analyzeSentiment[0].documentSentiment;
 
     // Check if user exists
@@ -195,9 +191,6 @@ router.post("/", async (req, res) => {
 
     });
     console.log(`This is newEntry: ${newEntry}`);
-
-    console.log('This should be the converted value', newEntry.normalizedSentiment);
-
     const savedEntry = await newEntry.save();
     console.log("[DEBUG] Entry saved with sentiment:", savedEntry);
     return res.status(201).send(savedEntry);
