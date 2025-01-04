@@ -31,14 +31,17 @@ function Forums() {
       const copy = string.split(" ").join("");
       return copy
     };
+
+    const goalClicked = ({ target: { value } }) => {
+      console.log("getGoals function triggered")
+      const goalNoSpaces = removeSpaces(value);
+      console.log('forumName is', goalNoSpaces)
+      setSelectedGoal(value);
+    }
+
   // Gets goals from database based on the elements value.
 
-  const getGoals = ({ target: { value } }) => {
-    console.log("getGoals function triggered")
-    const forumName = removeSpaces(value);
-    console.log('forumName is', forumName)
-    setSelectedGoal(value);
-    console.log(selectedGoal)
+  const getGoals = (forumName) => {
     axios
       .get("/api/forums", { params: { forumName } })
       .then((posts) => {
@@ -139,7 +142,7 @@ function Forums() {
             <Button
               className="glass-btn"
               type="button"
-              onClick={getGoals}
+              onClick={goalClicked}
               key={goal}
               goal={goal}
               value={goal}

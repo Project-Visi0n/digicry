@@ -79,7 +79,7 @@ router.post("/like", (req, res) => {
     },
   })
     .then(() => {
-      console.log("successful upvote");
+      console.log("successful upvote for", postId);
       res.sendStatus(201);
     })
     .catch((error) => {
