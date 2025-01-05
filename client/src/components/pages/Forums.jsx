@@ -223,7 +223,7 @@ function Forums() {
                     <h6>{minutesAgo(post.createdAt)}</h6>
                   </Box>
                   <br></br>
-                  <LikeButton selectedGoal={selectedGoal} post={post} />
+                  <LikeButton key={post._id} selectedGoal={selectedGoal} post={post} />
                 </Box>
               
               <Box style={{ height: "2px" }} />

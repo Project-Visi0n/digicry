@@ -94,7 +94,7 @@ function LikeButton({ post, selectedGoal }) {
   };
 
   return (
-    <Grid2 container spacing={1} >
+    <Grid2 container spacing={6} >
       <Grid2 item xs={2}>
         <Tooltip title="It's okay to love!" enterDelay={500} leaveDelay={200}>
           <IconButton
@@ -109,7 +109,7 @@ function LikeButton({ post, selectedGoal }) {
         </Tooltip>
       </Grid2>
       <Grid2 item xs={3} />
-      <Grid2 item xs={2}>
+      <Grid2 item xs={6}>
         <IconButton
           style={{ fill: "#ea0000" }}
           value={post._id}

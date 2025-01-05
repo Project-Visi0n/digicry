@@ -12,7 +12,6 @@ router.post("/", (req, res) => {
   const date = new Date();
 
   console.log('forums post / reached')
-  console.log(message, selectedGoal, noSpacesGoal)
   // Add a day
   const expiration = date.setDate(date.getDate() + 3);
   console.log(expiration)
@@ -46,7 +45,7 @@ router.get("/", (req, res) => {
   console.log('attempting to get the values of', query.forumName )
    Forums.find({ forumName: query.forumName })
     .then((posts) => {
-      console.log('posts returned ', posts)
+      console.log('posts returned ')
       if (posts.length > 0) {
         res.status(200).send(posts);
       } else {
@@ -72,7 +71,7 @@ router.get("/", (req, res) => {
 router.post("/like", (req, res) => {
   console.log("reached");
   const { postId, liked } = req.body;
-  console.log(liked);
+  console.log(liked, postId);
   Forums.findByIdAndUpdate(postId, {
     $inc: {
       upVote: liked ? -1 : 1,
