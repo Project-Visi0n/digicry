@@ -8,6 +8,7 @@ import {
   Container,
   Card,
   CardContent,
+  Grid,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -154,192 +155,183 @@ function Home() {
    * IF AUTHENTICATED, SHOW MAIN UI
    *********************************** */
   return (
-    <Container maxWidth="xl">
-      {/* Hero Section with Quote */}
-      <Box
-        className="glass-panel hero-section"
-        sx={{
-          textAlign: "center",
-          py: 6,
-          px: 4,
-          mb: 4,
-          borderRadius: "24px",
-        }}
-      >
-        <Typography
-          variant="h3"
-          sx={{
-            mb: 3,
-            background:
-              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          Welcome back, {user.name}
-        </Typography>
-
-        {/* Quote Display */}
-        <Box className="quote-container" sx={{ maxWidth: "800px", mx: "auto" }}>
-          {isLoading ? (
-            <CircularProgress />
-          ) : (
-            <>
-              <Typography variant="h5" sx={{ fontStyle: "italic", mb: 2 }}>
-                &quot;{quote.quote}&quot;
+    <Container maxWidth={false} sx={{ maxWidth: "1800px", mx: "auto" }}>
+      <Box>
+        {/* Hero Section */}
+        <Box className="dashboard-container">
+          <Box className="dashboard-main">
+            <Card className="glass-panel hero-section">
+              <Typography className="welcome-text">
+                Welcome back, {user.username}!
               </Typography>
-              <Typography variant="subtitle1">- {quote.author}</Typography>
-            </>
-          )}
+              {quote && (
+                <Typography className="quote-text">
+                  &quot;{quote.quote}&quot;
+                  {quote.author && (
+                    <Typography
+                      component="span"
+                      sx={{
+                        display: "block",
+                        mt: 1,
+                        color: "var(--pink)",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      — {quote.author}
+                    </Typography>
+                  )}
+                </Typography>
+              )}
+            </Card>
+
+            <Grid container spacing={2}>
+              {/* Mood Analytics */}
+              <Grid item xs={12} md={6}>
+                <Card className="glass-panel dashboard-card analytics-card">
+                  <CardContent className="dashboard-card-content">
+                    <Box className="dashboard-card-header">
+                      <Typography variant="h6">Mood Analytics</Typography>
+                      <Button size="small" className="glass-btn primary">
+                        View Full Report
+                      </Button>
+                    </Box>
+                    <Box className="dashboard-card-body">
+                      <MoodPreview entries={recentEntries} />
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Recent Journal Entries */}
+              <Grid item xs={12} md={6}>
+                <Card className="glass-panel dashboard-card journal-card">
+                  <CardContent className="dashboard-card-content">
+                    <Box className="dashboard-card-header">
+                      <Typography variant="h6">
+                        Recent Journal Entries
+                      </Typography>
+                      <Button
+                        component={Link}
+                        to="/journal/new"
+                        size="small"
+                        className="glass-btn primary"
+                        startIcon={<AddIcon />}
+                      >
+                        New Entry
+                      </Button>
+                    </Box>
+                    <Box className="dashboard-card-body custom-scrollbar">
+                      {error && (
+                        <Typography variant="body2" color="error">
+                          {error}
+                        </Typography>
+                      )}
+                      {recentEntries && recentEntries.length > 0 ? (
+                        <Stack spacing={1}>
+                          {recentEntries.map((entry) => (
+                            <Box
+                              key={entry._id}
+                              sx={{
+                                p: 1.5,
+                                borderRadius: "8px",
+                                background: "rgba(255, 255, 255, 0.1)",
+                                backdropFilter: "blur(10px)",
+                                transition: "transform 0.2s ease",
+                                cursor: "pointer",
+                                "&:hover": {
+                                  transform: "scale(1.01)",
+                                  background: "rgba(255, 255, 255, 0.15)",
+                                },
+                              }}
+                            >
+                              <Typography variant="subtitle1" sx={{ mb: 0.5 }}>
+                                {entry.title}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  mb: 0.5,
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                {entry.content}
+                              </Typography>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    color: "var(--pink)",
+                                    fontWeight: 500,
+                                  }}
+                                >
+                                  Mood: {entry.mood}
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  sx={{ color: "text.secondary" }}
+                                >
+                                  {new Date(entry.createdAt).toLocaleString()}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          ))}
+                        </Stack>
+                      ) : (
+                        <Typography variant="body2">
+                          No recent entries found.
+                        </Typography>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Forums Preview - Full Width */}
+              <Grid item xs={12}>
+                <Card className="glass-panel dashboard-card forums-card">
+                  <CardContent className="dashboard-card-content">
+                    <Box className="dashboard-card-header">
+                      <Typography variant="h6">Forums</Typography>
+                      <Button size="small" className="glass-btn primary">
+                        View All
+                      </Button>
+                    </Box>
+                    <Box className="dashboard-card-body custom-scrollbar">
+                      <ForumsPreview />
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
+
+          {/* Sidebar */}
+          <Box className="dashboard-sidebar">
+            <Card className="glass-panel dashboard-card events-card">
+              <CardContent className="dashboard-card-content">
+                <Box className="dashboard-card-header">
+                  <Typography variant="h6">Nearby Events</Typography>
+                  <Button size="small" className="glass-btn primary">
+                    View All
+                  </Button>
+                </Box>
+                <Box className="dashboard-card-body custom-scrollbar">
+                  <RenderEvents />
+                </Box>
+              </CardContent>
+            </Card>
+          </Box>
         </Box>
       </Box>
-
-      {/* Main Content Stack */}
-      <Stack spacing={4}>
-        {/* Top Row */}
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          spacing={4}
-          sx={{ width: "100%" }}
-        >
-          {/* Mood Analytics Section */}
-          <Card className="glass-panel analytics-card" sx={{ flex: 1 }}>
-            <CardContent>
-              <Typography variant="h5" sx={{ mb: 3 }}>
-                Mood Analytics
-              </Typography>
-
-              {/* Description for Mood Analytics */}
-              <Typography variant="body2" className="section-description">
-                Track your emotional trends over time to gain insights into your
-                well-being.
-              </Typography>
-
-              <Box className="mood-chart" sx={{ height: "300px" }}>
-                {/* Render mini chart with a new sub component */}
-                <MoodPreview entries={recentEntries} />
-              </Box>
-            </CardContent>
-          </Card>
-
-          {/* Recent Journal Entries */}
-          <Card className="glass-panel journal-card" sx={{ flex: 1 }}>
-            <CardContent>
-              <Typography variant="h5" sx={{ mb: 3 }}>
-                Recent Journal Entries
-              </Typography>
-
-              {/* Description for Recent Journal Entries */}
-              <Typography variant="body2" className="section-description">
-                Digi-Cry today? Writing down your feelings can help you process
-                and understand them better.
-              </Typography>
-
-              <Button
-                component={Link}
-                to="/journal/new"
-                className="glass-btn primary"
-                startIcon={<AddIcon />}
-              >
-                Add Journal Entry
-              </Button>
-
-              {/* Journal entries list */}
-              {error && (
-                <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-                  {error}
-                </Typography>
-              )}
-
-              {recentEntries && recentEntries.length > 0 ? (
-                recentEntries.map((entry) => (
-                  <Box
-                    key={entry._id}
-                    sx={{
-                      mt: 2,
-                      p: 2,
-                      borderRadius: "12px",
-                      background: "rgba(255, 255, 255, 0.1)",
-                      backdropFilter: "blur(10px)",
-                    }}
-                  >
-                    <Typography variant="h6" sx={{ mb: 1 }}>
-                      {entry.title}
-                    </Typography>
-                    <Typography variant="body2">
-                      {entry.content.slice(0, 100)}...
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ display: "block", mt: 1 }}
-                    >
-                      Mood: {entry.mood} | Created:{" "}
-                      {new Date(entry.createdAt).toLocaleString()}
-                    </Typography>
-                  </Box>
-                ))
-              ) : (
-                <Typography sx={{ mt: 2 }} variant="body1">
-                  No recent entries found.
-                </Typography>
-              )}
-            </CardContent>
-          </Card>
-        </Stack>
-
-        {/* Middle Row: Forums Preview */}
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          spacing={4}
-          sx={{ width: "100%" }}
-        >
-          {/* Forums Preview Section */}
-          <Card className="glass-panel forums-card" sx={{ flex: 1 }}>
-            <CardContent>
-              <Typography variant="h5" sx={{ mb: 1 }}>
-                Forums
-              </Typography>
-              {/* Description for Forums */}
-              <Typography variant="body2" className="section-description">
-                Engage with our community, share your goals, and receive support
-                from others.
-              </Typography>
-
-              {/* Render Forums Preview */}
-              <ForumsPreview />
-            </CardContent>
-          </Card>
-        </Stack>
-
-        {/* Bottom Row */}
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          spacing={4}
-          sx={{ width: "100%" }}
-        >
-          {/* Nearby Events Section */}
-          <Card className="glass-panel events-card" sx={{ flex: 1 }}>
-            <CardContent>
-              <Typography variant="h5" sx={{ mb: 1 }}>
-                Nearby Events
-              </Typography>
-              {/* Description for Nearby Events */}
-              <Typography variant="body2" className="section-description">
-                Discover events in your area to connect and engage with your
-                community.
-              </Typography>
-
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={2}
-                sx={{ width: "100%" }}
-              >
-                <RenderEvents />
-              </Stack>
-            </CardContent>
-          </Card>
-        </Stack>
-      </Stack>
     </Container>
   );
 }

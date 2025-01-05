@@ -173,281 +173,207 @@ function JournalEntryList({ searchQuery = "" }) {
         {filteredEntries.map((entry, index) => (
           <motion.div
             key={entry._id}
+            layout
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            transition={{ duration: 0.3 }}
           >
             <Box
-              className="journal-timeline-entry"
+              className="glass-panel"
               sx={{
+                mb: 2,
+                p: 3,
                 position: "relative",
-                mb: 4,
-                ml: isMobile ? 3 : 8,
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  left: "-25px",
-                  top: 0,
-                  bottom: 0,
-                  width: "3px",
-                  background: `linear-gradient(180deg,
-                    ${getEmotionColor(entry.mood)} 0%,
-                    rgba(255,255,255,0.1) 100%
-                  )`,
-                },
+                overflow: "hidden",
               }}
             >
-              {/* Mood Indicator Dot */}
               <Box
-                component={motion.div}
-                whileHover={{ scale: 1.2 }}
                 sx={{
-                  position: "absolute",
-                  left: "-34px",
-                  top: "20px",
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  background: getEmotionColor(entry.mood),
-                  boxShadow: `0 0 20px ${getEmotionColor(entry.mood)}80`,
-                  border: "2px solid rgba(255, 255, 255, 0.8)",
-                  zIndex: 2,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  mb: 2,
                 }}
-              />
+              >
+                <Box>
+                  <Typography
+                    className="welcome-text"
+                    sx={{
+                      fontSize: "1.5rem",
+                      mb: 1,
+                      color: "var(--grey)",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {entry.title}
+                  </Typography>
 
-              {/* Entry Card */}
-              <motion.div
-                layoutId={`card-${entry._id}`}
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        background: "rgba(255, 255, 255, 0.2)",
+                        padding: "4px 12px",
+                        borderRadius: "12px",
+                        backdropFilter: "blur(5px)",
+                      }}
+                    >
+                      <AccessTimeIcon
+                        sx={{
+                          fontSize: "0.9rem",
+                          color: "var(--grey)",
+                        }}
+                      />
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "var(--grey)",
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        {new Date(entry.createdAt).toLocaleDateString(
+                          undefined,
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          },
+                        )}
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        background: "rgba(255, 255, 255, 0.2)",
+                        borderRadius: "12px",
+                        padding: "4px 12px",
+                        backdropFilter: "blur(5px)",
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: "1.2rem",
+                          color: "var(--grey)",
+                        }}
+                      >
+                        {entry.mood}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Tooltip title="Edit Entry" arrow>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit(entry._id);
+                      }}
+                      className="glass-button"
+                      sx={{
+                        background: "rgba(255,255,255,0.1)",
+                        backdropFilter: "blur(5px)",
+                        color: "white",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          background: "rgba(255,255,255,0.2)",
+                          transform: "translateY(-2px)",
+                        },
+                      }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete Entry" arrow>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(entry._id);
+                      }}
+                      sx={{
+                        background: "rgba(255,255,255,0.1)",
+                        backdropFilter: "blur(5px)",
+                        color: "white",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          background: "rgba(255,255,255,0.2)",
+                          transform: "translateY(-2px)",
+                        },
+                      }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </Box>
+
+              {/* Content Section */}
+              <AnimatePresence>
+                {expandedId === entry._id && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Box
+                      sx={{
+                        p: 3,
+                        pt: 0,
+                        position: "relative",
+                        zIndex: 1,
+                      }}
+                    >
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          color: "var(--grey)",
+                          fontSize: "1rem",
+                          lineHeight: 1.6,
+                          maxHeight:
+                            expandedId === entry._id ? "none" : "3.2em",
+                          overflow: "hidden",
+                          display: "-webkit-box",
+                          WebkitLineClamp:
+                            expandedId === entry._id ? "unset" : 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {entry.content}
+                      </Typography>
+                    </Box>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Expand Button */}
+              <Box
                 onClick={() =>
                   setExpandedId(expandedId === entry._id ? null : entry._id)
                 }
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  p: 1,
+                  cursor: "pointer",
+                  background: "rgba(255,255,255,0.05)",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.1)",
+                  },
+                }}
               >
-                <Box
-                  sx={{
-                    mb: 3,
-                    background: "rgba(255, 255, 255, 0.05)",
-                    backdropFilter: "blur(10px)",
-                    borderRadius: "16px",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    overflow: "hidden",
-                    transition: "all 0.3s ease-in-out",
-                    position: "relative",
-                    "&:hover": {
-                      background: "rgba(255, 255, 255, 0.1)",
-                      borderColor: "rgba(255, 255, 255, 0.2)",
-                      "&::before": {
-                        opacity: 1,
-                        transform: "translateX(100%)",
-                      },
-                    },
-                    "&::before": {
-                      content: '""',
-                      position: "absolute",
-                      top: 0,
-                      left: -200,
-                      width: "200px",
-                      height: "100%",
-                      background:
-                        "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
-                      transform: "skewX(-15deg)",
-                      transition: "transform 0.8s ease-in-out",
-                      opacity: 0,
-                    },
-                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-                  }}
+                <motion.div
+                  animate={{ rotate: expandedId === entry._id ? 180 : 0 }}
                 >
-                  {/* Header Section */}
-                  <Box
-                    sx={{
-                      p: 3,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      position: "relative",
-                      zIndex: 1,
-                      borderBottom:
-                        expandedId === entry._id
-                          ? "1px solid rgba(255,255,255,0.2)"
-                          : "none",
-                    }}
-                  >
-                    <Box>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontWeight: 600,
-                          color: "white",
-                          tmb: 2,
-                          fontSize: "1.25rem",
-                          textShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                        }}
-                      >
-                        {entry.title}
-                      </Typography>
-
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 2 }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                            background: "rgba(255, 255, 255, 0.1)",
-                            padding: "4px 12px",
-                            borderRadius: "12px",
-                            backdropFilter: "blur(5px)",
-                          }}
-                        >
-                          <AccessTimeIcon
-                            sx={{
-                              fontSize: "0.9rem",
-                              color: "rgba(255,255,255,0.9)",
-                            }}
-                          />
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              color: "rgba(255,255,255,0.9)",
-                              fontSize: "0.85rem",
-                            }}
-                          >
-                            {new Date(entry.createdAt).toLocaleDateString(
-                              undefined,
-                              {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              },
-                            )}
-                          </Typography>
-                        </Box>
-                        <Box
-                          sx={{
-                            background: "rgba(255, 255, 255, 0.1)",
-                            borderRadius: "12px",
-                            padding: "4px 12px",
-                            backdropFilter: "blur(5px)",
-                          }}
-                        >
-                          <Typography sx={{ fontSize: "1.2rem" }}>
-                            {entry.mood}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <Tooltip title="Edit Entry" arrow>
-                        <IconButton
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEdit(entry._id);
-                          }}
-                          className="glass-button"
-                          sx={{
-                            background: "rgba(255,255,255,0.1)",
-                            backdropFilter: "blur(5px)",
-                            color: "white",
-                            transition: "all 0.3s ease",
-                            "&:hover": {
-                              background: "rgba(255,255,255,0.2)",
-                              transform: "translateY(-2px)",
-                            },
-                          }}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete Entry" arrow>
-                        <IconButton
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteClick(entry._id);
-                          }}
-                          sx={{
-                            background: "rgba(255,255,255,0.1)",
-                            backdropFilter: "blur(5px)",
-                            color: "white",
-                            transition: "all 0.3s ease",
-                            "&:hover": {
-                              background: "rgba(255,255,255,0.2)",
-                              transform: "translateY(-2px)",
-                            },
-                          }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </Box>
-
-                  {/* Content Section */}
-                  <AnimatePresence>
-                    {expandedId === entry._id && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Box
-                          sx={{
-                            p: 3,
-                            pt: 0,
-                            position: "relative",
-                            zIndex: 1,
-                          }}
-                        >
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              color: "rgba(255,255,255,0.8)",
-                              fontSize: "1rem",
-                              lineHeight: 1.6,
-                              maxHeight:
-                                expandedId === entry._id ? "none" : "3.2em",
-                              overflow: "hidden",
-                              display: "-webkit-box",
-                              WebkitLineClamp:
-                                expandedId === entry._id ? "unset" : 2,
-                              WebkitBoxOrient: "vertical",
-                            }}
-                          >
-                            {entry.content}
-                          </Typography>
-                        </Box>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Expand Button */}
-                  <Box
-                    onClick={() =>
-                      setExpandedId(expandedId === entry._id ? null : entry._id)
-                    }
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      p: 1,
-                      cursor: "pointer",
-                      background: "rgba(255,255,255,0.05)",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        background: "rgba(255,255,255,0.1)",
-                      },
-                    }}
-                  >
-                    <motion.div
-                      animate={{ rotate: expandedId === entry._id ? 180 : 0 }}
-                    >
-                      <ExpandMoreIcon x={{ color: "white" }} />
-                    </motion.div>
-                  </Box>
-                </Box>
-              </motion.div>
+                  <ExpandMoreIcon sx={{ color: "var(--grey)" }} />
+                </motion.div>
+              </Box>
             </Box>
           </motion.div>
         ))}
