@@ -1,7 +1,7 @@
 # Digi-Cry
 
 ## 📝 Description
-**Your personal, interactive mood journaling web application**  
+**Your personal, interactive mood journaling web application**
 
 Tracks moods over time via **Google Cloud Natural Language** sentiment analysis and offers motivational quotes, local events, and a supportive community forum.
 
