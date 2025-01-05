@@ -27,16 +27,19 @@ function ForumsPreview() {
     // Function to fetch posts for a single forumName
     const fetchPosts = async (forumName) => {
       try {
+        // Remove spaces from forumName to match backend expectation
+        const noSpacesForumName = forumName.split(" ").join("");
         const response = await axios.get("/api/forums", {
-          params: { forumName },
+          params: { forumName: noSpacesForumName },
         });
         return response.data;
       } catch (err) {
         if (err.response && err.response.status === 404) {
-          // No posts found for this forumName
+          // No posts found for this forumName - this is expected
           return [];
         }
         console.error(`Error fetching posts for ${forumName}:`, err);
+        setError(true);
         return [];
       }
     };
