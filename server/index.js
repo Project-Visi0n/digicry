@@ -85,26 +85,26 @@ app.use(passport.session());
 
 // Passport Strategy
 passport.use(
-  new GoogleStrategy(
+  new GoogleStrategy( // This object is sent to Google during signin. 
     {
       clientID: `${process.env.GOOGLE_CLIENT_ID}`,
       clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
       callbackURL: `${process.env.CALLBACK_URL}`,
-      passReqToCallback: true,
+      passReqToCallback: true, // Send req to the callback so we can keep the session!
     },
     async (req, accessToken, refreshToken, profile, done) => {
-      return done(null, profile);
+      return done(null, profile); // We opt to rely on the returned profile of the user, done is = "serializeUser"
     },
   ),
 );
 
 // Save user info session as a cookie
 passport.serializeUser((user, done) => {
-  done(null, user);
+  done(null, user); // Send entire user object to be stored to session
 });
 
 passport.deserializeUser((user, done) => {
-  done(null, user);
+  done(null, user); // We do not use req.user in our program, as we save them to our database
 });
 
 // Quotes endpoint
@@ -140,19 +140,20 @@ app.use("/api/forums", forumRoutes);
 // Log in with google route
 app.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] }),
+  passport.authenticate("google", { scope: ["profile"] }), // Passport sends client to google, for Options, we designate we want their profile
 );
 
-// If there is a session on the request, find or create the user's corresponding model.
+// If there is a session on the request, find or create the user's corresponding model. *Prevents us from needing req.user
 
 app.get("/check-session", (req, res) => {
-  console.log("checking for existing sessions");
+  // Grabbing the googleUser object off session
   const key = Object.keys(req.sessionStore.sessions);
   const reqSessions = JSON.parse(req.sessionStore.sessions[key[0]]);
   const {
     passport: { user: googleUser },
   } = reqSessions;
 
+  // Searching user collections for a matching OAuth Id. If they don't exist, create one.
   User.findOne({ oAuthId: googleUser.id })
     .then((foundUser) => {
       if (!foundUser) {
@@ -179,25 +180,24 @@ app.get("/check-session", (req, res) => {
 });
 
 // Callback route for google to redirect to
+
 app.get(
   "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/" }),
+  passport.authenticate("google", { failureRedirect: "/" }), // Client is sent to homepage WITHOUT tokens from google if they fail to connect
   (req, res) => {
-    console.log("received");
-    res.redirect(process.env.HOME_URL);
+    res.redirect(process.env.HOME_URL); // Send authenticated users to our homepage
   },
 );
 
 // logout the user
 app.get("/logout", function (req, res) {
-  console.log("logout received");
   req.logout(async function (err) {
     if (err) {
       console.error(err, "Error in request logout in server");
       res.send(500);
     }
-    await req.session.destroy();
-    await req.sessionStore.clear();
+    await req.session.destroy(); // Remove session on the request
+    await req.sessionStore.clear(); // Clear the sessionStore history
     res.redirect(process.env.HOME_URL);
   });
 });

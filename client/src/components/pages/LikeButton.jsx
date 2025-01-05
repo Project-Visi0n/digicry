@@ -4,29 +4,18 @@ import axios from "axios";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import IconButton from "@mui/material/IconButton";
-import {
-  Box,
-  Button,
-  Typography,
-  Container,
-  TextField,
-  InputAdornment,
-  positions,
-  Grid2,
-  Tooltip,
-} from "@mui/material";
+import { Grid2, Tooltip } from "@mui/material";
 
-function LikeButton({ post, selectedGoal }) {
+function LikeButton({ post }) {
   const [likes, setLikes] = useState(post.upVote);
   const [dislikes, setDislikes] = useState(post.downVote);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [chosen, setChosen] = useState(false);
-  const [likeColor, setLikeColor] = useState("#7e90a3");
 
   // Increments/Decrements or does nothing depending on which button is clicked
 
-  const handleDislike = ({ currentTarget: { value }}) => {
+  const handleDislike = ({ currentTarget: { value } }) => {
     if (!disliked && !chosen) {
       setDislikes(dislikes - 1);
       setDisliked(true);
@@ -36,7 +25,6 @@ function LikeButton({ post, selectedGoal }) {
           postId: value,
           disliked,
         })
-        .then(() => {})
         .catch((error) => {
           console.error(error);
         });
@@ -49,7 +37,6 @@ function LikeButton({ post, selectedGoal }) {
           postId: value,
           disliked,
         })
-        .then(() => {})
         .catch((error) => {
           console.error(error);
         });
@@ -59,12 +46,11 @@ function LikeButton({ post, selectedGoal }) {
   useEffect(() => {
     setLikes(post.upVote);
     setDislikes(post.downVote);
-  },[post.upVote, post.downVote]);
-  
-  const handleLike = ({ currentTarget: { value }}) => {
+  }, [post.upVote, post.downVote]);
+
+  const handleLike = ({ currentTarget: { value } }) => {
     if (!liked && !chosen) {
       setLikes(likes + 1);
-      setLikeColor("#00fc15");
       setLiked(true);
       setChosen(true);
       axios
@@ -72,7 +58,6 @@ function LikeButton({ post, selectedGoal }) {
           postId: value,
           liked,
         })
-        .then(() => {})
         .catch((error) => {
           console.error(error);
         });
@@ -80,13 +65,11 @@ function LikeButton({ post, selectedGoal }) {
       setChosen(false);
       setLikes(likes - 1);
       setLiked(false);
-      setLikeColor("#7e90a3");
       axios
         .post("api/forums/like", {
           postId: value,
           liked,
         })
-        .then(() => {})
         .catch((error) => {
           console.error(error);
         });
@@ -94,7 +77,7 @@ function LikeButton({ post, selectedGoal }) {
   };
 
   return (
-    <Grid2 container spacing={6} >
+    <Grid2 container spacing={6}>
       <Grid2 item xs={2}>
         <Tooltip title="It's okay to love!" enterDelay={500} leaveDelay={200}>
           <IconButton
