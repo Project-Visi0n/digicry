@@ -11,53 +11,50 @@ router.post("/", (req, res) => {
   const noSpacesGoal = selectedGoal.split(" ").join("");
   const date = new Date();
 
-  console.log('forums post / reached')
   // Add a day
   const expiration = date.setDate(date.getDate() + 3);
-  console.log(expiration)
-  if(noSpacesGoal !== "?"){
-  Forums.create({
-    forumName: noSpacesGoal,
-    user: "anon",
-    message,
-    upVote: 0,
-    downVote: 0,
-    expireAt: expiration,
-  })
-    .then(() => {
-      console.log("successful creation");
-      res.sendStatus(201);
+
+  if (noSpacesGoal !== "?") {
+    Forums.create({
+      forumName: noSpacesGoal,
+      user: "anon",
+      message,
+      upVote: 0,
+      downVote: 0,
+      expireAt: expiration,
     })
-    .catch((error) => {
-      console.error(error, "failed to create forum");
-      res.sendStatus(500);
-    });
+      .then(() => {
+        res.sendStatus(201);
+      })
+      .catch((error) => {
+        console.error(error, "failed to create forum");
+        res.sendStatus(500);
+      });
   } else {
-    res.sendStatus(404)
+    res.sendStatus(404);
   }
 });
 
 // Gets all posts from forums based on query
 
 router.get("/", (req, res) => {
-  
   const { query } = req;
-  console.log('attempting to get the values of', query.forumName )
-   Forums.find({ forumName: query.forumName })
+  Forums.find({ forumName: query.forumName })
     .then((posts) => {
-      console.log('posts returned ')
       if (posts.length > 0) {
         res.status(200).send(posts);
       } else {
         const fakeDate = new Date();
-        res.send([{
-          forumName: query.forumName,
-          user: 'anon',
-          message: "No posts have been made here yet!",
-          upVote: 0,
-          downVote: 0,
-          createdAt: fakeDate.getDate()
-        }])
+        res.send([
+          {
+            forumName: query.forumName,
+            user: "anon",
+            message: "No posts have been made here yet!",
+            upVote: 0,
+            downVote: 0,
+            createdAt: fakeDate.getDate(),
+          },
+        ]);
       }
     })
     .catch((error) => {
@@ -69,16 +66,13 @@ router.get("/", (req, res) => {
 // Updates the like status of a post
 
 router.post("/like", (req, res) => {
-  console.log("reached");
   const { postId, liked } = req.body;
-  console.log(liked, postId);
   Forums.findByIdAndUpdate(postId, {
     $inc: {
       upVote: liked ? -1 : 1,
     },
   })
     .then(() => {
-      console.log("successful upvote for", postId);
       res.sendStatus(201);
     })
     .catch((error) => {
@@ -97,11 +91,9 @@ router.post("/dislike", (req, res) => {
     },
   })
     .then(() => {
-      console.log("successful downvote");
       res.sendStatus(201);
     })
     .catch((error) => {
-      console.error(error, "failed to downvote");
       res.sendStatus(500);
     });
 });
