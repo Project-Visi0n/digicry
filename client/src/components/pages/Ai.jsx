@@ -6,8 +6,8 @@ function Ai() {
   const [goalAnalysis, setGoalAnalysis] = useState(
     "Our AI will give an analysis on how to acheive your daily goals here!"
   );
-  const [centerOrLeft, setCenterOrLeft] = useState("center")
-  const [hideOrShow, setHideOrShow] = useState(false)
+  const [centerOrLeft, setCenterOrLeft] = useState("center");
+  const [hideOrShow, setHideOrShow] = useState(false);
 
   const postGoal = (e) => {
     e.preventDefault();
@@ -15,10 +15,9 @@ function Ai() {
 
     axios
       .get("api/forums/ai", { params: { msg } })
-      .then((x) => {
-        console.log(x.data);
-        setGoalAnalysis(x.data);
-        setCenterOrLeft("left")
+      .then((analysis) => {
+        setGoalAnalysis(analysis.data);
+        setCenterOrLeft("left");
       })
       .catch((error) => {
         console.error(error, "Failed to create post");
@@ -27,13 +26,15 @@ function Ai() {
 
   const hideShow = () => {
     setHideOrShow(!hideOrShow);
-  }
+  };
 
-  const hs = hideOrShow ? 
-  
-    <div style={{whiteSpace: "pre-line"}}>
-      <Box align="center"><button className="glass-btn" onClick={hideShow}>Hide</button>
-      </Box> 
+  const hs = hideOrShow ? (
+    <div style={{ whiteSpace: "pre-line" }}>
+      <Box align="center">
+        <button type="button" className="glass-btn" onClick={hideShow}>
+          Hide
+        </button>
+      </Box>
       <Box align="center" component="form" onSubmit={postGoal}>
         <label>Goal Post Analysis</label>
         <br />
@@ -66,14 +67,20 @@ function Ai() {
       </Box>
       <Box>
         <Box align="center" className="glass-panel">
-         <th align={centerOrLeft} ><em>{goalAnalysis}</em></th> 
+          <th align={centerOrLeft}>
+            <em>{goalAnalysis}</em>
+          </th>
         </Box>
       </Box>
     </div>
-  :
- <Box align="center"><button className="glass-btn" onClick={hideShow}>Get Goals Analyzed By AI</button>
-</Box> 
-  return hs
+  ) : (
+    <Box align="center">
+      <button type="button" className="glass-btn" onClick={hideShow}>
+        Get Goals Analyzed By AI
+      </button>
+    </Box>
+  );
+  return hs;
 }
 
 export default Ai;
