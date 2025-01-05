@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Button, TextField } from "@mui/material";
 import LikeButton from "./LikeButton";
+import Ai from "./Ai";
 
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
@@ -152,6 +153,8 @@ function Forums() {
           Submit Post To {selectedGoal}{" "}
         </Button>
       </Box>
+      <br />
+      <Ai />
       <br />
       <Box>
         {goalPosts.reverse().map((post, i) => {
