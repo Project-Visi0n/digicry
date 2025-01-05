@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Button, TextField } from "@mui/material";
-
 import LikeButton from "./LikeButton";
 
 function Forums() {
   const [goalPosts, setGoalPosts] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState("?");
   const [submit, setSubmit] = useState(false);
-  const [goalOptions, setGoalOptions] = useState([
+  const [goalOptions] = useState([
     "Physical Health",
     "Finances",
     "Personal Development",
@@ -22,24 +21,13 @@ function Forums() {
   };
 
   const goalClicked = ({ target: { value } }) => {
-    console.log("getGoals function triggered");
     const goalNoSpaces = removeSpaces(value);
-    console.log("forumName is", goalNoSpaces);
     setSelectedGoal(value);
   };
 
   // Gets goals from database based on the elements value.
 
-  const getGoals = (forumName) => {
-    axios
-      .get("/api/forums", { params: { forumName } })
-      .then((posts) => {
-        setGoalPosts(posts.data);
-      })
-      .catch((error) => {
-        console.error(error, `error getting ${forumName} forums from server`);
-      });
-  };
+  
 
   // Sets the age of posts.
 
