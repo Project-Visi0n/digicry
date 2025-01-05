@@ -3,7 +3,7 @@ import axios from "axios";
 import { Box, Button, TextField } from "@mui/material";
 
 function Ai() {
-  const [goalAnalysis, setGoalAnalysis] = useState("")
+  const [goalAnalysis, setGoalAnalysis] = useState("Our AI will give an analysis on how to acheive your daily goals here!")
 
   const postGoal = (e) => {
     e.preventDefault();
@@ -12,7 +12,8 @@ function Ai() {
     axios
       .get("api/forums/ai",  { params: { msg } })
       .then((x) => {
-        console.log(x)
+        console.log(x.data)
+        setGoalAnalysis(x.data)
       })
       .catch((error) => {
         console.error(error, "Failed to create post");
@@ -53,7 +54,7 @@ function Ai() {
     </Button>
   </Box>
   <Box>
-    <p>{goalAnalysis}</p>
+    <Box align="center" className="glass-panel"><em align="center">{goalAnalysis}</em></Box>
   </Box>
   </div>
   )
