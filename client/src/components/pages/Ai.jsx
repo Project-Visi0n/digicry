@@ -7,6 +7,8 @@ function Ai() {
     "Our AI will give an analysis on how to acheive your daily goals here!"
   );
   const [centerOrLeft, setCenterOrLeft] = useState("center")
+  const [hideOrShow, setHideOrShow] = useState(false)
+
   const postGoal = (e) => {
     e.preventDefault();
     const msg = e.target[0].value;
@@ -23,8 +25,15 @@ function Ai() {
       });
   };
 
-  return (
+  const hideShow = () => {
+    setHideOrShow(!hideOrShow);
+  }
+
+  const hs = hideOrShow ? 
+  
     <div style={{whiteSpace: "pre-line"}}>
+      <Box align="center"><button className="glass-btn" onClick={hideShow}>Hide</button>
+      </Box> 
       <Box align="center" component="form" onSubmit={postGoal}>
         <label>Goal Post Analysis</label>
         <br />
@@ -61,7 +70,10 @@ function Ai() {
         </Box>
       </Box>
     </div>
-  );
+  :
+ <Box align="center"><button className="glass-btn" onClick={hideShow}>Get Goals Analyzed By AI</button>
+</Box> 
+  return hs
 }
 
 export default Ai;
