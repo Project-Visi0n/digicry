@@ -155,7 +155,7 @@ function Home() {
    * IF AUTHENTICATED, SHOW MAIN UI
    *********************************** */
   return (
-    <Container maxWidth={false} sx={{ maxWidth: '1800px', mx: 'auto' }}>
+    <Container maxWidth={false} sx={{ maxWidth: "1800px", mx: "auto" }}>
       <Box>
         {/* Hero Section */}
         <Box className="dashboard-container">
@@ -171,10 +171,10 @@ function Home() {
                     <Typography
                       component="span"
                       sx={{
-                        display: 'block',
+                        display: "block",
                         mt: 1,
-                        color: 'var(--pink)',
-                        fontStyle: 'italic'
+                        color: "var(--pink)",
+                        fontStyle: "italic",
                       }}
                     >
                       — {quote.author}
@@ -207,7 +207,9 @@ function Home() {
                 <Card className="glass-panel dashboard-card journal-card">
                   <CardContent className="dashboard-card-content">
                     <Box className="dashboard-card-header">
-                      <Typography variant="h6">Recent Journal Entries</Typography>
+                      <Typography variant="h6">
+                        Recent Journal Entries
+                      </Typography>
                       <Button
                         component={Link}
                         to="/journal/new"
