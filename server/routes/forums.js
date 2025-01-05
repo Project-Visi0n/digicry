@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const { Forums } = require("../models");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // Creates a post and saves it to Forums model, sets an expiration date of 3 days
 
@@ -34,6 +35,22 @@ router.post("/", (req, res) => {
     res.sendStatus(404);
   }
 });
+
+// Ai goal post
+router.get("/ai", async (req, res) => {
+  const { query } = req;
+
+  const genAI = new GoogleGenerativeAI(process.env.AI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  
+  const prompt = `How can I take a step closer to acheiving my goal of ${query.msg} today?`;
+  
+  const result = await model.generateContent(prompt);
+  res.send(result.response.text()).status(200);
+
+
+});
+
 
 // Gets all posts from forums based on query
 
