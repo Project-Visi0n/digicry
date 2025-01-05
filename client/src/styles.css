@@ -269,10 +269,19 @@ body {
  ***************************************************************/
 /* Hero Section */
 .hero-section {
-  background: rgba(255, 255, 255, 0.1) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  margin: 0 0 16px 0;
+  padding: 16px !important;
+}
+
+.hero-section .quote-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+.hero-section .welcome-text {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
 }
 
 /* Mood Panel */
@@ -529,4 +538,130 @@ body {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
   animation: pulse 2s infinite;
+}
+
+/***************************************************************
+ * Dashboard Layout
+ ***************************************************************/
+.dashboard-container {
+  display: flex;
+  gap: 16px;
+  padding: 0 16px 16px;
+  position: relative;
+}
+
+.dashboard-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 16px;
+  align-self: flex-start;
+  z-index: 0;
+}
+
+/* Card heights */
+.analytics-card {
+  height: 350px;
+}
+
+.journal-card {
+  height: 350px;
+}
+
+.forums-card {
+  height: 300px;
+}
+
+.events-card {
+  height: calc(100vh - 100px);
+  max-height: 968px;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-card-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px !important;
+}
+
+.dashboard-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.dashboard-card-body {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  margin: 0 -16px;
+  padding: 0 16px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .dashboard-container {
+    flex-direction: column-reverse; /* Put events at the top on mobile */
+  }
+  
+  .dashboard-sidebar {
+    width: 100%;
+    height: auto;
+    min-height: 400px;
+    position: static;
+    margin-bottom: 24px;
+  }
+
+  .analytics-card,
+  .journal-card,
+  .forums-card {
+    height: 400px;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+  
+  .dashboard-card {
+    margin-bottom: 16px;
+  }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--pink-rgb), 0.3) rgba(255, 255, 255, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(var(--pink-rgb), 0.3);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--pink-rgb), 0.5);
 }

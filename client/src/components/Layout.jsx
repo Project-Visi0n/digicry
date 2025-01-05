@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-function Layout({ children }) {
+function Layout() {
   const { user, logout } = useContext(AuthContext);
 
   return (
@@ -51,7 +51,16 @@ function Layout({ children }) {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Mood Analytics
+                  Analytics
+                </NavLink>
+
+                <NavLink
+                  to="/forums"
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
+                  Forums
                 </NavLink>
 
                 <NavLink
@@ -63,24 +72,40 @@ function Layout({ children }) {
                   Events
                 </NavLink>
 
-                <NavLink to="/forums"
-                className={({ isActive }) =>
-                  isActive ? "nav-link active" : "nav-link"
-                }
+                <NavLink
+                  to="#"
+                  onClick={logout}
+                  className="nav-link"
                 >
-                  Forums
-                </NavLink>
-
-                <NavLink to="/" onClick={logout} className="nav-link">
                   Logout
+                </NavLink>
+              </>
+            )}
+
+            {!user && (
+              <>
+                <NavLink
+                  to="/login"
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
+                  Login
+                </NavLink>
+                <NavLink
+                  to="/signup"
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
+                  Sign Up
                 </NavLink>
               </>
             )}
           </nav>
 
-          {/* Page Content */}
-          <Box className="page-content">
-            {children}
+          {/* Main Content */}
+          <Box className="main-content">
             <Outlet />
           </Box>
         </Box>
@@ -88,9 +113,5 @@ function Layout({ children }) {
     </>
   );
 }
-
-Layout.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default Layout;

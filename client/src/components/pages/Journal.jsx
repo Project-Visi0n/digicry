@@ -20,76 +20,77 @@ function Journal() {
   };
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" className="dashboard-container">
       {/* Header Section */}
-      <Box
-        className="glass-panel"
-        sx={{
-          mb: 4,
-          p: 3,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderRadius: "16px",
-        }}
-      >
-        <Typography
-          variant="h4"
+      <Box className="dashboard-main">
+        <Box
+          className="glass-panel"
           sx={{
-            background:
-              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            fontWeight: "bold",
+            mb: 4,
+            p: 3,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          Your Journal
-        </Typography>
-
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-          {/* Search Bar */}
-          <TextField
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="Search entries..."
-            variant="outlined"
-            size="small"
+          <Typography
+            variant="h4"
             sx={{
-              "& .MuiOutlinedInput-root": {
-                background: "rgba(255, 255, 255, 0.1)",
-                backdropFilter: "blur(10px)",
-                borderRadius: "12px",
-                "& fieldset": {
-                  borderColor: "rgba(255, 255, 255, 0.2)",
-                },
-                "&:hover fieldset": {
-                  borderColor: "rgba(255, 255, 255, 0.3)",
-                },
-              },
+              background: "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontWeight: "bold",
             }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: "rgba(255, 255, 255, 0.5)" }} />
-                </InputAdornment>
-              ),
-            }}
-          />
-
-          {/* New Entry Button */}
-          <Button
-            component={Link}
-            to="/journal/new"
-            className="glass-btn primary"
-            startIcon={<AddIcon />}
           >
-            New Entry
-          </Button>
-        </Box>
-      </Box>
+            Your Journal
+          </Typography>
 
-      {/* Journal Entries */}
-      <JournalEntryList searchQuery={searchQuery} />
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            {/* Search Bar */}
+            <TextField
+              className="glass-input"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search entries..."
+              variant="outlined"
+              size="small"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  background: "rgba(255, 255, 255, 0.1)",
+                  backdropFilter: "blur(10px)",
+                  borderRadius: "12px",
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                },
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: "rgba(255, 255, 255, 0.5)" }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            {/* New Entry Button */}
+            <Button
+              component={Link}
+              to="/journal/new"
+              className="glass-btn primary"
+              startIcon={<AddIcon />}
+            >
+              New Entry
+            </Button>
+          </Box>
+        </Box>
+
+        {/* Journal Entries */}
+        <JournalEntryList searchQuery={searchQuery} />
+      </Box>
     </Container>
   );
 }
