@@ -16,6 +16,7 @@ function Ai() {
       .then((x) => {
         console.log(x.data);
         setGoalAnalysis(x.data);
+        setCenterOrLeft("left")
       })
       .catch((error) => {
         console.error(error, "Failed to create post");
