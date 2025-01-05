@@ -21,13 +21,8 @@ function Forums() {
   };
 
   const goalClicked = ({ target: { value } }) => {
-    const goalNoSpaces = removeSpaces(value);
     setSelectedGoal(value);
   };
-
-  // Gets goals from database based on the elements value.
-
-  
 
   // Sets the age of posts.
 
@@ -67,14 +62,11 @@ function Forums() {
         selectedGoal,
       })
       .then(() => {
-        console.log("Post created");
-      })
-      .catch((error) => {
-        console.debug(error, "Failed to create post");
-      })
-      .finally(() => {
         setSubmit(!submit);
         e.target[0].value = "";
+      })
+      .catch((error) => {
+        console.error(error, "Failed to create post");
       });
   };
 
@@ -131,10 +123,10 @@ function Forums() {
       </Box>
       <br />
       <Box align="center" component="form" onSubmit={postMsg}>
-        <label>Say Something Positive!</label>
+        <label> Say Something Positive!</label>
         <br />
         <TextField
-          sx={(theme) => ({
+          sx={() => ({
             bgcolor: "#fff",
             width: "500px",
           })}
@@ -150,7 +142,7 @@ function Forums() {
           variant="outlined"
           sx={() => ({
             ":hover": {
-              boxShadow: 6, // theme.shadows[20]
+              boxShadow: 6,
               opacity: 0.95,
               bgcolor: "#FAF3DD",
             },
@@ -160,7 +152,7 @@ function Forums() {
           Submit Post To {selectedGoal}{" "}
         </Button>
       </Box>
-      <br></br>
+      <br />
       <Box>
         {goalPosts.reverse().map((post, i) => {
           return (
@@ -198,7 +190,7 @@ function Forums() {
                   <br />
                   <h6>{minutesAgo(post.createdAt)}</h6>
                 </Box>
-                <br></br>
+                <br />
                 <LikeButton
                   key={post._id}
                   selectedGoal={selectedGoal}
