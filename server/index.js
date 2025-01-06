@@ -148,6 +148,10 @@ app.get(
 
 app.get("/check-session", (req, res) => {
   // Grabbing the googleUser object off session
+  console.log(req.user)
+  console.log(req.session)
+  console.log(req.sessionStore)
+  
   const key = Object.keys(req.sessionStore.sessions);
   const reqSessions = JSON.parse(req.sessionStore.sessions[key[0]]);
   const {
