@@ -1,9 +1,11 @@
 /* eslint-disable consistent-return */
 const express = require("express");
+
 const router = express.Router();
 const mongoose = require("mongoose");
 const language = require("@google-cloud/language");
 const { Journal, User } = require("../models");
+
 const client = new language.LanguageServiceClient();
 
 // Utility function to validate ObjectId

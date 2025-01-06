@@ -157,58 +157,57 @@ function Home() {
   return (
     <Container maxWidth="xl">
       {/* Hero Section with Quote */}
-      <Box 
-  className="glass-panel hero-section" 
-  sx={{ 
-    textAlign: "center",
-    py: 2,  // Significantly reduced vertical padding
-    px: 4,  // Kept horizontal padding the same
-    mb: 4,
-    borderRadius: "24px",
-    minHeight: 'auto',  // Ensures it only takes the space it needs
-  }}
->
-  <Typography 
-    variant="h3"  
-    sx={{ 
-      mb: 1,  // Reduced margin bottom
-      background: "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
-      WebkitBackgroundClip: "text",
-      WebkitTextFillColor: "transparent",
-    }}
-  >
-    Welcome back, {user.name || "Friend"}
-  </Typography>
-
-  {/* Quote Display */}
-  <Box 
-    className="quote-container" 
-    sx={{ 
-      maxWidth: "800px", 
-      mx: "auto",
-      mt: 1  // Reduced top margin
-    }}
-  >
-    {isLoading ? (
-      <CircularProgress />
-    ) : (
-      <>
-        <Typography 
-          variant="h5" 
-          sx={{ 
-            fontStyle: "italic", 
-            mb: 0.5  // Reduced margin bottom
+      <Box
+        className="glass-panel hero-section"
+        sx={{
+          textAlign: "center",
+          py: 2, // Significantly reduced vertical padding
+          px: 4, // Kept horizontal padding the same
+          mb: 4,
+          borderRadius: "24px",
+          minHeight: "auto", // Ensures it only takes the space it needs
+        }}
+      >
+        <Typography
+          variant="h3"
+          sx={{
+            mb: 1, // Reduced margin bottom
+            background:
+              "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
           }}
         >
-          &quot;{quote.quote}&quot;
+          Welcome back, {user.name || "Friend"}
         </Typography>
-        <Typography variant="subtitle1">
-          - {quote.author}
-        </Typography>
-      </>
-    )}
-  </Box>
-</Box>
+
+        {/* Quote Display */}
+        <Box
+          className="quote-container"
+          sx={{
+            maxWidth: "800px",
+            mx: "auto",
+            mt: 1, // Reduced top margin
+          }}
+        >
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            <>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontStyle: "italic",
+                  mb: 0.5, // Reduced margin bottom
+                }}
+              >
+                &quot;{quote.quote}&quot;
+              </Typography>
+              <Typography variant="subtitle1">- {quote.author}</Typography>
+            </>
+          )}
+        </Box>
+      </Box>
 
       {/* Main Content Stack */}
       <Stack spacing={4}>

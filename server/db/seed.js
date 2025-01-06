@@ -96,9 +96,8 @@ const olderEntries = [
 ];
 
 // Remove older entries from that user to avoid duplicates
-function clearOldEntries() {
-  // Remove all
-  return Journal.deleteMany(olderEntries);
+async function clearOldEntries() {
+  return Journal.deleteMany({});
 }
 
 // Insert olderEntries
