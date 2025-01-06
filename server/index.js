@@ -148,25 +148,26 @@ app.get(
 
 app.get("/check-session", (req, res) => {
   // Grabbing the googleUser object off session
-  console.log(req.user)
-  console.log(req.session)
-  console.log(req.sessionStore)
-  
+  console.log(req.user, 'the user')
+  console.log(req.session, 'the session')
+  console.log(req.sessionStore, 'the session store')
+
   const key = Object.keys(req.sessionStore.sessions);
   const reqSessions = JSON.parse(req.sessionStore.sessions[key[0]]);
   const {
     passport: { user: googleUser },
   } = reqSessions;
-
+console.log(googleUser.id , 'google user id')
+console.log(req.user.id, 'the user id')
   // Searching user collections for a matching OAuth Id. If they don't exist, create one.
-  User.findOne({ oAuthId: googleUser.id })
+  User.findOne({ oAuthId: req.user.id })
     .then((foundUser) => {
       if (!foundUser) {
         return User.create({
-          username: googleUser.displayName,
-          name: googleUser.displayName,
+          username: req.user.displayName,
+          name: req.user.displayName,
           location: "unknown",
-          oAuthId: googleUser.id,
+          oAuthId: req.user.id,
         })
           .then((newUser) => {
             return res.status(200).send([newUser]);
