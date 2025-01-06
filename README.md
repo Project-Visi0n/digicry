@@ -58,6 +58,7 @@ Tracks moods over time via **Google Cloud Natural Language** sentiment analysis 
         5. Career
   - Post creation and viewing
   - Like system for engagement
+  - AI Goal Analysis powered by Google's Gemini AI
   - Recent posts feed
 
 ---
@@ -98,18 +99,18 @@ Tracks moods over time via **Google Cloud Natural Language** sentiment analysis 
 
 ### Installation
 
-1. **Clone the repository
+1. **Clone** the repository
 ```bash
 git clone https://github.com/your-username/digicry.git
 cd digicry
 ```
 
-2. Install dependencies
+2. **Install** dependencies
 ```bash
 npm install
 ```
 
-3. Set up environment variables
+3. **Set up** environment variables
 ```bash
 cp .env.example .env
 ```
@@ -122,15 +123,19 @@ Edit `.env` with your API keys and configuration
 ```
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
-SESSION_SECRET=your-secret-string
 PORT=5000
 HOME_URL=http://localhost:8080/
 SERVER_URL=http://localhost:5000/
+CALLBACK_URL
+DEPLOYMENT=FALSE
+GOOGLE_MAPS_API_KEY
+EVENTS_API_KEY
+AI_API_KEY
 ```
 
 ### 🌱 Seed Data
 
-To seed the database with sample journal entries:
+To seed the database with sample **journal entries**:
 
 ```bash
 npm run server
@@ -163,9 +168,9 @@ node server/db/seed/js
 
 ### 👥 Team
 
-- [Ashley Theriot](https://github.com/atheriot827)
-- [Barrington Hebert](https://github.com/bkhebert)
 - [Colton Gray](https://github.com/coltongraygg)
+- [Barrington Hebert](https://github.com/bkhebert)
+- [Ashley Theriot](https://github.com/atheriot827)
 
 ---
 
