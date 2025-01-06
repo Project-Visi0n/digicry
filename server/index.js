@@ -30,6 +30,7 @@ connectDB();
 // Create an instance of Express
 const app = express();
 
+
 // Start server
 if (process.env.DEPLOYMENT === "true") {
   // HTTPS / SSL CONFIG
@@ -46,6 +47,17 @@ if (process.env.DEPLOYMENT === "true") {
 }
 
 // Middleware
+
+// This sets it up so that each session gets a cookie with a secret key
+app.use(
+  session({
+    // Creates a new 'session' on requests
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 }, // Creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
+  }),
+);
 
 // Parse JSON bodies
 app.use(express.json());
@@ -67,16 +79,6 @@ app.use(express.static(path.join(__dirname, "../dist")));
 // 'next' or 'done' once it is finished. The function automatically receives 2 tokens and
 // a profile.
 
-// This sets it up so that each session gets a cookie with a secret key
-app.use(
-  session({
-    // Creates a new 'session' on requests
-    secret: "your-secret-key",
-    resave: true,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 }, // Creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
-  }),
-);
 
 // Set up passport
 app.use(cookieParser());
@@ -146,22 +148,15 @@ app.get(
 // If there is a session on the request, find or create the user's corresponding model. *Prevents us from needing req.user
 
 app.get("/check-session", (req, res) => {
-  // Grabbing the googleUser object off session
-  const key = Object.keys(req.sessionStore.sessions);
-  const reqSessions = JSON.parse(req.sessionStore.sessions[key[0]]);
-  const {
-    passport: { user: googleUser },
-  } = reqSessions;
-
   // Searching user collections for a matching OAuth Id. If they don't exist, create one.
-  User.findOne({ oAuthId: googleUser.id })
+  User.findOne({ oAuthId: req.user.id })
     .then((foundUser) => {
       if (!foundUser) {
         return User.create({
-          username: googleUser.displayName,
-          name: googleUser.displayName,
+          username: req.user.displayName,
+          name: req.user.displayName,
           location: "unknown",
-          oAuthId: googleUser.id,
+          oAuthId: req.user.id,
         })
           .then((newUser) => {
             return res.status(200).send([newUser]);
