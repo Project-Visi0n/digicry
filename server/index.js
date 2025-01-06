@@ -30,6 +30,17 @@ connectDB();
 // Create an instance of Express
 const app = express();
 
+// This sets it up so that each session gets a cookie with a secret key
+app.use(
+  session({
+    // Creates a new 'session' on requests
+    secret: "your-secret-key",
+    resave: true,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 }, // Creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
+  }),
+);
+
 // Start server
 if (process.env.DEPLOYMENT === "true") {
   // HTTPS / SSL CONFIG
@@ -67,16 +78,6 @@ app.use(express.static(path.join(__dirname, "../dist")));
 // 'next' or 'done' once it is finished. The function automatically receives 2 tokens and
 // a profile.
 
-// This sets it up so that each session gets a cookie with a secret key
-app.use(
-  session({
-    // Creates a new 'session' on requests
-    secret: "your-secret-key",
-    resave: true,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 }, // Creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
-  }),
-);
 
 // Set up passport
 app.use(cookieParser());
