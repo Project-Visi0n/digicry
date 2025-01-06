@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { NavLink, Outlet } from "react-router-dom";
 import { Container, Typography, Box } from "@mui/material";
-import PropTypes from "prop-types";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
@@ -51,7 +50,7 @@ function Layout() {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Analytics
+                  Mood Analytics
                 </NavLink>
 
                 <NavLink
@@ -72,11 +71,7 @@ function Layout() {
                   Events
                 </NavLink>
 
-                <NavLink
-                  to="#"
-                  onClick={logout}
-                  className="nav-link"
-                >
+                <NavLink to="#" onClick={logout} className="nav-link">
                   Logout
                 </NavLink>
               </>

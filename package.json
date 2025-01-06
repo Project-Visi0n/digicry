@@ -14,7 +14,9 @@
 
     "clean-deps": "rimraf node_modules package-lock.json && npm install",
 
-    "start-prod": "node server/index.js"
+    "start-prod": "node server/index.js",
+
+    "seed": "node server/db/seed.js"
 
   },
 
@@ -81,6 +83,8 @@
     "@emotion/styled": "^11.14.0",
 
     "@google-cloud/language": "^6.5.0",
+
+    "@google/generative-ai": "^0.21.0",
 
     "@mui/icons-material": "^6.2.1",
 
