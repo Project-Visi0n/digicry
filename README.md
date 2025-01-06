@@ -16,11 +16,8 @@ Tracks moods over time via **Google Cloud Natural Language** sentiment analysis 
     3. [Environment Variables](#environment-variables)
     4. [Seed Data](#seed-data)
 5. [Usage](#usage)
-    1. [Development Mode](#development-mode)
-    2. [Production Mode](#production-mode)
 6. [APIs & Services](#apis--services)
-7. [Project Scripts](#project-scripts)
-8. [Contact](#contact)
+7. [Contact](#contact)
 
 ---
 
@@ -88,13 +85,6 @@ Tracks moods over time via **Google Cloud Natural Language** sentiment analysis 
   - [Axios](https://github.com/axios/axios) for HTTP requests
   - [dotenv](https://github.com/motdotla/dotenv) for environment variables
 
-- **APIs**
-  - [Stoicism Quote API](https://github.com/tlcheah2/stoic-quote-lambda-public-api) for Motivation Quotes
-  - [Google Cloud Natural Language API](https://cloud.google.com/natural-language/docs/basics) for sentiment analysis of journal entries for mood tracking
-  - [Google Gemini API](https://ai.google.dev/gemini-api/docs/quickstart?lang=node) for setting and achieving goals
-  - [Google Maps Geocoding API](https://developers.google.com/maps/documentation/geocoding/overview)
-  - [SERP API](https://serpapi.com/) for event discovery
-
 ---
 
 ## 🚀 Getting Started
@@ -125,6 +115,10 @@ cp .env.example .env
 ```
 Edit `.env` with your API keys and configuration
 
+---
+
+### Environment Variables
+
 ```
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
@@ -134,16 +128,18 @@ HOME_URL=http://localhost:8080/
 SERVER_URL=http://localhost:5000/
 ```
 
-4. Start the development server
+### 🌱 Seed Data
+
+To seed the database with sample journal entries:
+
 ```bash
-npm run dev
+npm run server
+# In a new terminal:
+node server/db/seed/js
 ```
-
-The app will be available at `http://localhost:0000`
-
 ---
 
-## 🔧 Available Scripts
+## 🔧 Usage
 
 - `npm run dev`: Start both frontend and backend in development mode
 - `npm run server`: Start backend server only
@@ -155,7 +151,17 @@ The app will be available at `http://localhost:0000`
 
 ---
 
-## 👥 Team
+## 🔗 APIs & Services
+
+  - [Stoicism Quote API](https://github.com/tlcheah2/stoic-quote-lambda-public-api) for Motivation Quotes
+  - [Google Cloud Natural Language API](https://cloud.google.com/natural-language/docs/basics) for sentiment analysis of journal entries for mood tracking
+  - [Google Gemini API](https://ai.google.dev/gemini-api/docs/quickstart?lang=node) for setting and achieving goals
+  - [Google Maps Geocoding API](https://developers.google.com/maps/documentation/geocoding/overview)
+  - [SERP API](https://serpapi.com/) for event discovery
+
+## Contact
+
+### 👥 Team
 
 - [Ashley Theriot](https://github.com/atheriot827)
 - [Barrington Hebert](https://github.com/bkhebert)
