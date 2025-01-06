@@ -47,7 +47,7 @@ function MoodPreview({ entries }) {
 
       dataPoints.push(entry.sentimentScore);
     });
-
+  
     // Return in the shape react-chartjs-2 expects
     return {
       labels,
