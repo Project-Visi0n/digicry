@@ -45,16 +45,9 @@ function MoodPreview({ entries }) {
 
       labels.push(shortDate);
 
-      // Use normalizedSentiment if present, else sentimentScore * 100 as fallback
-      const sentiment =
-        entry.normalizedSentiment ||
-        (entry.sentimentScore ? entry.sentimentScore * 50 + 50 : 0);
-      // sentimentScore is typically -1 to +1.
-      // Multiplying by 50 then adding 50 yields a 0 to 100 scale, roughly.
-
-      dataPoints.push(Math.round(sentiment));
+      dataPoints.push(entry.sentimentScore);
     });
-
+  
     // Return in the shape react-chartjs-2 expects
     return {
       labels,
