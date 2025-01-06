@@ -51,7 +51,7 @@ function Layout() {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Analytics
+                  Mood Analytics
                 </NavLink>
 
                 <NavLink
