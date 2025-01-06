@@ -35,7 +35,7 @@ app.use(
   session({
     // Creates a new 'session' on requests
     secret: "your-secret-key",
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 }, // Creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
   }),
