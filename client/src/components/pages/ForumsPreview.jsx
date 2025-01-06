@@ -120,18 +120,6 @@ function ForumsPreview() {
           No forum posts available. Be the first to start a discussion!
         </Typography>
       )}
-
-      {/* Link to Forums Page */}
-      <Box sx={{ textAlign: "right", mt: 2 }}>
-        <Button
-          component={Link}
-          to="/forums"
-          className="glass-btn primary"
-          sx={{ textTransform: "none" }}
-        >
-          View All Forums
-        </Button>
-      </Box>
     </Box>
   );
 }

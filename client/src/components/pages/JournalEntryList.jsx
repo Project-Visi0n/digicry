@@ -15,6 +15,7 @@ import {
   Alert,
   Tooltip,
   Zoom,
+  Fade,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
@@ -209,9 +210,7 @@ function JournalEntryList({ searchQuery = "" }) {
                     {entry.title}
                   </Typography>
 
-                  <Box
-                    sx={{ display: "flex", alignItems: "center", gap: 2 }}
-                  >
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <Box
                       sx={{
                         display: "flex",
@@ -267,47 +266,44 @@ function JournalEntryList({ searchQuery = "" }) {
                 </Box>
 
                 <Box sx={{ display: "flex", gap: 1 }}>
-                  <Tooltip title="Edit Entry" arrow>
-                    <IconButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEdit(entry._id);
-                      }}
-                      className="glass-button"
-                      sx={{
-                        background: "rgba(255,255,255,0.1)",
-                        backdropFilter: "blur(5px)",
-                        color: "white",
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          background: "rgba(255,255,255,0.2)",
-                          transform: "translateY(-2px)",
-                        },
-                      }}
-                    >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete Entry" arrow>
-                    <IconButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteClick(entry._id);
-                      }}
-                      sx={{
-                        background: "rgba(255,255,255,0.1)",
-                        backdropFilter: "blur(5px)",
-                        color: "white",
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          background: "rgba(255,255,255,0.2)",
-                          transform: "translateY(-2px)",
-                        },
-                      }}
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEdit(entry._id);
+                    }}
+                    className="glass-button"
+                    sx={{
+                      background: "rgba(255,255,255,0.1)",
+                      backdropFilter: "blur(5px)",
+                      color: "white",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        background: "rgba(255,255,255,0.2)",
+                        transform: "translateY(-2px)",
+                      },
+                    }}
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteClick(entry._id);
+                    }}
+                    sx={{
+                      background: "rgba(255,255,255,0.1)",
+                      backdropFilter: "blur(5px)",
+                      color: "white",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        background: "rgba(255,255,255,0.2)",
+                        transform: "translateY(-2px)",
+                      },
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
                 </Box>
               </Box>
 

@@ -36,7 +36,8 @@ function Journal() {
           <Typography
             variant="h4"
             sx={{
-              background: "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
+              background:
+                "linear-gradient(45deg, var(--pink) 30%, var(--blue) 90%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               fontWeight: "bold",
