@@ -81,7 +81,7 @@ Tracks moods over time via **Google Cloud Natural Language** sentiment analysis 
 - **Deployment & Cloud Services:**
   - [Google Cloud Natural Language API](https://cloud.google.com/natural-language)
   - [Google Cloud Platform](https://cloud.google.com/) for hosting
-
+  - [Gemeni API https://ai.google.dev/]  for AI
 - **Other Notable Libraries:**
   - [Axios](https://github.com/axios/axios) for HTTP requests
   - [dotenv](https://github.com/motdotla/dotenv) for environment variables
