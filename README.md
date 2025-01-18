@@ -1,5 +1,7 @@
 # Digi-Cry
 
+![Dependencies](https://img.shields.io/david/atheriot827/The-404s-Org/digicry?style=flat-square)
+
 ## 📝 Description
 **Your personal, interactive mood journaling web application**
 
