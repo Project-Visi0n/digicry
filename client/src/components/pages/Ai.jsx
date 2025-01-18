@@ -28,7 +28,7 @@ function Ai() {
     setHideOrShow(!hideOrShow);
   };
 
-  const hs = hideOrShow ? (
+  const aiElement = hideOrShow ? (
     <div style={{ whiteSpace: "pre-line" }}>
       <Box align="center">
         <button type="button" className="glass-btn" onClick={hideShow}>
@@ -65,6 +65,7 @@ function Ai() {
           Goal Post Analysis{" "}
         </Button>
       </Box>
+      <br />
       <Box>
         <Box align="center" className="glass-panel">
           <th align={centerOrLeft}>
@@ -80,7 +81,7 @@ function Ai() {
       </button>
     </Box>
   );
-  return hs;
+  return aiElement;
 }
 
 export default Ai;

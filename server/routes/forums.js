@@ -43,7 +43,7 @@ router.get("/ai", async (req, res) => {
   const genAI = new GoogleGenerativeAI(process.env.AI_API_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   
-  const prompt = `How can I take a step closer to acheiving my goal of ${query.msg} today?`;
+  const prompt = `How can I take a step closer to acheiving my goals of ${query.msg} today?`;
   
   const result = await model.generateContent(prompt);
   res.send(result.response.text()).status(200);

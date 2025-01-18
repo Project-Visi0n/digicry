@@ -7,6 +7,7 @@
 
 Tracks moods over time via **Google Cloud Natural Language** sentiment analysis and offers motivational quotes, local events, and a supportive community forum.
 
+
 ## Table of Contents
 
 1. [About the Project](#about-the-project)
@@ -83,7 +84,7 @@ Tracks moods over time via **Google Cloud Natural Language** sentiment analysis 
 - **Deployment & Cloud Services:**
   - [Google Cloud Natural Language API](https://cloud.google.com/natural-language)
   - [Google Cloud Platform](https://cloud.google.com/) for hosting
-
+  - [Gemeni API https://ai.google.dev/]  for AI
 - **Other Notable Libraries:**
   - [Axios](https://github.com/axios/axios) for HTTP requests
   - [dotenv](https://github.com/motdotla/dotenv) for environment variables
@@ -183,3 +184,9 @@ node server/db/seed/js
 ---
 
 <p align="center">Made with ❤️ by The 404's</p>
+
+![Screenshot 2025-01-18 104325](https://github.com/user-attachments/assets/9b76c971-53e1-4276-b430-f29ca4155ed8)
+![Screenshot 2025-01-18 104128](https://github.com/user-attachments/assets/38c842c8-5e5a-478c-9094-ec67d3286258)
+![Screenshot 2025-01-18 104213](https://github.com/user-attachments/assets/6ceb7012-1aff-48ed-b1af-a40bf5fe67d8)
+![Screenshot 2025-01-18 104235](https://github.com/user-attachments/assets/74162d2a-7832-402e-b782-ebd96f5a3ad1)
+![Screenshot 2025-01-18 104307](https://github.com/user-attachments/assets/10410de6-24e3-41d0-8c46-b8c4554860f8)
