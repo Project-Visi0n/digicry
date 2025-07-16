@@ -1,38 +1,58 @@
-
 import React from "react";
+import PropTypes from "prop-types";
 
+// Renders a horizontal scrollable gallery of SVG shapes
 export default function ShapeGallery({ shapes, onSelect, selectedPath }) {
   return (
-    <div style={{
-      display: "flex",
-      overflowX: "auto",
-      padding: "1rem 0",
-      gap: "1rem",
-      borderBottom: "1px solid #eee"
-    }}>
-      {shapes.map((shape, idx) => (
-        <div
-          key={idx}
+    <div style={{ display: "flex", flexDirection: "row", gap: 12 }}>
+      {shapes.map((shape) => (
+        <button
+          type="button"
+          key={shape.name}
           onClick={() => onSelect(shape.path)}
           style={{
-            border: shape.path === selectedPath ? "2px solid #FFA69E" : "2px solid transparent",
+            border:
+              selectedPath === shape.path
+                ? "2px solid var(--mint, #B8F2E6)"
+                : "1px solid #ccc",
             borderRadius: 8,
-            cursor: "pointer",
-            background: "#fff",
-            boxShadow: "0 1px 4px #0001",
+            background: selectedPath === shape.path ? "#f0fffd" : "#fff",
             padding: 4,
-            minWidth: 60,
-            minHeight: 60,
+            cursor: "pointer",
+            outline: "none",
+            width: 56,
+            height: 56,
             display: "flex",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
+            boxShadow: selectedPath === shape.path ? "0 0 0 2px #B8F2E6" : "none",
+            transition: "border 0.2s, box-shadow 0.2s, background 0.2s",
           }}
+          aria-label={shape.name}
         >
-          <svg width="48" height="48" viewBox="0 0 40 40">
-            <path d={shape.path} fill="#B8F2E6" stroke="#333" />
+          <svg
+            width={40}
+            height={40}
+            viewBox="0 0 100 100"
+            style={{ display: "block" }}
+          >
+            <g transform="translate(10,10) scale(0.8)">
+              <path d={shape.path} fill="#eee" stroke="#333" strokeWidth={2} />
+            </g>
           </svg>
-        </div>
+        </button>
       ))}
     </div>
   );
 }
+
+ShapeGallery.propTypes = {
+  shapes: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  onSelect: PropTypes.func.isRequired,
+  selectedPath: PropTypes.string.isRequired,
+};
