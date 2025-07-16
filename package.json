@@ -4,164 +4,84 @@
   "engines": {
     "node": ">=14.0.0"
   },
-
   "scripts": {
-
     "server": "nodemon server/index.js",
-
     "build": "webpack --config webpack.config.js",
-
     "client": "webpack serve --mode development ",
-
     "lint": "eslint .",
-
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-
     "clean-deps": "rimraf node_modules package-lock.json && npm install",
-
     "start-prod": "node server/index.js",
-
     "seed": "node server/db/seed.js"
-
   },
-
   "devDependencies": {
-
     "@babel/cli": "^7.26.4",
-
     "@babel/core": "^7.26.0",
-
     "@babel/preset-env": "^7.26.0",
-
     "@babel/preset-react": "^7.26.3",
-
     "@eslint/js": "^9.17.0",
-
     "babel-loader": "^9.2.1",
-
     "clean-webpack-plugin": "^4.0.0",
-
     "concurrently": "^9.1.0",
-
     "copy-webpack-plugin": "^12.0.2",
-
     "css-loader": "^7.1.2",
-
     "dotenv-webpack": "^8.1.0",
-
     "eslint": "^8.57.1",
-
     "eslint-config-airbnb": "^19.0.4",
-
     "eslint-config-prettier": "^9.1.0",
-
     "eslint-plugin-import": "^2.31.0",
-
     "eslint-plugin-jsx-a11y": "^6.10.2",
-
     "eslint-plugin-prettier": "^5.2.1",
-
     "eslint-plugin-react": "^7.37.2",
-
     "eslint-plugin-react-hooks": "^4.6.2",
-
     "globals": "^15.14.0",
-
     "html-webpack-plugin": "^5.6.3",
-
     "nodemon": "^3.1.9",
-
     "prettier": "^3.4.2",
-
     "rimraf": "^6.0.1",
-
     "webpack": "^5.97.1",
-
     "webpackbar": "^7.0.0"
-
   },
-
   "dependencies": {
-
     "@emotion/react": "^11.14.0",
-
     "@emotion/styled": "^11.14.0",
-
     "@google-cloud/language": "^6.5.0",
-
     "@google/generative-ai": "^0.21.0",
-
     "@mui/icons-material": "^6.2.1",
-
     "@mui/lab": "^6.0.0-beta.21",
-
     "@mui/material": "^6.3.1",
-
     "@mui/x-charts": "^7.23.2",
-
     "axios": "^1.7.9",
-
     "bcrypt": "^5.0.1",
-
     "body-parser": "^1.18.2",
-
     "chart.js": "^4.4.7",
-
     "connect-flash": "^0.1.1",
-
     "connect-mongo": "^5.1.0",
-
     "cookie-parser": "^1.4.5",
-
     "cors": "^2.8.5",
-
     "dotenv": "^16.4.7",
-
     "express": "^4.21.2",
-
     "express-session": "^1.18.1",
-
+    "flubber": "^0.4.2",
     "framer-motion": "^11.15.0",
-
     "html-loader": "^5.1.0",
-
     "mkcert": "^3.2.0",
-
     "mongodb": "^6.12.0",
-
     "mongoose": "^8.9.2",
-
     "node-fetch": "^3.3.2",
-
     "passport": "^0.7.0",
-
     "passport-google-oauth20": "^2.0.0",
-
     "passport-google-oidc": "^0.1.0",
-
     "passport-local": "^1.0.0",
-
     "prop-types": "^15.8.1",
-
     "react": "^18.2.0",
-
     "react-chartjs-2": "^5.3.0",
-
     "react-dom": "^18.2.0",
-
     "react-router": "^6.28.1",
-
     "react-router-dom": "6.21.1",
-
     "style-loader": "^4.0.0",
-
     "uuid": "^8.3.2",
-
     "webpack-cli": "^5.1.4",
-
     "webpack-dev-server": "^5.2.0"
-
   }
-
 }
-

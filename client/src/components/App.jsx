@@ -9,6 +9,7 @@ import MoodAnalytics from "./pages/MoodAnalytics";
 import Events from "./pages/Events";
 import ProtectedRoute from "./ProtectedRoute";
 import Forums from "./pages/Forums";
+import Breathe from "./pages/Breathing/Breathe";
 
 function App() {
   return (
@@ -72,6 +73,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Forums />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="breathe"
+          element={
+            <ProtectedRoute>
+              <Breathe />
             </ProtectedRoute>
           }
         />
