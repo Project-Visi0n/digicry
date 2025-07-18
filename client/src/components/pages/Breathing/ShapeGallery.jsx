@@ -37,7 +37,24 @@ export default function ShapeGallery({ shapes, onSelect, selectedPath }) {
             style={{ display: "block" }}
           >
             <g transform="translate(10,10) scale(0.8)">
-              <path d={shape.path} fill="#eee" stroke="#333" strokeWidth={2} />
+              {Array.isArray(shape.path)
+                ? shape.path.map((p) => (
+                    <path
+                      key={p.d + (p.fill || "") + (p.stroke || "")}
+                      d={p.d}
+                      fill={p.fill || "none"}
+                      stroke={p.stroke || "#333"}
+                      strokeWidth={p.stroke === "none" ? 0 : 2}
+                    />
+                  ))
+                : (
+                    <path
+                      d={shape.path}
+                      fill="#eee"
+                      stroke="#333"
+                      strokeWidth={2}
+                    />
+                  )}
             </g>
           </svg>
         </button>

@@ -23,6 +23,14 @@ export default function BreathControl({
   startPath,
   endPath,
 }) {
+  // Support multi-path shapes: extract the main path for morphing, but render all paths
+  const getMainPath = (shape) => {
+    if (Array.isArray(shape)) {
+      // Use the first path's d for morphing
+      return shape[0] && shape[0].d ? shape[0].d : "";
+    }
+    return shape;
+  };
   const [t, setT] = useState(0); // 0: start, 1: end
   const [reversed, setReversed] = useState(false);
   const [phase, setPhase] = useState("morphing"); // 'morphing' or 'holding'
@@ -67,9 +75,8 @@ export default function BreathControl({
     };
   }, [reversed, duration, hold, paused, phase]);
 
-  // Create a flubber interpolator between startPath and endPath
-  // This function returns a path string for any t between 0 (start) and 1 (end)
-  const interpolator = interpolate(startPath, endPath, {
+  // Create a flubber interpolator between startPath and endPath (main path only)
+  const interpolator = interpolate(getMainPath(startPath), getMainPath(endPath), {
     maxSegmentLength: 2,
   });
   // Get the current SVG path for the morph, based on t (progress)
@@ -102,6 +109,21 @@ export default function BreathControl({
   const fill = lerpColor(mint, pink, t);
 
   // Render the animated SVG
+  // If either shape is multi-path, render all paths (face, eyes, mouth, etc) on top of the morphing outline
+  const renderExtraPaths = (shape) => {
+    if (!Array.isArray(shape)) return null;
+    // Skip the first path (used for morphing)
+    return shape.slice(1).map((p, i) => (
+      <path
+        key={p.d + (p.fill || "") + (p.stroke || "")}
+        d={p.d}
+        fill={p.fill || "none"}
+        stroke={p.stroke || "#333"}
+        strokeWidth={p.stroke === "none" ? 0 : 2}
+      />
+    ));
+  };
+
   return (
     <svg
       width="400"
@@ -111,7 +133,11 @@ export default function BreathControl({
     >
       {/* Add margin and center the shape with a group transform */}
       <g transform="translate(10,10) scale(0.8)">
+        {/* Morphing outline (face) */}
         <path d={d} fill={fill} fillOpacity={0.85} />
+        {/* Extra features (eyes, mouth, etc) for start/end shape */}
+        {renderExtraPaths(startPath)}
+        {renderExtraPaths(endPath)}
       </g>
     </svg>
   );
