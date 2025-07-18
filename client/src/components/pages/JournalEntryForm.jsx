@@ -26,6 +26,8 @@ function JournalEntryForm() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [promptLoading, setPromptLoading] = useState(false);
 
   // If editing, fetch the existing entry
   useEffect(() => {
@@ -55,7 +57,6 @@ function JournalEntryForm() {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    // Set formData by returning a new object with all previous fields plus the updated field
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -69,7 +70,6 @@ function JournalEntryForm() {
     try {
       setIsLoading(true);
       if (id) {
-        // If we have an id, we're updating
         await axios
           .put(`/api/journal/${id}`, formData, {
             withCredentials: true,
@@ -79,7 +79,6 @@ function JournalEntryForm() {
             setError("Failed to update journal entry");
           });
       } else {
-        // Otherwise, we're creating a new entry
         await axios
           .post("/api/journal", formData, { withCredentials: true })
           .then((response) => {
@@ -96,6 +95,25 @@ function JournalEntryForm() {
       setError("Failed to save journal entry");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchPrompt = async () => {
+    setPromptLoading(true);
+    try {
+      const res = await axios.get("http://localhost:3001/api/gemini/prompts");
+      setPrompt(res.data.prompt);
+
+      // Optional: autofill content with the prompt
+      // setFormData((prev) => ({
+      //   ...prev,
+      //   content: res.data.prompt,
+      // }));
+    } catch (err) {
+      console.error("Error fetching prompt:", err);
+      setPrompt("Couldn't load a prompt right now. Try again later.");
+    } finally {
+      setPromptLoading(false);
     }
   };
 
@@ -142,6 +160,43 @@ function JournalEntryForm() {
         )}
 
         <Stack spacing={3}>
+          {/* AI Prompt Box */}
+          <Box
+            sx={{
+              background: "rgba(255, 255, 255, 0.1)",
+              backdropFilter: "blur(10px)",
+              borderRadius: "12px",
+              p: 2,
+              fontStyle: "italic",
+              fontSize: "1rem",
+              color: "#444",
+            }}
+          >
+            {promptLoading
+              ? "✨ Generating prompt..."
+              : prompt || "Need help starting? Click below to generate a prompt."}
+          </Box>
+
+          <Button
+            onClick={fetchPrompt}
+            variant="outlined"
+            sx={{
+              width: "fit-content",
+              alignSelf: "flex-start",
+              px: 2,
+              py: 1,
+              borderRadius: "12px",
+              background: "rgba(255, 255, 255, 0.1)",
+              color: "#444",
+              textTransform: "none",
+              "&:hover": {
+                background: "rgba(255, 255, 255, 0.2)",
+              },
+            }}
+          >
+            ✨ Generate AI-powered Prompt ✨ 
+          </Button>
+
           <TextField
             name="title"
             label="Title"

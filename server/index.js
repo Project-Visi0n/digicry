@@ -19,8 +19,9 @@ const { User } = require("./models");
 // Import Routes
 const journalRoutes = require("./routes/journal");
 const eventRoutes = require("./routes/event");
-const geolocationRoutes = require("./routes/event");
+
 const forumRoutes = require("./routes/forums");
+const promptRoutes = require("./routes/prompts");
 
 const PORT = process.env.PORT || 5000;
 
@@ -132,7 +133,7 @@ app.use("/api/journal", journalRoutes);
 
 // Events Route
 app.use("/api/events", eventRoutes);
-app.use("/api/geolocate", geolocationRoutes);
+
 
 
 
@@ -145,10 +146,18 @@ app.get(
   passport.authenticate("google", { scope: ["profile"] }), // Passport sends client to google, for Options, we designate we want their profile
 );
 
+// Prompts Route
+
+app.use('/api/gemini', promptRoutes);
+
 // If there is a session on the request, find or create the user's corresponding model. *Prevents us from needing req.user
 
 app.get("/check-session", (req, res) => {
-  // Searching user collections for a matching OAuth Id. If they don't exist, create one.
+  if (!req.user || !req.user.id) {
+    console.warn("[DEBUG] No user session found");
+    return res.status(401).send({ error: "User not authenticated" });
+  }
+
   User.findOne({ oAuthId: req.user.id })
     .then((foundUser) => {
       if (!foundUser) {
@@ -157,14 +166,9 @@ app.get("/check-session", (req, res) => {
           name: req.user.displayName,
           location: "unknown",
           oAuthId: req.user.id,
-        })
-          .then((newUser) => {
-            return res.status(200).send([newUser]);
-          })
-          .catch((err) => {
-            console.error("Error creating user:", err);
-            return res.sendStatus(500);
-          });
+        }).then((newUser) => {
+          return res.status(200).send([newUser]);
+        });
       }
       return res.status(200).send([foundUser]);
     })
@@ -173,6 +177,7 @@ app.get("/check-session", (req, res) => {
       res.sendStatus(500);
     });
 });
+
 
 // Callback route for google to redirect to
 
