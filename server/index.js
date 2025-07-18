@@ -9,6 +9,7 @@ const path = require("path");
 const cors = require("cors");
 const axios = require("axios");
 const cookieParser = require("cookie-parser");
+const favoriteShapeComboRoutes = require("./routes/favoriteShapeCombos");
 
 dotenv.config();
 
@@ -137,8 +138,12 @@ app.use("/api/events", eventRoutes);
 
 
 
+
 // Forums Route
 app.use("/api/forums", forumRoutes);
+
+// Favorite Shape Combos Route
+app.use("/api/favorites", favoriteShapeComboRoutes);
 
 // Log in with google route
 app.get(

@@ -63,6 +63,15 @@ function Layout() {
                 </NavLink>
 
                 <NavLink
+                  to="/breathe"
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
+                  Breathe
+                </NavLink>
+
+                <NavLink
                   to="/events"
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
