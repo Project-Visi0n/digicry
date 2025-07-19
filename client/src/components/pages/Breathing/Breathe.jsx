@@ -1,9 +1,10 @@
 // ...existing code...
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Slider from "@mui/material/Slider";
 import Button from "@mui/material/Button";
 import ShapeGallery from "./ShapeGallery";
 import BreathControl from "./BreathControl";
+import { AuthContext } from "../../../context/AuthContext";
 
 const INITIAL_SHAPES = [
   { name: "Circle", path: "M50,25 a25,25 0 1,0 0.00001,0" },
@@ -49,6 +50,33 @@ const INITIAL_SHAPES = [
 ];
 
 function Breathe() {
+  const { user } = useContext(AuthContext);
+  const [favorite, setFavorite] = useState(null);
+  const [favoriteCombos, setFavoriteCombos] = useState([]);
+
+  // Fetch favorite shape combos for this user
+  const fetchFavorites = () => {
+    if (!user || !user._id) return;
+    fetch(`/api/favorites/${user._id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setFavorite(data[0]);
+          setFavoriteCombos(data);
+        } else {
+          setFavorite(null);
+          setFavoriteCombos([]);
+        }
+      })
+      .catch(() => {
+        setFavorite(null);
+        setFavoriteCombos([]);
+      });
+  };
+  useEffect(() => {
+    fetchFavorites();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
   const [durationSec, setDurationSec] = useState(4);
   const [holdSec, setHoldSec] = useState(1);
   const [paused, setPaused] = useState(false);
@@ -61,15 +89,16 @@ function Breathe() {
       const res = await fetch("/api/favorites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ startPath, endPath }),
+        body: JSON.stringify({ user: user && user._id, startPath, endPath }),
       });
       if (res.ok) {
-        alert("Favorite saved!");
+        fetchFavorites();
+        // alert("Favorite saved!");
       } else {
-        alert("Failed to save favorite");
+        // alert("Failed to save favorite");
       }
     } catch (err) {
-      alert("Error saving favorite");
+      // alert("Error saving favorite");
     }
   };
   return (
@@ -267,6 +296,114 @@ function Breathe() {
                 selectedPath={endPath}
               />
             </div>
+          </div>
+          {/* Favorite Shape Combo Preview Box */}
+          {favorite && (
+            <div
+              style={{
+                marginTop: 18,
+                width: 360,
+                minHeight: 60,
+                borderRadius: 16,
+                background: "rgba(255,255,255,0.22)",
+                boxShadow: "0 2px 8px 0 rgba(31,38,135,0.10)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+                padding: 12,
+                gap: 24,
+              }}
+            >
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 12, marginBottom: 2 }}>Favorite Start</div>
+                <svg width="48" height="48" viewBox="0 0 100 100">
+                  <path d={favorite.startShapePath} fill="#B8F2E6" fillOpacity="0.7" />
+                </svg>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 12, marginBottom: 2 }}>Favorite End</div>
+                <svg width="48" height="48" viewBox="0 0 100 100">
+                  <path d={favorite.endShapePath} fill="#FFA69E" fillOpacity="0.7" />
+                </svg>
+              </div>
+            </div>
+          )}
+          {/* Favorite Shape Combos List Box (always visible) */}
+          <div
+            style={{
+              marginTop: 16,
+              width: 360,
+              maxHeight: 120,
+              overflowY: "auto",
+              borderRadius: 16,
+              background: "rgba(255,255,255,0.18)",
+              boxShadow: "0 2px 8px 0 rgba(31,38,135,0.10)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 16,
+              padding: 10,
+              justifyContent: favoriteCombos.length === 0 ? "center" : "flex-start",
+            }}
+          >
+            {favoriteCombos.length === 0 ? (
+              <span style={{ color: "#888", fontSize: 15 }}>No favorites yet</span>
+            ) : (
+              favoriteCombos.map((combo, idx) => (
+                <div
+                  key={combo._id || idx}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Recall this favorite shape combo"
+                  style={{
+                    textAlign: "center",
+                    cursor: "pointer",
+                    border: "2px solid transparent",
+                    borderRadius: 8,
+                    transition: "border 0.2s",
+                  }}
+                  onClick={() => {
+                    setStartPath(combo.startShapePath);
+                    setEndPath(combo.endShapePath);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      setStartPath(combo.startShapePath);
+                      setEndPath(combo.endShapePath);
+                    }
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.border = "2px solid #B8F2E6";
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.border = "2px solid #B8F2E6";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.border = "2px solid transparent";
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.border = "2px solid transparent";
+                  }}
+                  title="Click to use this combo"
+                >
+                  {/* Combined SVG path for start+end */}
+                  <svg width="48" height="48" viewBox="0 0 100 100">
+                    <path
+                      d={combo.startShapePath}
+                      fill="#B8F2E6"
+                      fillOpacity="0.7"
+                    />
+                    <path
+                      d={combo.endShapePath}
+                      fill="#FFA69E"
+                      fillOpacity="0.7"
+                    />
+                  </svg>
+                </div>
+              ))
+            )}
           </div>
           {/* Save Favorite Shapes button below the gallery */}
           <Button
