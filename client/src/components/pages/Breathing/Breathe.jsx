@@ -140,7 +140,7 @@ function Breathe() {
       }}
     >
       <h2>Breathe</h2>
-      {/* Main area: sliders (left), breathing shape (center), shape galleries (right) */}
+      {/* Okay, here's the main area: sliders on the left, breathing shape in the center, and shape galleries on the right. */}
       <div
         style={{
           display: "flex",
@@ -149,7 +149,7 @@ function Breathe() {
           margin: "24px 0",
         }}
       >
-        {/* Sliders and pause/save controls (left) */}
+        {/* Sliders and pause/save controls go on the left. */}
         <div
           style={{
             display: "flex",
@@ -219,7 +219,7 @@ function Breathe() {
             {paused ? "Start" : "Pause"}
           </Button>
         </div>
-        {/* Morphing shape (center) */}
+        {/* The morphing shape sits in the center. */}
         <div style={{ margin: "0 32px" }}>
           {startPath && endPath ? (
             <BreathControl
@@ -236,7 +236,7 @@ function Breathe() {
             </div>
           )}
         </div>
-        {/* Shape galleries stacked vertically to the right of shape and Save button below */}
+        {/* Shape galleries are stacked vertically to the right of the shape, with the Save button below. */}
         <div
           style={{
             display: "flex",
@@ -330,7 +330,7 @@ function Breathe() {
               />
             </div>
           </div>
-          {/* Favorites List Box (single, horizontal, with label) */}
+          {/* Here's the favorites list box—single row, horizontal, with a label. */}
           <div style={{ marginTop: 18, width: 360 }}>
             <div style={{ fontWeight: 600, marginBottom: 6, fontSize: 16 }}>
               Favorites
@@ -475,7 +475,7 @@ function Breathe() {
                 ))
               )}
             </div>
-            {/* Edit Favorite Button */}
+            {/* Edit Favorite button lives here. */}
             <Button
               variant="outlined"
               sx={{ marginTop: 10, width: 360 }}
@@ -484,7 +484,7 @@ function Breathe() {
             >
               {editTarget ? "Cancel Edit" : "Edit Favorite"}
             </Button>
-            {/* If editTarget is set (edit mode), show instructions */}
+            {/* If I'm editing, show some instructions here. */}
             {editTarget && (
               <div style={{ marginTop: 8, color: "#888", fontSize: 14 }}>
                 {editTarget._id
@@ -493,7 +493,7 @@ function Breathe() {
               </div>
             )}
           </div>
-          {/* Edit Confirmation Modal */}
+          {/* Edit confirmation modal pops up here. */}
           <Dialog open={editModalOpen} onClose={() => setEditModalOpen(false)}>
             <DialogTitle>Edit Favorite</DialogTitle>
             <DialogContent>
@@ -529,7 +529,7 @@ function Breathe() {
               </Button>
             </DialogActions>
           </Dialog>
-          {/* Delete Confirmation Modal */}
+          {/* Delete confirmation modal pops up here. */}
           <Dialog
             open={deleteModalOpen}
             onClose={() => setDeleteModalOpen(false)}
@@ -562,7 +562,7 @@ function Breathe() {
               </Button>
             </DialogActions>
           </Dialog>
-          {/* Save Favorite Shapes button below the gallery */}
+          {/* Save Favorite Shapes button goes below the gallery. */}
           <Button
             variant="outlined"
             onClick={handleSaveFavorite}
