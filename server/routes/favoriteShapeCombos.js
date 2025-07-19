@@ -5,8 +5,15 @@ const FavoriteShapeCombo = require("../models/FavoriteShapeCombo");
 // Save a favorite combo
 router.post("/", async (req, res) => {
   try {
-    const { user, startShapeName, endShapeName, startShapePath, endShapePath } = req.body;
-    const combo = new FavoriteShapeCombo({ user, startShapeName, endShapeName, startShapePath, endShapePath });
+    const { user, startShapeName, endShapeName, startPath, endPath } = req.body;
+    // Accept either the old or new field names for compatibility
+    const combo = new FavoriteShapeCombo({
+      user,
+      startShapeName,
+      endShapeName,
+      startShapePath: req.body.startShapePath || startPath,
+      endShapePath: req.body.endShapePath || endPath,
+    });
     await combo.save();
     res.status(201).json(combo);
   } catch (err) {

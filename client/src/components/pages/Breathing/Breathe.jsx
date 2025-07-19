@@ -45,17 +45,33 @@ const INITIAL_SHAPES = [
   { name: "SymI", path: "M50,20 v60" },
   { name: "SymV", path: "M50,20 v60 M20,50 h60" },
   { name: "SymX", path: "M20,20 L80,80 M80,20 L20,80" },
-  { name: "Triangle", path: "M50,15 L85,85 L15,85 Z" },
+  { name: "Triangle", path: "M50,15 L85,85 L15,85 Z" } 
 ];
 
-export default function Breathe() {
-  // Store in seconds for UI, convert to ms for BreathControl
-  const [durationSec, setDurationSec] = useState(2);
+function Breathe() {
+  const [durationSec, setDurationSec] = useState(4);
   const [holdSec, setHoldSec] = useState(1);
   const [paused, setPaused] = useState(false);
   const [startPath, setStartPath] = useState(INITIAL_SHAPES[0].path);
   const [endPath, setEndPath] = useState(INITIAL_SHAPES[1].path);
 
+  // Save favorite shape combo handler (stub)
+  const handleSaveFavorite = async () => {
+    try {
+      const res = await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ startPath, endPath }),
+      });
+      if (res.ok) {
+        alert("Favorite saved!");
+      } else {
+        alert("Failed to save favorite");
+      }
+    } catch (err) {
+      alert("Error saving favorite");
+    }
+  };
   return (
     <div
       style={{
@@ -68,100 +84,202 @@ export default function Breathe() {
       }}
     >
       <h2>Breathe</h2>
-
-      {/* Shape selection menus */}
+      {/* Main area: sliders (left), breathing shape (center), shape galleries (right) */}
       <div
         style={{
-          width: 420,
-          margin: "0 auto 16px auto",
-          padding: 12,
-          border: "2px solid #ccc",
-          borderRadius: 12,
-          background: "#fafbfc",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-start",
+          margin: "24px 0",
         }}
       >
-        <div style={{ marginBottom: 8, fontWeight: 600 }}>Start Shape</div>
+        {/* Sliders and pause/save controls (left) */}
         <div
           style={{
-            overflowX: "auto",
-            whiteSpace: "nowrap",
-            padding: "4px 0 12px 0",
-            border: "1px solid #eee",
-            borderRadius: 8,
-            background: "#fff",
-            marginBottom: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginRight: 24,
           }}
         >
-          <ShapeGallery
-            shapes={INITIAL_SHAPES}
-            onSelect={setStartPath}
-            selectedPath={startPath}
+          <div
+            style={{
+              height: 320,
+              display: "flex",
+              flexDirection: "row",
+              gap: 24,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <span style={{ marginBottom: 8 }}>Duration</span>
+              <Slider
+                orientation="vertical"
+                min={0.5}
+                max={6}
+                step={0.1}
+                value={durationSec}
+                onChange={(_, v) => setDurationSec(Number(v))}
+                valueLabelDisplay="auto"
+                sx={{ color: "var(--mint)", height: 200 }}
+              />
+              <span style={{ marginTop: 8 }}>{durationSec.toFixed(1)} s</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <span style={{ marginBottom: 8 }}>Hold</span>
+              <Slider
+                orientation="vertical"
+                min={0}
+                max={4}
+                step={0.1}
+                value={holdSec}
+                onChange={(_, v) => setHoldSec(Number(v))}
+                valueLabelDisplay="auto"
+                sx={{ color: "var(--pink)", height: 200 }}
+              />
+              <span style={{ marginTop: 8 }}>{holdSec.toFixed(1)} s</span>
+            </div>
+          </div>
+          <Button
+            variant="contained"
+            onClick={() => setPaused((p) => !p)}
+            sx={{
+              background: paused ? "var(--mint)" : "var(--pink)",
+              color: "#333",
+              marginTop: 16,
+            }}
+          >
+            {paused ? "Start" : "Pause"}
+          </Button>
+        </div>
+        {/* Morphing shape (center) */}
+        <div style={{ margin: "0 32px" }}>
+          <BreathControl
+            duration={Math.round(durationSec * 1000)}
+            hold={Math.round(holdSec * 1000)}
+            paused={paused}
+            startPath={startPath}
+            endPath={endPath}
+            key={[paused, durationSec, holdSec, startPath, endPath].join("-")}
           />
         </div>
-        <div style={{ margin: "16px 0 8px 0", fontWeight: 600 }}>End Shape</div>
+        {/* Shape galleries stacked vertically to the right of shape and Save button below */}
         <div
           style={{
-            overflowX: "auto",
-            whiteSpace: "nowrap",
-            padding: "4px 0 12px 0",
-            border: "1px solid #eee",
-            borderRadius: 8,
-            background: "#fff",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginLeft: 32,
+            minWidth: 400,
+            minHeight: 600,
+            width: 400,
+            height: 600,
+            justifyContent: "center",
           }}
         >
-          <ShapeGallery
-            shapes={INITIAL_SHAPES}
-            onSelect={setEndPath}
-            selectedPath={endPath}
-          />
+          <div
+            style={{
+              width: 360,
+              height: 560,
+              padding: 20,
+              borderRadius: 24,
+              background: "rgba(255, 255, 255, 0.18)",
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              border: "1.5px solid rgba(255, 255, 255, 0.35)",
+              outline: "1px solid rgba(184, 242, 230, 0.25)",
+              transition: "box-shadow 0.2s",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              overflowY: "auto",
+              overflowX: "hidden",
+              gap: 24,
+            }}
+          >
+            <div style={{ marginBottom: 8, fontWeight: 600 }}>Start Shape</div>
+            <div
+              style={{
+                width: "100%",
+                height: 260,
+                overflowX: "auto",
+                overflowY: "hidden",
+                whiteSpace: "nowrap",
+                padding: "20px 0 20px 0",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: 12,
+                background: "rgba(255,255,255,0.22)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                boxShadow: "0 2px 8px 0 rgba(31,38,135,0.10)",
+                marginBottom: 16,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                gap: 20,
+              }}
+            >
+              <ShapeGallery
+                shapes={INITIAL_SHAPES}
+                onSelect={setStartPath}
+                selectedPath={startPath}
+              />
+            </div>
+            <div style={{ margin: "16px 0 8px 0", fontWeight: 600 }}>
+              End Shape
+            </div>
+            <div
+              style={{
+                width: "100%",
+                height: 260,
+                overflowX: "auto",
+                overflowY: "hidden",
+                whiteSpace: "nowrap",
+                padding: "20px 0 20px 0",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: 12,
+                background: "rgba(255,255,255,0.22)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                boxShadow: "0 2px 8px 0 rgba(31,38,135,0.10)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                gap: 20,
+              }}
+            >
+              <ShapeGallery
+                shapes={INITIAL_SHAPES}
+                onSelect={setEndPath}
+                selectedPath={endPath}
+              />
+            </div>
+          </div>
+          {/* Save Favorite Shapes button below the gallery */}
+          <Button
+            variant="outlined"
+            onClick={handleSaveFavorite}
+            sx={{ marginTop: 18, width: 360 }}
+          >
+            Save Favorite Shapes
+          </Button>
         </div>
       </div>
-
-      <div style={{ width: 320, margin: "24px 0" }}>
-        <div style={{ marginBottom: 24 }}>
-          <span>Animation Duration: {durationSec.toFixed(1)} s</span>
-          <Slider
-            min={0.5}
-            max={6}
-            step={0.1}
-            value={durationSec}
-            onChange={(_, v) => setDurationSec(Number(v))}
-            valueLabelDisplay="auto"
-            sx={{ color: "var(--mint)" }}
-          />
-        </div>
-        <div style={{ marginBottom: 24 }}>
-          <span>Hold Time: {holdSec.toFixed(1)} s</span>
-          <Slider
-            min={0}
-            max={4}
-            step={0.1}
-            value={holdSec}
-            onChange={(_, v) => setHoldSec(Number(v))}
-            valueLabelDisplay="auto"
-            sx={{ color: "var(--pink)" }}
-          />
-        </div>
-        <Button
-          variant="contained"
-          onClick={() => setPaused((p) => !p)}
-          sx={{
-            background: paused ? "var(--mint)" : "var(--pink)",
-            color: "#333",
-          }}
-        >
-          {paused ? "Start" : "Pause"}
-        </Button>
-      </div>
-      <BreathControl
-        duration={Math.round(durationSec * 1000)}
-        hold={Math.round(holdSec * 1000)}
-        paused={paused}
-        startPath={startPath}
-        endPath={endPath}
-        key={[paused, durationSec, holdSec, startPath, endPath].join("-")}
-      />
     </div>
   );
 }
+
+export default Breathe;
