@@ -109,7 +109,7 @@ export default function BreathControl({
   const fill = lerpColor(mint, pink, t);
 
   // Render the animated SVG
-  // If either shape is multi-path, render all paths (face, eyes, mouth, etc) on top of the morphing outline
+  // If either shape is multi-path, render all paths on top of the morphing outline
   const renderExtraPaths = (shape) => {
     if (!Array.isArray(shape)) return null;
     // Skip the first path (used for morphing)
@@ -125,21 +125,40 @@ export default function BreathControl({
   };
 
   return (
-    <svg
-      width="400"
-      height="400"
-      viewBox="0 0 100 100"
-      style={{ display: "block", marginLeft: "auto", marginRight: "auto" }}
+    <div
+      style={{
+        width: 400,
+        height: 400,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 24,
+        background: "rgba(255,255,255,0.18)",
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        border: "1.5px solid rgba(255,255,255,0.35)",
+        outline: "1px solid rgba(184,242,230,0.25)",
+        transition: "box-shadow 0.2s",
+        margin: "0 auto"
+      }}
     >
-      {/* Add margin and center the shape with a group transform */}
-      <g transform="translate(10,10) scale(0.8)">
-        {/* Morphing outline (face) */}
-        <path d={d} fill={fill} fillOpacity={0.85} />
-        {/* Extra features (eyes, mouth, etc) for start/end shape */}
-        {renderExtraPaths(startPath)}
-        {renderExtraPaths(endPath)}
-      </g>
-    </svg>
+      <svg
+        width="340"
+        height="340"
+        viewBox="0 0 100 100"
+        style={{ display: "block", margin: "0 auto" }}
+      >
+        {/* Add margin and center the shape with a group transform */}
+        <g transform="translate(10,10) scale(0.8)">
+          {/* Morphing outline (face) */}
+          <path d={d} fill={fill} fillOpacity={0.85} />
+          {/* Extra features for start/end shape */}
+          {renderExtraPaths(startPath)}
+          {renderExtraPaths(endPath)}
+        </g>
+      </svg>
+    </div>
   );
 }
 
