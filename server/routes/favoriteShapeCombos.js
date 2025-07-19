@@ -31,4 +31,18 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
+
+// Delete a favorite combo by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const deleted = await FavoriteShapeCombo.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Favorite not found' });
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 module.exports = router;
