@@ -136,7 +136,7 @@ function Breathe() {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "60vh",
-        marginTop: 40,
+        marginTop: 20,
       }}
     >
       <h2>Breathe</h2>
@@ -213,7 +213,7 @@ function Breathe() {
             sx={{
               background: paused ? "var(--mint)" : "var(--pink)",
               color: "#333",
-              marginTop: 16,
+              marginTop: 0,
             }}
           >
             {paused ? "Start" : "Pause"}
@@ -246,14 +246,14 @@ function Breathe() {
             minWidth: 400,
             minHeight: 600,
             width: 400,
-            height: 600,
-            justifyContent: "center",
+            height: 725,
+            justifyContent: "flex-start",
           }}
         >
           <div
             style={{
               width: 360,
-              height: 560,
+              height: 325,
               padding: 20,
               borderRadius: 24,
               background: "rgba(255, 255, 255, 0.18)",
@@ -272,11 +272,11 @@ function Breathe() {
               gap: 24,
             }}
           >
-            <div style={{ marginBottom: 8, fontWeight: 600 }}>Start Shape</div>
+            <div style={{ marginBottom: 0, fontWeight: 600 }}>Start Shape</div>
             <div
               style={{
                 width: "100%",
-                height: 260,
+                height: 80,
                 overflowX: "auto",
                 overflowY: "hidden",
                 whiteSpace: "nowrap",
@@ -300,13 +300,13 @@ function Breathe() {
                 selectedPath={startPath}
               />
             </div>
-            <div style={{ margin: "16px 0 8px 0", fontWeight: 600 }}>
+            <div style={{ margin: "0px 0 0px 0", fontWeight: 600 }}>
               End Shape
             </div>
             <div
               style={{
                 width: "100%",
-                height: 260,
+                height: 80,
                 overflowX: "auto",
                 overflowY: "hidden",
                 whiteSpace: "nowrap",
@@ -478,7 +478,7 @@ function Breathe() {
             {/* Edit Favorite button lives here. */}
             <Button
               variant="outlined"
-              sx={{ marginTop: 10, width: 360 }}
+              sx={{ marginTop: 0, width: 360 }}
               onClick={() => setEditTarget(editTarget ? null : { _id: null })}
               disabled={favoriteCombos.length === 0}
             >
@@ -566,7 +566,7 @@ function Breathe() {
           <Button
             variant="outlined"
             onClick={handleSaveFavorite}
-            sx={{ marginTop: 18, width: 360 }}
+            sx={{ marginTop: 0, width: 360 }}
           >
             Save Favorite Shapes
           </Button>
