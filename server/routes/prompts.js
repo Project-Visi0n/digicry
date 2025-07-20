@@ -1,42 +1,39 @@
-const express = require('express');
+const express = require("express");
+
 const router = express.Router();
-const axios = require('axios');
 
-router.get('/prompts', async (req, res) => {
-  const geminiKey = process.env.GEMINI_API_KEY;
+const Prompt = require("../models/Prompt");
 
-  if (!geminiKey) {
-    return res.status(500).send({ prompt: "Server misconfiguration: API key missing." });
-  }
-
+//  Create (save a prompt)
+router.post("/", async (req, res) => {
   try {
-    const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
-      {
-        contents: [
-          {
-            parts: [
-              {
-                text: "Give me one short reflective journal prompt that fits in my textbox and encourages thought self-expression of the user."
-              }
-            ]
-          }
-        ]
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-goog-api-key": geminiKey
-        }
-      }
-    );
-
-    const prompt = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-    res.send({ prompt: prompt || "Describe your day." });
-
+    const newPrompt = new Prompt({ text: req.body.text });
+    const saved = await newPrompt.save();
+    res.status(201).json(saved);
   } catch (err) {
-    console.error("Gemini API error:", err.response?.data || err.message);
-    res.status(500).send({ prompt: "Can not generate a prompt right now" });
+    res.status(500).json({ error: "Failed to save prompt"});
+  }
+});
+
+//  Read (get all prompts already saved)
+
+router.get("/", async (req, res) => {
+  try {
+    const prompts = await Prompt.find().sort({ createdAt: -1 });
+    res.json(prompts);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch prompts' });
+  }
+});
+
+// Delete (delete favorited prompts)
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await Prompt.findIdAndDelete(req.params.id);
+    res.status(204).end();
+  } catch(err) {
+    res.status(200).json({ error: 'Failed to delete prompts'});
   }
 });
 

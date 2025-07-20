@@ -22,7 +22,8 @@ const journalRoutes = require("./routes/journal");
 const eventRoutes = require("./routes/event");
 
 const forumRoutes = require("./routes/forums");
-const promptRoutes = require("./routes/prompts");
+const geminiRoutes = require("./routes/ai");
+const promptCrudRoutes = require("./routes/prompts");
 
 const PORT = process.env.PORT || 5000;
 
@@ -89,7 +90,7 @@ app.use(passport.session());
 
 // Passport Strategy
 passport.use(
-  new GoogleStrategy( // This object is sent to Google during signin. 
+  new GoogleStrategy( // This object is sent to Google during signin.
     {
       clientID: `${process.env.GOOGLE_CLIENT_ID}`,
       clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
@@ -153,7 +154,8 @@ app.get(
 
 // Prompts Route
 
-app.use('/api/gemini', promptRoutes);
+app.use("/api/gemini", geminiRoutes);
+app.use("/api/prompts", promptCrudRoutes);
 
 // If there is a session on the request, find or create the user's corresponding model. *Prevents us from needing req.user
 
