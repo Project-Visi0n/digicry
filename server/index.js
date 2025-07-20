@@ -9,9 +9,8 @@ const path = require("path");
 const cors = require("cors");
 const axios = require("axios");
 const cookieParser = require("cookie-parser");
-const favoriteShapeComboRoutes = require("./routes/favoriteShapeCombos");
-const shapesRoutes = require("./routes/shapes");
 
+// Load environment variables
 dotenv.config();
 
 // Import database connection and models
@@ -21,148 +20,119 @@ const { User } = require("./models");
 // Import Routes
 const journalRoutes = require("./routes/journal");
 const eventRoutes = require("./routes/event");
-
 const forumRoutes = require("./routes/forums");
 const geminiRoutes = require("./routes/ai");
 const promptCrudRoutes = require("./routes/prompts");
+const favoriteShapeComboRoutes = require("./routes/favoriteShapeCombos");
+const shapesRoutes = require("./routes/shapes");
 
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 connectDB();
 
-// Create an instance of Express
+// Create Express app
 const app = express();
 
-
-// Start server
-if (process.env.DEPLOYMENT === "true") {
-  // HTTPS / SSL CONFIG
-  const options = {
-    cert: fs.readFileSync("/etc/ssl/certs/slayer.events/fullchain1.pem"),
-    key: fs.readFileSync("/etc/ssl/certs/slayer.events/privkey1.pem"),
-  };
-  https.createServer(options, app).listen(443);
-} else {
-  // Start Local Server
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Listening on port: ${PORT}`);
-  });
-}
-
-// Middleware
-
-// This sets it up so that each session gets a cookie with a secret key
+// Session middleware
 app.use(
   session({
-    // Creates a new 'session' on requests
     secret: "your-secret-key",
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 }, // Creates req.session.cookie will only be alive for 1 hour ( maxAge is a timer option = 1000ms . 60 . 60 = 1 hr. )
-  }),
+    cookie: { maxAge: 1000 * 60 * 60 },
+  })
 );
 
-// Parse JSON bodies
+// Body parser and cookie parser
 app.use(express.json());
+app.use(cookieParser());
 
-// CORS configuration
+// CORS
 app.use(
   cors({
-    origin: `http://localhost:8080`,
+    origin: "http://localhost:8080",
     credentials: true,
-  }),
+  })
 );
 
-// Serve static files from the dist directory
-app.use(express.static(path.join(__dirname, "../dist")));
-
-// We set passport up to use the 'Google Strategy'. Each 'strategy' is an approach
-// used for logging into a certain site. The Google Strategy needs an object with the
-// client ID, clientSecret, CallbackURL, and an async callback function that will call
-// 'next' or 'done' once it is finished. The function automatically receives 2 tokens and
-// a profile.
-
-
-// Set up passport
-app.use(cookieParser());
+// Passport setup
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport Strategy
 passport.use(
-  new GoogleStrategy( // This object is sent to Google during signin.
+  new GoogleStrategy(
     {
       clientID: `${process.env.GOOGLE_CLIENT_ID}`,
       clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
       callbackURL: `${process.env.CALLBACK_URL}`,
-      passReqToCallback: true, // Send req to the callback so we can keep the session!
+      passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
-      return done(null, profile); // We opt to rely on the returned profile of the user, done is = "serializeUser"
-    },
-  ),
+      return done(null, profile);
+    }
+  )
 );
 
-// Save user info session as a cookie
 passport.serializeUser((user, done) => {
-  done(null, user); // Send entire user object to be stored to session
+  done(null, user);
 });
 
 passport.deserializeUser((user, done) => {
-  done(null, user); // We do not use req.user in our program, as we save them to our database
+  done(null, user);
 });
 
-// Quotes endpoint
+// Mount API routes (DO THIS BEFORE static assets!)
+app.use("/api/ai", geminiRoutes);
+app.use("/api/prompts", promptCrudRoutes);
+app.use("/api/journal", journalRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/forums", forumRoutes);
+app.use("/api/favorites", favoriteShapeComboRoutes);
+app.use("/api/shapes", shapesRoutes);
+
+// Test route
+app.get("/api/test", (req, res) => {
+  console.log(" /api/test was HIT");
+  res.send("Test route works");
+});
+
+// Quote route
 app.get("/api/stoic-quote", async (req, res) => {
   try {
     const response = await axios.get("https://stoic.tekloon.net/stoic-quote");
     res.send(response.data);
   } catch (error) {
     console.error("Error fetching quote:", error.message);
-    res.status(500);
+    res.status(500).send("Failed to fetch quote");
   }
 });
 
-// Routes
+// Google Auth Routes
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile"] }));
 
-// Root Route
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist", "index.html"));
-});
-
-// Journal Route
-app.use("/api/journal", journalRoutes);
-
-// Events Route
-app.use("/api/events", eventRoutes);
-
-
-
-
-
-// Forums Route
-app.use("/api/forums", forumRoutes);
-
-// Favorite Shape Combos Route
-app.use("/api/favorites", favoriteShapeComboRoutes);
-
-// Shapes Route
-app.use("/api/shapes", shapesRoutes);
-
-// Log in with google route
 app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] }), // Passport sends client to google, for Options, we designate we want their profile
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (req, res) => {
+    res.redirect(process.env.HOME_URL);
+  }
 );
 
-// Prompts Route
+// Logout
+app.get("/logout", async function (req, res) {
+  try {
+    await req.logout(() => {});
+    await req.session.destroy();
+    await req.sessionStore.clear();
+    res.redirect(process.env.HOME_URL);
+  } catch (err) {
+    console.error(err, "Error in logout");
+    res.sendStatus(500);
+  }
+});
 
-app.use("/api/gemini", geminiRoutes);
-app.use("/api/prompts", promptCrudRoutes);
-
-// If there is a session on the request, find or create the user's corresponding model. *Prevents us from needing req.user
-
+// Session check
 app.get("/check-session", (req, res) => {
   if (!req.user || !req.user.id) {
     console.warn("[DEBUG] No user session found");
@@ -177,38 +147,33 @@ app.get("/check-session", (req, res) => {
           name: req.user.displayName,
           location: "unknown",
           oAuthId: req.user.id,
-        }).then((newUser) => {
-          return res.status(200).send([newUser]);
-        });
+        }).then((newUser) => res.status(200).send([newUser]));
       }
       return res.status(200).send([foundUser]);
     })
     .catch((error) => {
-      console.error(error, "Check-Session Error, User Not Found");
+      console.error("Check-Session Error:", error);
       res.sendStatus(500);
     });
 });
 
+// Serve static frontend (AFTER routes)
+app.use(express.static(path.join(__dirname, "../dist")));
 
-// Callback route for google to redirect to
-
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/" }), // Client is sent to homepage WITHOUT tokens from google if they fail to connect
-  (req, res) => {
-    res.redirect(process.env.HOME_URL); // Send authenticated users to our homepage
-  },
-);
-
-// logout the user
-app.get("/logout", function (req, res) {
-  req.logout(async function (err) {
-    if (err) {
-      console.error(err, "Error in request logout in server");
-      res.send(500);
-    }
-    await req.session.destroy(); // Remove session on the request
-    await req.sessionStore.clear(); // Clear the sessionStore history
-    res.redirect(process.env.HOME_URL);
-  });
+// Fallback to frontend app
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist", "index.html"));
 });
+
+// Start server
+if (process.env.DEPLOYMENT === "true") {
+  const options = {
+    cert: fs.readFileSync("/etc/ssl/certs/slayer.events/fullchain1.pem"),
+    key: fs.readFileSync("/etc/ssl/certs/slayer.events/privkey1.pem"),
+  };
+  https.createServer(options, app).listen(443);
+} else {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Listening on port: ${PORT}`);
+  });
+}
