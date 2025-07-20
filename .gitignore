@@ -9,3 +9,6 @@ localhost.pem
 localhost-key.pem
 google-cred.json
 
+config/gcloud-key.json
+config/gcloud-key.json
+data/db/
